@@ -30,3 +30,13 @@ export const getColumnNames = async (tableName) => {
         console.log(`error geting column names from table  ${tableName}`, error)
     }
 }
+
+export const getTable = async (tableName) => {
+    try {
+        const table = await db(tableName)
+        .select('*')
+        return table
+    } catch (error) {
+        console.log(`error geting table ${tableName} from database`, error)
+    }
+}
