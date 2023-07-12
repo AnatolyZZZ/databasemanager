@@ -10,3 +10,23 @@ export const getTableNames = async () => {
         console.log('error geting tablenames from database', error)
     }
 }
+
+export const getColumnNames = async (tableName) => {
+    try {
+        const query = `
+            SELECT attname
+            FROM pg_catalog.pg_attribute
+            WHERE attrelid = '${tableName}'::regclass
+            AND attnum > 0
+            AND NOT attisdropped;
+        `;
+    
+        const res =  await db.raw(query);
+        // console.log('res =>', res); 
+        const columns = res.rows.map(elt => elt.attname)
+        
+        return columns
+    } catch (error) {
+        console.log(`error geting column names from table  ${tableName}`, error)
+    }
+}
