@@ -1,11 +1,11 @@
 import { Route, Routes } from "react-router-dom";
-import { HomePage } from "./components/Homepage";
+import { HomePage } from "./components/HomePage";
 import { Loading } from './components/misc/Loading';
 import { useEffect  } from 'react';
 import { useDispatch, useSelector } from "react-redux";
-import { setLoading, setTable, setColumns} from './actions'
+import { setLoading, setTable, setColumns, setTableNames} from './actions'
 
-function fetchData(url) {
+async function fetchData(url) {
   return fetch(url)
     .then(response => response.json());
 }
@@ -36,6 +36,8 @@ function App() {
       console.log(error)
       dispatch(setLoading(false));
     })
+
+    
 
     return () => {
       abortController1.abort();

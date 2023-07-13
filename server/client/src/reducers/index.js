@@ -5,7 +5,8 @@ const initialState = {
     table : [],
     loading : false,
     columns : [],
-    root_url : 'http://localhost:5002'
+    root_url : 'http://localhost:5002',
+    tables : []
 }
 
 export const reducer = (state = initialState, action = {}) => {
@@ -18,6 +19,8 @@ export const reducer = (state = initialState, action = {}) => {
             return {...state, loading : action.payload}
         case (ACTIONS.SET_TABLE_NAME) :
             return {...state, table_name : action.payload}
+        case (ACTIONS.GET_TABLES) :
+            return {...state, tables : action.payload}
         default :
             return {...state}
     }

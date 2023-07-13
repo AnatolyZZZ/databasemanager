@@ -2,7 +2,8 @@ export const ACTIONS = {
     SET_TABLE : 'SET_TABLE',
     SET_COLUMNS : 'SET_COLUMNS',
     SET_LOADING : 'SET_LOADING',
-    SET_TABLE_NAME : 'SET_TABLE_NAME'
+    SET_TABLE_NAME : 'SET_TABLE_NAME',
+    GET_TABLES : 'GET_TABLES'
 }
 
 export const setTable = (table) => {
@@ -31,5 +32,12 @@ export const setLoading = (val) => {
     return {
         type : ACTIONS.SET_LOADING,
         payload : val
+    }
+}
+
+export const setTableNames = (tableNames) => {
+    return {
+        type : ACTIONS.GET_TABLES,
+        payload: tableNames
     }
 }
