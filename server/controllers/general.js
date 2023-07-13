@@ -13,7 +13,7 @@ export const _getTableNames = async (req, res) => {
 export const _getColumnNames = async (req, res) => {
     try {
         // console.log('req body',req.body)
-        const columnNames = await getColumnNames(req.body.table);
+        const columnNames = await getColumnNames(req.params.table);
         res.status(200).json(columnNames)
     } catch (error) {
         console.log('error in controller', error);
@@ -23,11 +23,10 @@ export const _getColumnNames = async (req, res) => {
 
 export const _getTable = async (req, res) => {
     try {
-        // console.log('req body',req.body)
-        const table = await getTable(req.body.table);
+        const table = await getTable(req.params.name);
         res.status(200).json(table)
     } catch (error) {
         console.log('error in controller', error);
-        res.status(500).json({msg : `error geting  table ${req.body.table}`})
+        res.status(500).json({msg : `error geting  table ${req.params.name}`})
     }
 }

@@ -3,8 +3,10 @@ import './misc.css'
 export const Dialog = ({isOpen, children, cssClass}) => {
     const dialogRef = useRef(null);
     useEffect ( () => {
-        isOpen ? dialogRef.current.open = true : dialogRef.current.open = false
-        return () => dialogRef.current.open = false
+        const node = dialogRef.current;
+        // console.log(`isOpen changed to ${isOpen}`)
+        isOpen ? node.open = true : node.open = false
+        return () => node.open = false
     }, [isOpen])
     return <dialog ref={dialogRef} className={cssClass}>
         {children}
