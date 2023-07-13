@@ -3,7 +3,8 @@ import { HomePage } from "./components/HomePage";
 import { Loading } from './components/misc/Loading';
 import { useEffect  } from 'react';
 import { useDispatch, useSelector } from "react-redux";
-import { setLoading, setTable, setColumns, setTableNames} from './actions'
+import { setLoading, setTable, setColumns, setTableNames} from './actions';
+import './App.css'
 
 async function fetchData(url) {
   return fetch(url)
@@ -17,6 +18,7 @@ function App() {
   const root_url = useSelector(state => state.root_url)
 
   useEffect(() => {
+    if (table_name !== '') {
     const abortController1 = new AbortController()
     const abortController2 = new AbortController()
     
@@ -36,14 +38,24 @@ function App() {
       console.log(error)
       dispatch(setLoading(false));
     })
-
-    
-
     return () => {
       abortController1.abort();
       abortController2.abort();
-    };
+    }
+  };
   }, [table_name, dispatch, root_url]);
+
+  useEffect(() => {
+    const abortController = new AbortController();
+    fetch(`${root_url}/api/general/tablenames`)
+    .then(res => res.json())
+    .then(data => dispatch(setTableNames(data)))
+    .catch((error) => {
+      console.log(error)
+      dispatch(setLoading(false));
+    })
+    return () => abortController.abort()
+  }, [dispatch, root_url])
 
   return (<div className="App">
     <Loading/>

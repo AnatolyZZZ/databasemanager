@@ -1,7 +1,7 @@
 import { ACTIONS } from "../actions"
 
 const initialState = {
-    table_name : 'products',
+    table_name : '',
     table : [],
     loading : false,
     columns : [],

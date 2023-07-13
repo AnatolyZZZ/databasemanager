@@ -4,28 +4,29 @@ import { setTableName } from '../actions';
 
 export const Controllers = (props) => {
     const table_name = useSelector(state => state.table_name);
-    const 
+    const tables = useSelector(state => state.tables);
     const dispatch = useDispatch();
 
     const handleChange = (e) => {
         dispatch(setTableName(e.target.value));
     }
 
+    // console.log(tables);
+
 
     return <div className="container controllers">
-        <FormControl fullWidth>
-        <InputLabel id="demo-simple-select-label">Age</InputLabel>
+        <FormControl size='large'>
+        <InputLabel id="demo-simple-select-label">Select table name</InputLabel>
             <Select
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
                 value={table_name}
                 label="Select table name"
                 onChange={handleChange}
-            >
-                {}
-                <MenuItem value={10}>Ten</MenuItem>
-                <MenuItem value={20}>Twenty</MenuItem>
-                <MenuItem value={30}>Thirty</MenuItem>
+                style={{width : '12rem'}}
+            >   
+                {/* <MenuItem value="">Table name</MenuItem> */}
+                {tables.map(elt => <MenuItem value={elt} key={elt}>{elt}</MenuItem>)}
             </Select>
     </FormControl>
 

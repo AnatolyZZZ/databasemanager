@@ -11,6 +11,7 @@ server/client/.pnp.js
 server/client/package-lock.json
 server/.env
 server/client/.env
+/.env
 
 # testing
 server/client/coverage
