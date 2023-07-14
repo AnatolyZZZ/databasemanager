@@ -7,7 +7,8 @@ const initialState = {
     columns : [],
     root_url : 'http://localhost:5002',
     tables : [],
-    selected_columns : []
+    selected_columns : [],
+    primaryKey : ''
 }
 
 export const reducer = (state = initialState, action = {}) => {
@@ -32,6 +33,8 @@ export const reducer = (state = initialState, action = {}) => {
             const returnValue = {...state, selected_columns:new_selected}
             localStorage.setItem(`${state.table_name}_selected`, JSON.stringify(new_selected));
             return returnValue
+        case (ACTIONS.SET_PK) :
+            return {...state, primaryKey : action.payload}
         default :
             return {...state}
     }

@@ -5,7 +5,8 @@ export const ACTIONS = {
     SET_TABLE_NAME : 'SET_TABLE_NAME',
     GET_TABLES : 'GET_TABLES',
     TOGGLE_SELECTED : 'TOGGLE_SELECTED',
-    SET_SELECTED : 'SET_SELECTED'
+    SET_SELECTED : 'SET_SELECTED',
+    SET_PK : 'SET_PK'
 }
 
 export const setTable = (table) => {
@@ -55,5 +56,12 @@ export const setSelected = (newSelected) => {
     return {
         type : ACTIONS.SET_SELECTED,
         payload : newSelected
+    }
+}
+
+export const setPrimaryKey = (key) => {
+    return {
+        type : ACTIONS.SET_PK,
+        payload : key
     }
 }

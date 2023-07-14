@@ -13,19 +13,31 @@ export const getTableNames = async () => {
 
 export const getColumnNames = async (tableName) => {
     try {
-        const query = `
+        const columnQuery = `
             SELECT attname
             FROM pg_catalog.pg_attribute
             WHERE attrelid = '${tableName}'::regclass
             AND attnum > 0
             AND NOT attisdropped;
         `;
+        const primaryKeyQuery = `
+            SELECT pg_attribute.attname
+            FROM pg_index, pg_class, pg_attribute
+            WHERE pg_class.oid = '${tableName}'::regclass
+            AND indrelid = pg_class.oid
+            AND pg_attribute.attrelid = pg_class.oid
+            AND pg_attribute.attnum = any(pg_index.indkey)
+            AND indisprimary
+        `;
+
     
-        const res =  await db.raw(query);
+        const columnRes =  await db.raw(columnQuery);
+        const primaryKeyRes = await db.raw(primaryKeyQuery);
         // console.log('res =>', res); 
-        const columns = res.rows.map(elt => elt.attname)
-        
-        return columns
+        const columns = columnRes.rows.map(elt => elt.attname)
+        const primaryKey = primaryKeyRes.rows[0].attname;
+        console.log('PK =>', primaryKey); 
+        return [columns, primaryKey]
     } catch (error) {
         console.log(`error geting column names from table  ${tableName}`, error)
     }
