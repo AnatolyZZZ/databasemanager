@@ -3,7 +3,9 @@ export const ACTIONS = {
     SET_COLUMNS : 'SET_COLUMNS',
     SET_LOADING : 'SET_LOADING',
     SET_TABLE_NAME : 'SET_TABLE_NAME',
-    GET_TABLES : 'GET_TABLES'
+    GET_TABLES : 'GET_TABLES',
+    TOGGLE_SELECTED : 'TOGGLE_SELECTED',
+    SET_SELECTED : 'SET_SELECTED'
 }
 
 export const setTable = (table) => {
@@ -38,6 +40,20 @@ export const setLoading = (val) => {
 export const setTableNames = (tableNames) => {
     return {
         type : ACTIONS.GET_TABLES,
-        payload: tableNames
+        payload : tableNames
+    }
+}
+
+export const toggleSelected = (id) => {
+    return {
+        type : ACTIONS.TOGGLE_SELECTED,
+        payload : id 
+    }
+}
+
+export const setSelected = (newSelected) => {
+    return {
+        type : ACTIONS. SET_SELECTED,
+        payload : newSelected
     }
 }

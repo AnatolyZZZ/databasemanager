@@ -3,7 +3,7 @@ import { HomePage } from "./components/HomePage";
 import { Loading } from './components/misc/Loading';
 import { useEffect  } from 'react';
 import { useDispatch, useSelector } from "react-redux";
-import { setLoading, setTable, setColumns, setTableNames} from './actions';
+import { setLoading, setTable, setColumns, setTableNames, setSelected} from './actions';
 import './App.css'
 
 async function fetchData(url) {
@@ -33,6 +33,17 @@ function App() {
       dispatch(setLoading(false));
       dispatch(setTable(data1));
       dispatch(setColumns(data2));
+      // update selected 
+      const storedItem = localStorage.getItem(`${table_name}_selected`);
+      const previousSelected = storedItem ?  JSON.parse(storedItem) : []
+      const newSelected = data2.map(elt => ([elt, true]));
+      previousSelected.forEach(elt => {
+        const idx = newSelected.findIndex((element) => elt === element[0]);
+        if (idx !== -1) {
+          newSelected[idx][1] = elt[1];
+        }
+      })
+      dispatch(setSelected(newSelected));
     })
     .catch((error) => {
       console.log(error)
