@@ -1,6 +1,5 @@
 import { useSelector } from 'react-redux';
-import 'react-data-grid/lib/styles.css';
-import { DataGrid, GridCellEditStopReasons } from '@mui/x-data-grid';
+import { DataGrid, GridCellEditStopReasons, GridCellEditStartReasons } from '@mui/x-data-grid';
 
 export const Table = (props) => {
     const table = useSelector(state => state.table);
@@ -21,12 +20,12 @@ export const Table = (props) => {
     columns = columns.map(elt => Object({field : elt[0], headerName : elt[0].charAt(0).toUpperCase()+elt[0].slice(1), width : lengths.get(elt[0])*12+5, editable : true}));
     
 
-    const handleSave = (params, event) => {
-        console.log(params, event)
-        const rowID = params.id;
-        const fieldName = params.field;
-        const cellValue = params.row[fieldName];
-        console.log('Double Clicked\n Cell Value:', cellValue, '\nfieldName:', fieldName, '\nrowID', rowID);
+    const handleSave = (updRow) => {
+        console.log(updRow)
+        ////
+        /// to  code checks and server update  
+        ////
+        return updRow
     };      
   
     return <>
@@ -36,12 +35,22 @@ export const Table = (props) => {
                 columns={columns}
                 rows={table}
                 getRowId={row => row[primaryKey]}
+                
                 onCellEditStop={(params, event) => {
                     if (params.reason === GridCellEditStopReasons.cellFocusOut) {
                       event.defaultMuiPrevented = true;
-                    }
-                    handleSave(params, event)
+                    }  
                 }}
+                
+                onCellEditStart={(params, event) => {
+                    console.log('reason of start', params.reason)
+                    if (params.reason !== GridCellEditStartReasons.cellDoubleClick) {
+                        event.defaultMuiPrevented = true;
+                    }
+                }}
+
+                processRowUpdate={(updatedRow, originalRow) => handleSave(updatedRow)}
+
             />
         </div>
     </>
