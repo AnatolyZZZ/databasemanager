@@ -20,10 +20,6 @@ export const Controllers = (props) => {
         dispatch(toggleSelected(idx))
     }
 
-    // console.log(selected_columns);
-    // console.log(tables)
-
-
     return <div className="container controllers">
         <FormControl size='large' sx={{m: 1, width : 192}}>
         <InputLabel id="table_name_select_label">Table name</InputLabel>
@@ -38,7 +34,6 @@ export const Controllers = (props) => {
                 <MenuItem disabled value="">
                     <em>Select table name</em>
                  </MenuItem>
-                {/* <MenuItem value="">Table name</MenuItem> */}
                 {tables.map(elt => <MenuItem value={elt} key={elt}>{elt}</MenuItem>)}
             </Select>
     </FormControl>
@@ -59,7 +54,6 @@ export const Controllers = (props) => {
               />
          )}
         </FormGroup>
-        {/* <FormHelperText>Be careful</FormHelperText> */}
       </FormControl>
       <Button onClick={()=>openEditColumns(false)}>Close</Button>
     </Dialog> 

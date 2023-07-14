@@ -35,17 +35,14 @@ function App() {
       dispatch(setColumns(data2));
       // update selected 
       const storedItem = localStorage.getItem(`${table_name}_selected`);
-      // console.log('stored item', storedItem, 'table ', table_name)
       const previousSelected = storedItem ?  JSON.parse(storedItem) : []
       const newSelected = data2.map(elt => ([elt, true]));
       previousSelected.forEach(elt => {
         const idx = newSelected.findIndex((element) => elt[0] === element[0]);
         if (idx !== -1) {
           newSelected[idx][1] = elt[1];
-          // console.log(`changing elt ${idx} to ${elt[1]}`)
         }
       })
-      // console.log('new selected', newSelected)
       dispatch(setSelected(newSelected));
     })
     .catch((error) => {
