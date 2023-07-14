@@ -1,11 +1,15 @@
 import { useSelector, useDispatch } from 'react-redux';
-import {FormControl, InputLabel, MenuItem, Select, FormControlLabel, FormLabel, FormGroup, Checkbox} from '@mui/material';
+import {FormControl, InputLabel, MenuItem, Select, FormControlLabel, FormLabel, FormGroup, Checkbox, Button} from '@mui/material';
 import { setTableName, toggleSelected } from '../actions';
+import {useState} from 'react'
+import { Dialog } from './misc/Dialog';
+import './Controllers.css'
 
 export const Controllers = (props) => {
     const table_name = useSelector(state => state.table_name);
     const tables = useSelector(state => state.tables);
-    const selected_columns = useSelector(state => state.selected_columns)
+    const selected_columns = useSelector(state => state.selected_columns);
+    const [editColumns, openEditColumns] = useState(false);
     const dispatch = useDispatch();
 
     const handleChangeTable = (e) => {
@@ -39,33 +43,15 @@ export const Controllers = (props) => {
             </Select>
     </FormControl>
 
-    {/* <FormControl sx={{ m: 1, width: 300 }}>
-        <InputLabel id="column_checkbox_label">Tag</InputLabel>
-        <Select
-          labelId="column_checkbox_label"
-          id="column_checkbox"
-          multiple
-          value={'Columns'}
-          onChange={handleColumsCheck}
-          input={<OutlinedInput label="Tag" />}
-          renderValue={(selected) => selected.join(', ')}
-          MenuProps={MenuProps}
-        >
-          {names.map((name) => (
-            <MenuItem key={name} value={name}>
-              <Checkbox checked={personName.indexOf(name) > -1} />
-              <ListItemText primary={name} />
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl> */}
+    <Button variant="contained" color='secondary' onClick={(e) => openEditColumns(true)}>Select columns</Button>
 
-      
+    <Dialog isOpen={editColumns} cssClass={'columns-edit'}>
       <FormControl sx={{ m: 3 }} component="fieldset" variant="standard">
-        <FormLabel component="legend">Which columns to display</FormLabel>
+        <FormLabel component="legend">Which columns to display?</FormLabel>
         <FormGroup>
             {selected_columns.map((elt, idx) => 
                 <FormControlLabel
+                key={idx}
                 control={
                   <Checkbox checked={elt[1]} onChange={(e) => handleColumsCheck(idx)} name={elt[0]} />
                 }
@@ -75,7 +61,8 @@ export const Controllers = (props) => {
         </FormGroup>
         {/* <FormHelperText>Be careful</FormHelperText> */}
       </FormControl>
-      
+      <Button onClick={()=>openEditColumns(false)}>Close</Button>
+    </Dialog> 
 
     </div>
 }

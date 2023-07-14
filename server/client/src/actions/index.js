@@ -53,7 +53,7 @@ export const toggleSelected = (id) => {
 
 export const setSelected = (newSelected) => {
     return {
-        type : ACTIONS. SET_SELECTED,
+        type : ACTIONS.SET_SELECTED,
         payload : newSelected
     }
 }

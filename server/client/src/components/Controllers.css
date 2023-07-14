@@ -1,0 +1,13 @@
+.controllers {
+    display : flex;
+    align-items: center;
+    position: relative;
+}
+
+.columns-edit {
+   border-color: #ddd;
+   z-index: 1;
+   inset-inline-start: 200px;
+   inset-inline-end: unset;
+    transform: translateY(300px);
+}
