@@ -1,19 +1,10 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { DataGrid, GridCellEditStopReasons, GridCellEditStartReasons, GridEditInputCell } from '@mui/x-data-grid';
 import { setEditMode } from '../actions';
-// import { validateCell } from './Validation';
-import { makeStyles, styled } from '@mui/styles';
-import {Box} from '@mui/material'
+import { validateCellFailed } from './Validation';
+import { makeStyles } from '@mui/styles';
 
-const validateCellFailed = (value) => {
-    console.log('params.value =>', value)
-    if (!value || value === "") {
-        console.log('true')
-      return true;
-    } else {
-        return false;
-    }
-}
+
 
 const useStyles = makeStyles((theme) => {
 // console.log('theme', theme)

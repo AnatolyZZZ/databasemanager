@@ -1,5 +1,9 @@
-export const validateCell = (params) => {
-    if (!params.value || params.value === "") {
-      return { error: true, helperText: "This field is required" };
+export const validateCellFailed = (value) => {
+    console.log('params.value =>', value)
+    if (!value || value === "") {
+        console.log('true')
+      return true;
+    } else {
+        return false;
     }
 }
