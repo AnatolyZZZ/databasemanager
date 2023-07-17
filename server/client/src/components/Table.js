@@ -11,8 +11,9 @@ const useStyles = makeStyles((theme) => {
 return (
     {
     root: {
-      background: 'red',
+      background: 'rgba(255, 0, 0, 0.35);',
       color: 'white',
+      height: '100%'
     },
   })
 }
@@ -96,16 +97,18 @@ export const Table = (props) => {
                     console.log(params)
                     if (params.reason === GridCellEditStopReasons.cellFocusOut) {
                       event.defaultMuiPrevented = true;
+                    } else {
+                        dispatch(setEditMode(false))
                     }
-                    // else if (!validateCell(params.value, params.field, params.rowData)) {
-                    //     event.defaultMuiPrevented = true;
-                    // }
                 }}
 
                 onCellEditStart={(params, event) => {
                     // console.log('reason of start', params.reason);
-                    // console.log('event', event)
-                    if (params.reason !== GridCellEditStartReasons.cellDoubleClick || editing) {
+                    // console.log('check', params.reason !== GridCellEditStartReasons.cellDoubleClick &  params.reason !== editing &  params.reason !== GridCellEditStartReasons.enterKeyDown)
+                    // console.log('left', params.reason);
+                    // console.log('right',GridCellEditStartReasons.cellDoubleClick || editing || GridCellEditStartReasons.enterKeyDown)
+                    // console.log(GridCellEditStartReasons.enterKeyDown)
+                    if (params.reason !== GridCellEditStartReasons.cellDoubleClick &  params.reason !== editing &  params.reason !== GridCellEditStartReasons.enterKeyDown) {
                         event.defaultMuiPrevented = true;
                     } else {
                         dispatch(setEditMode(true))
