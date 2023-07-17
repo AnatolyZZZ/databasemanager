@@ -8,7 +8,9 @@ const initialState = {
     root_url : 'http://localhost:5002',
     tables : [],
     selected_columns : [],
-    primaryKey : ''
+    primaryKey : '',
+    editing : false,
+    edit_correct : true
 }
 
 export const reducer = (state = initialState, action = {}) => {
@@ -35,6 +37,10 @@ export const reducer = (state = initialState, action = {}) => {
             return returnValue
         case (ACTIONS.SET_PK) :
             return {...state, primaryKey : action.payload}
+        case (ACTIONS.EDIT_MODE) :
+            return {...state, editing : action.payload}
+        case (ACTIONS.SET_EDIT_CORRECT) :
+            return {...state, edit_correct : action.payload}
         default :
             return {...state}
     }

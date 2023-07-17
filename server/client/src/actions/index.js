@@ -6,7 +6,9 @@ export const ACTIONS = {
     GET_TABLES : 'GET_TABLES',
     TOGGLE_SELECTED : 'TOGGLE_SELECTED',
     SET_SELECTED : 'SET_SELECTED',
-    SET_PK : 'SET_PK'
+    SET_PK : 'SET_PK',
+    EDIT_MODE : 'EDIT_MODE',
+    SET_EDIT_CORRECT : 'SET_EDIT_CORRECT'
 }
 
 export const setTable = (table) => {
@@ -63,5 +65,18 @@ export const setPrimaryKey = (key) => {
     return {
         type : ACTIONS.SET_PK,
         payload : key
+    }
+}
+
+export const setEditMode = (val) => {
+    return {
+        type : ACTIONS.EDIT_MODE,
+        payload : val
+    }
+}
+export const setEditCorrect = (val) => {
+    return {
+        type : ACTIONS.SET_EDIT_CORRECT,
+        payload : val
     }
 }
