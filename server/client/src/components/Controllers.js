@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from 'react-redux';
-import {FormControl, InputLabel, MenuItem, Select, FormControlLabel, FormLabel, FormGroup, Checkbox, Button} from '@mui/material';
+import {FormControl, InputLabel, MenuItem, Select, FormControlLabel, FormGroup, Checkbox, Button} from '@mui/material';
 import { setTableName, toggleSelected } from '../actions';
 import {useState} from 'react'
 // import { Dialog } from './misc/Dialog';

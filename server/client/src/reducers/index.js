@@ -39,8 +39,6 @@ export const reducer = (state = initialState, action = {}) => {
             return {...state, primaryKey : action.payload}
         case (ACTIONS.EDIT_MODE) :
             return {...state, editing : action.payload}
-        case (ACTIONS.SET_EDIT_CORRECT) :
-            return {...state, edit_correct : action.payload}
         default :
             return {...state}
     }

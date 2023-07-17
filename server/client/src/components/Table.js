@@ -1,9 +1,7 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { DataGrid, GridCellEditStopReasons, GridCellEditStartReasons, GridEditInputCell } from '@mui/x-data-grid';
-import { setEditMode, setEditCorrect } from '../actions';
-import { useState, useEffect } from 'react';
+import { setEditMode } from '../actions';
 // import { validateCell } from './Validation';
-import Tooltip from '@mui/material/Tooltip';
 import { makeStyles, styled } from '@mui/styles';
 import {Box} from '@mui/material'
 
@@ -32,7 +30,7 @@ return (
 const StyledBox = styled(Box)(({ theme }) => ({
     height: '100%',
     width: '100%',
-    'div:has(& .Mui-error)' : {
+    ':has(div.Mui-error)' : {
         backgroundColor: `rgba(126,10,15, 0.1)`,
         color:  '#ff4343',
       },
@@ -67,14 +65,9 @@ export const Table = (props) => {
     const primaryKey = useSelector(state => state.primaryKey);
     const selected_columns = useSelector(state => state.selected_columns);
     const editing = useSelector(state => state.editing);
-    const edit_correct = useSelector (state => state.edit_correct);
-    const [edit_correct_local, setLocalCorrect] = useState(true) 
     const lengths = new Map();
     let columns = selected_columns.filter(elt => elt[1] === true);
 
-    useEffect(()=> {
-        setLocalCorrect(edit_correct)
-    }, [edit_correct])
 
     for (let column of selected_columns) {
         lengths.set(column[0], String(column[0]).length);
@@ -112,16 +105,6 @@ export const Table = (props) => {
         ////
         return updRow
     }; 
-    
-    function handleEdit (params)  {
-        let correct =  window.confirm('edit correct?');
-        // // let correct = false;
-        dispatch( {type : 'SET_EDIT_CORRECT', payload : correct});
-        // // setLocalCorrect(correct);
-        // console.log('local correct is', edit_correct_local)
-        console.log(params)
-        return(correct)
-    }
   
     return <>
         <div className='container'>
