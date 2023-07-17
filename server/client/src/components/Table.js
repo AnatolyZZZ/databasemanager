@@ -16,7 +16,7 @@ const validateCellFailed = (value) => {
 }
 
 const useStyles = makeStyles((theme) => {
-console.log('theme', theme)
+// console.log('theme', theme)
 return (
     {
     root: {
@@ -26,19 +26,6 @@ return (
   })
 }
 );
-
-const StyledBox = styled(Box)(({ theme }) => ({
-    height: '100%',
-    width: '100%',
-    ':has(div.Mui-error)' : {
-        backgroundColor: `rgba(126,10,15, 0.1)`,
-        color:  '#ff4343',
-      },
-    '& .Mui-error': {
-      backgroundColor: `rgba(126,10,15, 0.1)`,
-      color:  '#ff4343',
-    },
-  }));
 
 
 const StyledInput = (params) => {
@@ -52,7 +39,7 @@ const StyledInput = (params) => {
   };
 
 function customRender (props) {
-    console.log('props in render', props)
+    // console.log('props in render', props)
     // const {error, ...other} = props;
     return (<StyledInput {...props}/>);
   }
@@ -87,7 +74,7 @@ export const Table = (props) => {
                 preProcessEditCellProps : (params) => {
                     const hasError = validateCellFailed(params.props.value);
                     if(hasError) {
-                        console.log('haserror params', { ...params.props, error: hasError })
+                        // console.log('haserror params', { ...params.props, error: hasError })
                     }
                     return { ...params.props, error: hasError };
                   },
@@ -109,7 +96,6 @@ export const Table = (props) => {
     return <>
         <div className='container'>
             <h1>Table component</h1>
-            <StyledBox>
              <DataGrid 
                 columns={columns}
                 rows={table}
@@ -138,7 +124,6 @@ export const Table = (props) => {
                 processRowUpdate={(updatedRow, originalRow) => handleSave(updatedRow)}
 
             />
-            </StyledBox>
         </div>
     </>
 }
