@@ -43,10 +43,10 @@ export const getColumnNames = async (tableName) => {
         const constrains = await db(tableName).columnInfo()
         // const info = await infoPromise;
         // const constrains = info.map(elt => elt.constrains);
-        console.log('constrains => ', constrains);
+        // console.log('constrains => ', constrains);
 
         const primaryKey = primaryKeyRes.rows[0].attname;
-        console.log('PK =>', primaryKey); 
+        // console.log('PK =>', primaryKey); 
         return [columns, primaryKey, constrains]
     } catch (error) {
         console.log(`error geting column names from table  ${tableName}`, error);

@@ -5,16 +5,23 @@ export const validateCellFailed = (params, constrains, dispatch) => {
     console.log('validate cell constrains =>', constrains);
     console.log('params', params);
     let errorMessage = '';
+    let newMessege = '';
     let intPass = true, notEmptyPass=true;
     if (constrains.type === 'integer') {
         // console.log('check for int');
         // console.log(isInteger(params.props.value));
-        [intPass, errorMessage] = isInteger(params.props.value);  
+        [intPass, newMessege] = isInteger(params.props.value);
+        if (newMessege) {
+            errorMessage = newMessege
+        }  
     }
     if (!constrains.nullable) {
         // console.log('check for empty');
         // console.log(notEmpty(params.props.value));
-        [notEmptyPass, errorMessage] = notEmpty(params.props.value)
+        [notEmptyPass, newMessege] = notEmpty(params.props.value);
+        if (newMessege) {
+            errorMessage = newMessege
+        } 
     }
     // console.log(intPass, notEmptyPass);
     // console.log('returning', !intPass || !notEmptyPass)

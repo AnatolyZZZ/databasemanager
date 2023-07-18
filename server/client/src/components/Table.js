@@ -25,7 +25,7 @@ const StyledInput = (params) => {
     const classes = useStyles();
     const {error, ...other} = params;
     if (params.error) {
-        console.log('error, classses',classes)
+        // console.log('error, classses',classes)
     }
     return (<GridEditInputCell {...other} className={error ? `${classes.root} Mui-error`: null}/>
     );

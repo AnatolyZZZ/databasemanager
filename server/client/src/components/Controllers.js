@@ -2,9 +2,10 @@ import { useSelector, useDispatch } from 'react-redux';
 import {FormControl, InputLabel, MenuItem, Select, FormControlLabel, FormGroup, Checkbox, Button} from '@mui/material';
 import { setTableName, toggleSelected } from '../actions';
 import {useState} from 'react'
-import Paper from '@mui/material/Paper';
+// import Paper from '@mui/material/Paper';
 import {Dialog , DialogActions, DialogContent, DialogTitle}from '@mui/material';
-import Draggable from 'react-draggable';
+// import Draggable from 'react-draggable';
+import { useHotkeys } from 'react-hotkeys-hook';
 import './Controllers.css'
 
 
@@ -14,8 +15,13 @@ export const Controllers = (props) => {
     const selected_columns = useSelector(state => state.selected_columns);
     const editing = useSelector(state => state.editing);
     const errorMessage = useSelector(state => state.errorMessage);
+    
     const [editColumns, openEditColumns] = useState(false);
     const [showErrorMessage, setShowMessage] = useState(false);
+    // strange problem appeared: when using hotkey both useHotkey and pressing button happens 
+    // so first Hotkey changes showErrorMessege to false then button shows it again 
+    // therefore using this additional state
+    const [closedByHotkey, setClosedByHotkey] = useState(false);
     const dispatch = useDispatch();
 
     const handleChangeTable = (e) => {
@@ -25,17 +31,27 @@ export const Controllers = (props) => {
     const handleColumsCheck = (idx) => {
         dispatch(toggleSelected(idx))
     }
+    // potential perfomance problem shouls make another component?
 
-    function PaperComponent(props) {
-        return (
-          <Draggable
-            handle="#draggable-dialog-title"
-            cancel={'[class*="MuiDialogContent-root"]'}
-          >
-            <Paper {...props} />
-          </Draggable>
-        );
-      }
+    useHotkeys('enter', () => {
+        setShowMessage(false);
+        setClosedByHotkey(true);
+        // console.log('enter pressed')
+        setTimeout(() => {
+            setClosedByHotkey(false)
+        }, 100);
+    });
+
+    // function PaperComponent(props) {
+    //     return (
+    //       <Draggable
+    //         handle="#draggable-dialog-title"
+    //         cancel={'[class*="MuiDialogContent-root"]'}
+    //       >
+    //         <Paper {...props} />
+    //       </Draggable>
+    //     );
+    //   }
 
     return <div className="container controllers">
         <FormControl size='large' sx={{m: 1, width : 192}}>
@@ -55,7 +71,12 @@ export const Controllers = (props) => {
             </Select>
     </FormControl>
 
-    <Button variant="contained" color='secondary' onClick={(e) => {if (!editing) {openEditColumns(true)}}}>Select columns</Button>
+    <Button 
+        variant="contained" 
+        color='secondary' 
+        onClick={(e) => {if (!editing) {openEditColumns(true)}}}>
+            Select columns
+    </Button>
 
     <Dialog disableEscapeKeyDown open={editColumns}>
         <DialogTitle>Which columns to display?</DialogTitle>
@@ -77,15 +98,30 @@ export const Controllers = (props) => {
         </DialogContent>
         
         <DialogActions>
-            <Button onClick={()=> openEditColumns(false)}>Ok</Button>
+            <Button onClick={()=> openEditColumns(false) }>Ok</Button>
         </DialogActions>
     </Dialog>
 
-    <Button variant='outlined' onClick={()=>setShowMessage(true)}>Show errors</Button>
+    <Button 
+        variant='outlined' 
+        onClick={()=>{
+            if (!closedByHotkey) {
+                // console.log('showErrorMessage now is ', showErrorMessage)
+                setShowMessage(!showErrorMessage);
+                // console.log('changing by button to', !showErrorMessage);
+                setClosedByHotkey(false)
+            }
+        }}
+        id='open-error-dialog-button'>
+            Show errors
+        </Button>
 
-    #draggable-dialog-title
-    <Dialog open={showErrorMessage}> 
-        <DialogTitle id="#draggable-dialog-title" style={{ cursor: 'move' }}>Error on currently editing sell:</DialogTitle>
+    <Dialog 
+        open={showErrorMessage}
+        // PaperComponent={PaperComponent}
+        id='#error-message-dialog'
+     > 
+        <DialogTitle id="#draggable-dialog-title">Error on currently editing cell:</DialogTitle>
         <DialogContent>
             {errorMessage ? errorMessage : 'No errors detected'}
         </DialogContent>

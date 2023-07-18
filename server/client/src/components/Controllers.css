@@ -12,3 +12,7 @@
    inset-inline-end: unset;
     transform: translateY(300px);
 }
+
+#open-error-dialog-button {
+    margin-left: auto;
+}

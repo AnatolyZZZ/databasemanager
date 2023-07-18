@@ -32,7 +32,7 @@ export const _getTable = async (req, res) => {
 }
 
 export const _updateEntry = async (req, res) => {
-    console.log('req.body', req.body)
+    // console.log('req.body', req.body)
     try {
         const result = await updateEntry(req.body.tableName, req.body.primaryKey, req.body.keyValue, req.body.entry);
         res.status(200).json(result)
