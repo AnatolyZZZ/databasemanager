@@ -8,6 +8,7 @@ export const ACTIONS = {
     SET_SELECTED : 'SET_SELECTED',
     SET_PK : 'SET_PK',
     EDIT_MODE : 'EDIT_MODE',
+    SET_ERROR_MESSAGE : 'SET_ERROR_MESSAGE'
 }
 
 export const setTable = (table) => {

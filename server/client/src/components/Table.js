@@ -3,6 +3,7 @@ import { DataGrid, GridCellEditStopReasons, GridCellEditStartReasons, GridEditIn
 import { setEditMode } from '../actions';
 import { validateCellFailed } from './Validation';
 import { makeStyles } from '@mui/styles';
+import {useState} from 'react'
 
 
 
@@ -11,7 +12,7 @@ const useStyles = makeStyles((theme) => {
 return (
     {
     root: {
-      background: 'rgba(255, 0, 0, 0.35);',
+      background: 'rgba(255, 0, 0, 0.6);',
       color: 'white',
       height: '100%'
     },
@@ -46,6 +47,8 @@ export const Table = (props) => {
     const selected_columns = useSelector(state => state.selected_columns);
     const root_url = useSelector(state => state.root_url);
     const editing = useSelector(state => state.editing);
+    const constrains = useSelector(state => state.constrains);
+    const [editingColumnName, setEditingColumnName] = useState(null);
     const lengths = new Map();
     let columns = selected_columns.filter(elt => elt[1] === true);
 
@@ -59,17 +62,30 @@ export const Table = (props) => {
             lengths.set(key, Math.max(lengths.get(key), String(row[key]).length))
         }
     }
+    const isSerial = (column) => {
+        // console.log(constrains)
+        const defaultValString = String(constrains[column]['defaultValue']);
+        const nextVal = defaultValString.slice(0, 8);
+        const res = nextVal === 'nextval(' ? true : false
+        // console.log('nextVal', res)
+        return res
+    }
+    // if (Object.keys(constrains).length > 0) {
+    //     console.log('length', Object.keys(constrains).length)
+    //     isSerial('id')
+    // };
+
     // console.log(lengths)
     columns = columns.map(elt => Object({
                 field : elt[0],
                 headerName : elt[0].charAt(0).toUpperCase() + elt[0].slice(1), 
                 width : lengths.get(elt[0])*12+15, 
-                editable : true, 
+                editable : !isSerial(elt[0]), 
                 preProcessEditCellProps : (params) => {
-                    const hasError = validateCellFailed(params.props.value);
-                    if(hasError) {
-                        // console.log('haserror params', { ...params.props, error: hasError })
-                    }
+                    const hasError = validateCellFailed(params, constrains[editingColumnName], dispatch);
+                    // if(hasError) {
+                        // console.log('param props', params.props)
+                    // }
                     return { ...params.props, error: hasError };
                   },
                 renderEditCell : customRender
@@ -107,8 +123,8 @@ export const Table = (props) => {
                 dispatch(setEditMode(false));
                return row
             } else {
-                console.log('error', result.msg, 'result upd', result.upd)
-                return result.upd 
+                console.log('error', result.msg, 'result.upd', result.upd)
+                return result.upd.entry 
             }
         } catch (error) {
             console.log('error => ', error)
@@ -134,15 +150,16 @@ export const Table = (props) => {
                 }}
 
                 onCellEditStart={(params, event) => {
-                    // console.log('reason of start', params.reason);
+                    // console.log('params of start', params);
                     // console.log('check', params.reason !== GridCellEditStartReasons.cellDoubleClick &  params.reason !== editing &  params.reason !== GridCellEditStartReasons.enterKeyDown)
                     // console.log('left', params.reason);
                     // console.log('right',GridCellEditStartReasons.cellDoubleClick || editing || GridCellEditStartReasons.enterKeyDown)
                     // console.log(GridCellEditStartReasons.enterKeyDown)
-                    if (params.reason !== GridCellEditStartReasons.cellDoubleClick &  params.reason !== editing &  params.reason !== GridCellEditStartReasons.enterKeyDown) {
+                    if ((params.reason !== GridCellEditStartReasons.cellDoubleClick &  params.reason !== editing &  params.reason !== GridCellEditStartReasons.enterKeyDown)||(editing === true)) {
                         event.defaultMuiPrevented = true;
                     } else {
-                        dispatch(setEditMode(true))
+                        dispatch(setEditMode(true));
+                        setEditingColumnName(params.field)
                     }
                 }}
 

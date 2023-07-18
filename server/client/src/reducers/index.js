@@ -11,7 +11,8 @@ const initialState = {
     primaryKey : '',
     editing : false,
     edit_correct : true,
-    constrains : {}
+    constrains : {},
+    errorMessage : ''
 }
 
 export const reducer = (state = initialState, action = {}) => {
@@ -40,6 +41,8 @@ export const reducer = (state = initialState, action = {}) => {
             return {...state, primaryKey : action.payload}
         case (ACTIONS.EDIT_MODE) :
             return {...state, editing : action.payload}
+        case (ACTIONS.SET_ERROR_MESSAGE) :
+            return {...state, errorMessage : action.payload}
         default :
             return {...state}
     }
