@@ -4,6 +4,8 @@ import { setEditMode } from '../actions';
 import { validateCellFailed } from './Validation';
 import { makeStyles } from '@mui/styles';
 import {useState} from 'react'
+// import  { styled } from '@mui/styles';
+import {Box} from '@mui/material'
 
 
 
@@ -94,12 +96,9 @@ export const Table = (props) => {
         );
     
 
-    const handleSave = async (updRow) => {
+    const handleSave = async (updRow, originalRow) => {
         // console.log(updRow);
-        dispatch({type: 'SET_LOADING', payload: true})
-        ////
-        /// to code checks and server update  
-        ////
+       
         const upd = {
             tableName : table_name,
             primaryKey : primaryKey,
@@ -112,61 +111,82 @@ export const Table = (props) => {
             headers : {'Content-type' : 'application/json'},
             body : JSON.stringify(upd)
         }
-
-        try {
-            const res = await fetch(`${root_url}/api/general/tables`, para);
-            const result = await res.json()
-            // console.log('result', result)
-            if (res.status === 200) {
-                const row = result[0]
-                dispatch({type: 'SET_LOADING', payload: false});
-                dispatch(setEditMode(false));
-               return row
-            } else {
-                console.log('error', result.msg, 'result.upd', result.upd)
-                return result.upd.entry 
+        let shalowEqual = true;
+        for (let key in updRow) {
+            if (updRow[key] !== originalRow[key]) {
+                shalowEqual = false
+                break
             }
-        } catch (error) {
-            console.log('error => ', error)
         }
+        if (!shalowEqual) {
+            try {
+                dispatch({type: 'SET_LOADING', payload: true})
+                const res = await fetch(`${root_url}/api/general/tables`, para);
+                const result = await res.json()
+                // console.log('result', result)
+                if (res.status === 200) {
+                    const row = result[0]
+                    dispatch({type: 'SET_LOADING', payload: false});
+                    dispatch(setEditMode(false));
+                return row
+                } else {
+                    console.log('error', result.msg, 'result.upd', result.upd)
+                    return result.upd.entry 
+                }
+            } catch (error) {
+                console.log('error => ', error)
+            }
+        }
+        dispatch(setEditMode(false));
         return updRow
     }; 
   
     return <>
         <div className='container'>
             <h1>Table component</h1>
-             <DataGrid 
-                columns={columns}
-                rows={table}
-                getRowId={row => row[primaryKey]}
-                
-                onCellEditStop={(params, event) => {
-                    // console.log(params)
-                    if (params.reason === GridCellEditStopReasons.cellFocusOut) {
-                      event.defaultMuiPrevented = true;
-                    } else {
-                        dispatch(setEditMode(false))
-                    }
-                }}
-
-                onCellEditStart={(params, event) => {
-                    // console.log('params of start', params);
-                    // console.log('check', params.reason !== GridCellEditStartReasons.cellDoubleClick &  params.reason !== editing &  params.reason !== GridCellEditStartReasons.enterKeyDown)
-                    // console.log('left', params.reason);
-                    // console.log('right',GridCellEditStartReasons.cellDoubleClick || editing || GridCellEditStartReasons.enterKeyDown)
-                    // console.log(GridCellEditStartReasons.enterKeyDown)
-                    if ((params.reason !== GridCellEditStartReasons.cellDoubleClick &  params.reason !== editing &  params.reason !== GridCellEditStartReasons.enterKeyDown)||(editing === true)) {
+            <Box sx={{
+                width : '100%',
+                height : '100%',
+                '.MuiDataGrid-cell' : {
+                    opacity : 0.5
+                },
+                '.MuiDataGrid-cell--editable' :{
+                    opacity : "1 !important",
+                }
+            }} id="style-box">
+                <DataGrid 
+                    columns={columns}
+                    rows={table}
+                    getRowId={row => row[primaryKey]}
+                    
+                    onCellEditStop={(params, event) => {
+                        // console.log(params)
+                        if (params.reason === GridCellEditStopReasons.cellFocusOut) {
                         event.defaultMuiPrevented = true;
-                    } else {
-                        dispatch(setEditMode(true));
-                        setEditingColumnName(params.field)
-                    }
-                }}
+                        } else {
+                            dispatch(setEditMode(false))
+                        }
+                    }}
 
-                processRowUpdate={async (updatedRow, originalRow) => handleSave(updatedRow)}
-                onProcessRowUpdateError={(err)=> console.log('err', err)}
+                    onCellEditStart={(params, event) => {
+                        // console.log('params of start', params);
+                        // console.log('check', params.reason !== GridCellEditStartReasons.cellDoubleClick &  params.reason !== editing &  params.reason !== GridCellEditStartReasons.enterKeyDown)
+                        // console.log('left', params.reason);
+                        // console.log('right',GridCellEditStartReasons.cellDoubleClick || editing || GridCellEditStartReasons.enterKeyDown)
+                        // console.log(GridCellEditStartReasons.enterKeyDown)
+                        if ((params.reason !== GridCellEditStartReasons.cellDoubleClick &  params.reason !== editing &  params.reason !== GridCellEditStartReasons.enterKeyDown)||(editing === true)) {
+                            event.defaultMuiPrevented = true;
+                        } else {
+                            dispatch(setEditMode(true));
+                            setEditingColumnName(params.field)
+                        }
+                    }}
 
-            />
+                    processRowUpdate={async (updatedRow, originalRow) => handleSave(updatedRow, originalRow)}
+                    onProcessRowUpdateError={(err)=> console.log('err', err)}
+
+                />
+            </Box>
         </div>
     </>
 }

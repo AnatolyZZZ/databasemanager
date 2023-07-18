@@ -15,6 +15,7 @@ export const Controllers = (props) => {
     const selected_columns = useSelector(state => state.selected_columns);
     const editing = useSelector(state => state.editing);
     const errorMessage = useSelector(state => state.errorMessage);
+    const primaryKey = useSelector(state => state.primaryKey)
     
     const [editColumns, openEditColumns] = useState(false);
     const [showErrorMessage, setShowMessage] = useState(false);
@@ -90,7 +91,7 @@ export const Controllers = (props) => {
                         control={
                         <Checkbox checked={elt[1]} onChange={(e) => handleColumsCheck(idx)} name={elt[0]} />
                         }
-                        label={elt[0]}
+                        label={elt[0] === primaryKey ? `${elt[0]} (PK)` : elt[0]}
                     />
                 )}
                 </FormGroup>

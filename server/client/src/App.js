@@ -47,6 +47,12 @@ function App() {
           newSelected[idx][1] = elt[1];
         }
       })
+      // turn off primary key
+      for (let elt of newSelected) {
+        if (elt[0] === data2[1]) {
+          elt[1] = false
+        }
+      }
       dispatch(setSelected(newSelected));
     })
     .catch((error) => {
@@ -61,10 +67,14 @@ function App() {
   }, [table_name, dispatch, root_url]);
 
   useEffect(() => {
+    dispatch(setLoading(true))
     const abortController = new AbortController();
     fetch(`${root_url}/api/general/tablenames`)
     .then(res => res.json())
-    .then(data => dispatch(setTableNames(data)))
+    .then(data => {
+      dispatch(setTableNames(data))
+      dispatch(setLoading(false))
+    })
     .catch((error) => {
       console.log(error)
       dispatch(setLoading(false));
