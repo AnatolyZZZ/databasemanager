@@ -7,7 +7,7 @@ export const ACTIONS = {
     TOGGLE_SELECTED : 'TOGGLE_SELECTED',
     SET_SELECTED : 'SET_SELECTED',
     SET_PK : 'SET_PK',
-    EDIT_MODE : 'EDIT_MODE'
+    EDIT_MODE : 'EDIT_MODE',
 }
 
 export const setTable = (table) => {
@@ -73,3 +73,4 @@ export const setEditMode = (val) => {
         payload : val
     }
 }
+
