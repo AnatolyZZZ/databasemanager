@@ -11,8 +11,9 @@ const useStyles = makeStyles((theme) => {
 return (
     {
     root: {
-      background: 'red',
+      background: 'rgba(255, 0, 0, 0.35);',
       color: 'white',
+      height: '100%'
     },
   })
 }
@@ -40,8 +41,10 @@ function customRender (props) {
 export const Table = (props) => {
     const dispatch = useDispatch()
     const table = useSelector(state => state.table);
+    const table_name = useSelector(state => state.table_name);
     const primaryKey = useSelector(state => state.primaryKey);
     const selected_columns = useSelector(state => state.selected_columns);
+    const root_url = useSelector(state => state.root_url);
     const editing = useSelector(state => state.editing);
     const lengths = new Map();
     let columns = selected_columns.filter(elt => elt[1] === true);
@@ -75,12 +78,39 @@ export const Table = (props) => {
         );
     
 
-    const handleSave = (updRow) => {
+    const handleSave = async (updRow) => {
         console.log(updRow);
         dispatch(setEditMode(false))
         ////
         /// to code checks and server update  
         ////
+        const upd = {
+            tableName : table_name,
+            primaryKey : primaryKey,
+            keyValue : updRow[primaryKey],
+            entry : updRow
+        }
+
+        const para = {
+            method : "PUT",
+            headers : {'Content-type' : 'application/json'},
+            body : JSON.stringify(upd)
+        }
+
+        try {
+            const res = await fetch(`${root_url}/api/general/tables`, para);
+            const result = await res.json()
+            console.log('result', result)
+            if (res.status === 200) {
+                const row = result[0]
+               return row
+            } else {
+                console.log('error', result.msg, 'result upd', result.upd)
+                return result.upd 
+            }
+        } catch (error) {
+            console.log('error => ', error)
+        }
         return updRow
     }; 
   
@@ -96,23 +126,26 @@ export const Table = (props) => {
                     console.log(params)
                     if (params.reason === GridCellEditStopReasons.cellFocusOut) {
                       event.defaultMuiPrevented = true;
+                    } else {
+                        dispatch(setEditMode(false))
                     }
-                    // else if (!validateCell(params.value, params.field, params.rowData)) {
-                    //     event.defaultMuiPrevented = true;
-                    // }
                 }}
 
                 onCellEditStart={(params, event) => {
                     // console.log('reason of start', params.reason);
-                    // console.log('event', event)
-                    if (params.reason !== GridCellEditStartReasons.cellDoubleClick || editing) {
+                    // console.log('check', params.reason !== GridCellEditStartReasons.cellDoubleClick &  params.reason !== editing &  params.reason !== GridCellEditStartReasons.enterKeyDown)
+                    // console.log('left', params.reason);
+                    // console.log('right',GridCellEditStartReasons.cellDoubleClick || editing || GridCellEditStartReasons.enterKeyDown)
+                    // console.log(GridCellEditStartReasons.enterKeyDown)
+                    if (params.reason !== GridCellEditStartReasons.cellDoubleClick &  params.reason !== editing &  params.reason !== GridCellEditStartReasons.enterKeyDown) {
                         event.defaultMuiPrevented = true;
                     } else {
                         dispatch(setEditMode(true))
                     }
                 }}
 
-                processRowUpdate={(updatedRow, originalRow) => handleSave(updatedRow)}
+                processRowUpdate={async (updatedRow, originalRow) => handleSave(updatedRow)}
+                onProcessRowUpdateError={(err)=> console.log('err', err)}
 
             />
         </div>

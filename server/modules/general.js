@@ -49,6 +49,21 @@ export const getTable = async (tableName) => {
         .select('*')
         return table
     } catch (error) {
-        console.log(`error geting table ${tableName} from database`, error)
+        console.log(`error geting table ${tableName} from database`, error);
+    }
+}
+
+export const updateEntry = async (tableName, primaryKey, keyValue, entry) => {
+    console.log('upd inputs',tableName, primaryKey, keyValue, entry);
+    try {
+        const result = await db(tableName)
+        .where({[primaryKey] : keyValue})
+        .update(entry)
+        .returning('*')
+        console.log('result', result)
+        return result
+    } catch (error) {
+        console.log(`error updating table ${tableName} by entry ${entry}, were ${primaryKey} is ${keyValue}`, error);
+        throw(error)
     }
 }
