@@ -79,8 +79,8 @@ export const Table = (props) => {
     
 
     const handleSave = async (updRow) => {
-        console.log(updRow);
-        dispatch(setEditMode(false))
+        // console.log(updRow);
+        dispatch({type: 'SET_LOADING', payload: true})
         ////
         /// to code checks and server update  
         ////
@@ -103,6 +103,8 @@ export const Table = (props) => {
             console.log('result', result)
             if (res.status === 200) {
                 const row = result[0]
+                dispatch({type: 'SET_LOADING', payload: false});
+                dispatch(setEditMode(false));
                return row
             } else {
                 console.log('error', result.msg, 'result upd', result.upd)
@@ -123,7 +125,7 @@ export const Table = (props) => {
                 getRowId={row => row[primaryKey]}
                 
                 onCellEditStop={(params, event) => {
-                    console.log(params)
+                    // console.log(params)
                     if (params.reason === GridCellEditStopReasons.cellFocusOut) {
                       event.defaultMuiPrevented = true;
                     } else {
