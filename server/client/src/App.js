@@ -28,12 +28,14 @@ function App() {
     ]
     dispatch({type: 'SET_LOADING', payload: true})
     
+
     Promise.all(fetchPromises)
     .then(([data1, data2]) => {
+      // console.log('data1', data1, 'data2', data2)
       dispatch(setLoading(false));
       dispatch(setTable(data1));
       // console.log(data2);
-      dispatch(setColumns(data2[0]));
+      dispatch(setColumns([data2[0], data2[2]]));
       dispatch(setPrimaryKey(data2[1]));
       // update selected 
       const storedItem = localStorage.getItem(`${table_name}_selected`);
@@ -48,7 +50,7 @@ function App() {
       dispatch(setSelected(newSelected));
     })
     .catch((error) => {
-      console.log(error)
+      console.log('error got',error)
       dispatch(setLoading(false));
     })
     return () => {

@@ -10,7 +10,8 @@ const initialState = {
     selected_columns : [],
     primaryKey : '',
     editing : false,
-    edit_correct : true
+    edit_correct : true,
+    constrains : {}
 }
 
 export const reducer = (state = initialState, action = {}) => {
@@ -18,7 +19,7 @@ export const reducer = (state = initialState, action = {}) => {
         case (ACTIONS.SET_TABLE) :
             return {...state, table : action.payload}
         case (ACTIONS.SET_COLUMNS) :
-            return {...state, columns : action.payload}
+            return {...state, columns : action.payload[0], constrains : action.payload[1]}
         case (ACTIONS.SET_LOADING) :
             return {...state, loading : action.payload}
         case (ACTIONS.SET_TABLE_NAME) :
