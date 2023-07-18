@@ -123,7 +123,8 @@ export const Controllers = (props) => {
      > 
         <DialogTitle id="#draggable-dialog-title">Error on currently editing cell:</DialogTitle>
         <DialogContent>
-            {errorMessage ? errorMessage : 'No errors detected'}
+            {!editing ? "You are not edditing any cell" :
+            errorMessage ? errorMessage : 'No errors detected'}
         </DialogContent>
 
         <DialogActions>

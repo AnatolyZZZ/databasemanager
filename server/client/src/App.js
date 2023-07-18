@@ -34,7 +34,7 @@ function App() {
       // console.log('data1', data1, 'data2', data2)
       dispatch(setLoading(false));
       dispatch(setTable(data1));
-      console.log('data2',data2);
+      // console.log('data2',data2);
       dispatch(setColumns([data2[0], data2[2]]));
       dispatch(setPrimaryKey(data2[1]));
       // update selected 

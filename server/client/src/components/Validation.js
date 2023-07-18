@@ -2,8 +2,8 @@
 
 
 export const validateCellFailed = (params, constrains, dispatch) => {
-    console.log('validate cell constrains =>', constrains);
-    console.log('params', params);
+    // console.log('validate cell constrains =>', constrains);
+    // console.log('params', params);
     let errorMessage = '';
     let newMessege = '';
     let intPass = true, notEmptyPass=true;

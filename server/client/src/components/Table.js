@@ -116,7 +116,7 @@ export const Table = (props) => {
         try {
             const res = await fetch(`${root_url}/api/general/tables`, para);
             const result = await res.json()
-            console.log('result', result)
+            // console.log('result', result)
             if (res.status === 200) {
                 const row = result[0]
                 dispatch({type: 'SET_LOADING', payload: false});
