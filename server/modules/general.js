@@ -66,13 +66,13 @@ export const getTable = async (tableName) => {
 }
 
 export const updateEntry = async (tableName, primaryKey, keyValue, entry) => {
-    console.log('upd inputs',tableName, primaryKey, keyValue, entry);
+    // console.log('upd inputs',tableName, primaryKey, keyValue, entry);
     try {
         const result = await db(tableName)
         .where({[primaryKey] : keyValue})
         .update(entry)
         .returning('*')
-        console.log('result', result)
+        // console.log('result', result)
         return result
     } catch (error) {
         console.log(`error updating table ${tableName} by entry ${entry}, were ${primaryKey} is ${keyValue}`, error);
