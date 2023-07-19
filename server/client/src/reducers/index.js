@@ -12,7 +12,7 @@ const initialState = {
     editing : false,
     edit_correct : true,
     constrains : {},
-    errorMessage : '',
+    errorMessages : [],
     alerErrorOn : false,
     alertErrorMessage : ''
 }
@@ -43,9 +43,9 @@ export const reducer = (state = initialState, action = {}) => {
             return {...state, primaryKey : action.payload}
         case (ACTIONS.EDIT_MODE) :
             return {...state, editing : action.payload}
-        case (ACTIONS.SET_ERROR_MESSAGE) :
+        case (ACTIONS.SET_EDIT_ERROR_MESSAGES) :
             // console.log('setting in reducer', action.payload)
-            return {...state, errorMessage : action.payload}
+            return {...state, errorMessages : action.payload}
         case (ACTIONS.SET_ALERT_ERROR) :
             return {...state, alerErrorOn : action.payload}
         case (ACTIONS.SET_ALERT_ERROR_MESSAGE) :
