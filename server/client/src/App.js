@@ -1,5 +1,5 @@
 import { Route, Routes } from "react-router-dom";
-import { HomePage } from "./components/HomePage";
+import { HomePage } from "./components/Homepage";
 import { Loading } from './components/misc/Loading';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from "react-redux";
