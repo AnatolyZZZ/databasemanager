@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { DataGrid, GridCellEditStopReasons, GridCellEditStartReasons, GridEditInputCell } from '@mui/x-data-grid';
-import { setEditMode } from '../actions';
+import { setEditMode, setAlertError, setAlertErrorMessage } from '../actions';
 import { validateCellFailed } from './Validation';
 import { makeStyles } from '@mui/styles';
 import {useState} from 'react'
@@ -130,11 +130,15 @@ export const Table = (props) => {
                     dispatch(setEditMode(false));
                 return row
                 } else {
-                    console.log('error', result.msg, 'result.upd', result.upd)
+                    console.log('error', result.msg, 'result.upd', result.upd);
+                    dispatch(setAlertErrorMessage('Failed to save in database, res status'));
+                    dispatch(setAlertError(true))
                     return result.upd.entry 
                 }
             } catch (error) {
                 console.log('error => ', error)
+                dispatch(setAlertErrorMessage('Failed to save in database, err'));
+                dispatch(setAlertError(true))
             }
         }
         dispatch(setEditMode(false));
@@ -152,6 +156,9 @@ export const Table = (props) => {
                 },
                 '.MuiDataGrid-cell--editable' :{
                     opacity : "1 !important",
+                },
+                '.MuiDataGrid-root' : {
+                    'minHeight' : "400px"
                 }
             }} id="style-box">
                 <DataGrid 
@@ -163,9 +170,11 @@ export const Table = (props) => {
                         // console.log(params)
                         if (params.reason === GridCellEditStopReasons.cellFocusOut) {
                         event.defaultMuiPrevented = true;
-                        } else {
-                            dispatch(setEditMode(false))
                         }
+                        //  else {
+                        //     console.log('here')
+                        //     dispatch(setEditMode(false))
+                        // }
                     }}
 
                     onCellEditStart={(params, event) => {
@@ -185,6 +194,7 @@ export const Table = (props) => {
                     processRowUpdate={async (updatedRow, originalRow) => handleSave(updatedRow, originalRow)}
                     onProcessRowUpdateError={(err)=> console.log('err', err)}
 
+                    id="data-grid-main"
                 />
             </Box>
         </div>

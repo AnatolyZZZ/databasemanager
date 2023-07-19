@@ -1,21 +1,21 @@
 import { Route, Routes } from "react-router-dom";
 import { HomePage } from "./components/HomePage";
 import { Loading } from './components/misc/Loading';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import {ACTIONS} from './actions'
 import {Alert, IconButton, Collapse} from '@mui/material';
 import {Close} from '@mui/icons-material'
-import { setLoading, setTable, setColumns, setTableNames, setSelected, setPrimaryKey} from './actions';
+import { setLoading, setTable, setColumns, setTableNames, setSelected, setPrimaryKey, setAlertError, setAlertErrorMessage} from './actions';
 import './App.css'
 
 function App() {
 
   const dispatch = useDispatch();
-  const [alertOpen, setAlert] = useState(false);
-  const [alertMessage, setAlertMessage] = useState('Failed to fetch tablenames')
+  const alertOpen = useSelector(state => state.alerErrorOn);
+  const alertMessage = useSelector(state => state.alertErrorMessage);
   const table_name = useSelector(state => state.table_name);
-  const root_url = useSelector(state => state.root_url)
+  const root_url = useSelector(state => state.root_url);
 
   useEffect(() => {
     const abortController1 = new AbortController()
@@ -26,8 +26,8 @@ function App() {
         const res1 = await fetch(`${root_url}/api/general/table/${table_name}`, {signal : abortController1.signal});
         const res2 = await fetch(`${root_url}/api/general/columnnames/${table_name}`, {signal : abortController2.signal});
         if (res1.status !== 200 || res2.status !== 200) {
-          setAlertMessage('Failed to fetch data, please reload page');
-          setAlert(true)
+          dispatch(setAlertErrorMessage('Failed to fetch data, please reload page'));
+          dispatch(setAlertError(true))
           dispatch(setLoading(false));
         } else {
           const data1 = await res1.json();
@@ -55,8 +55,8 @@ function App() {
         dispatch(setSelected(newSelected));
         }
       } catch (error) {
-        setAlertMessage('Failed to fetch data, please reload page');
-        setAlert(true)
+        dispatch(setAlertErrorMessage('Failed to fetch data, please reload page'));
+        dispatch(setAlertError(true))
         dispatch(setLoading(false));
       }
       
@@ -73,6 +73,8 @@ function App() {
   ;
   }, [table_name, dispatch, root_url]);
 
+  // 
+
   useEffect(() => {
     const abortController = new AbortController();
     async function  fetchTablenames () {
@@ -83,14 +85,17 @@ function App() {
           const data = await res.json();
           dispatch(setTableNames(data));
           dispatch(setLoading(false));
-          setAlert(false)
+       
+          dispatch(setAlertError(false))
         } else {
-          setAlert(true)
+          dispatch(setAlertErrorMessage('Failed to fetch tablenames, wait or reload page'));
+          dispatch(setAlertError(true))
         }
       } catch (error) {
         console.log(error)
         dispatch(setLoading(false));
-        setAlert(true)
+        dispatch(setAlertErrorMessage('Failed to fetch tablenames, wait or reload page'));
+        dispatch(setAlertError(true))
       }
     }
     fetchTablenames();
@@ -108,7 +113,7 @@ function App() {
             color="inherit"
             size="small"
             onClick={() => {
-              setAlert(false);
+              dispatch(setAlertError(false));
             }}>
               <Close fontSize="inherit" />
           </IconButton>

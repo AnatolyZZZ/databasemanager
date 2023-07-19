@@ -8,7 +8,9 @@ export const ACTIONS = {
     SET_SELECTED : 'SET_SELECTED',
     SET_PK : 'SET_PK',
     EDIT_MODE : 'EDIT_MODE',
-    SET_ERROR_MESSAGE : 'SET_ERROR_MESSAGE'
+    SET_ERROR_MESSAGE : 'SET_ERROR_MESSAGE',
+    SET_ALERT_ERROR : 'SET_ALERT_ERROR',
+    SET_ALERT_ERROR_MESSAGE : 'SET_ALERT_ERROR_MESSAGE'
 }
 
 export const setTable = (table) => {
@@ -71,6 +73,20 @@ export const setPrimaryKey = (key) => {
 export const setEditMode = (val) => {
     return {
         type : ACTIONS.EDIT_MODE,
+        payload : val
+    }
+}
+
+export const setAlertError = (val) => {
+    return {
+        type : ACTIONS.SET_ALERT_ERROR,
+        payload : val
+    }
+}
+
+export const setAlertErrorMessage = (val) => {
+    return {
+        type : ACTIONS.SET_ALERT_ERROR_MESSAGE,
         payload : val
     }
 }
