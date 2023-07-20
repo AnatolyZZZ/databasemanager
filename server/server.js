@@ -16,6 +16,9 @@ server.use(express.json())
 
 server.use('/api/general', generalRouter)
 
+server.use(express.static(path.resolve(__dirname, "./client/build")));
+server.use(express.static(path.join(__dirname, "client/build")));
+
 server.listen(process.env.PORT, ()=>{
     console.log(`run on port ${process.env.PORT}`);
   })
