@@ -171,10 +171,11 @@ export const Table = (props) => {
                         if (params.reason === GridCellEditStopReasons.cellFocusOut) {
                         event.defaultMuiPrevented = true;
                         }
-                        //  else {
-                        //     console.log('here')
-                        //     dispatch(setEditMode(false))
-                        // }
+                         else if (params.reason === GridCellEditStopReasons.escapeKeyDown) {
+                                dispatch(setEditMode(false))
+                            }
+                        // console.log(GridCellEditStopReasons)
+                            // dispatch(setEditMode(false))
                     }}
 
                     onCellEditStart={(params, event) => {
