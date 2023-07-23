@@ -23,7 +23,7 @@ function App() {
     async function fetchData () {
       dispatch({type: ACTIONS.SET_LOADING, payload: true})
       try {
-        const res1 = await fetch(`${root_url}/api/general/table/${table_name}`, {signal : abortController1.signal});
+        const res1 = await fetch(`${root_url}/api/table/${table_name}`, {signal : abortController1.signal});
         const res2 = await fetch(`${root_url}/api/general/columnnames/${table_name}`, {signal : abortController2.signal});
         if (res1.status !== 200 || res2.status !== 200) {
           dispatch(setAlertErrorMessage('Failed to fetch data, please reload page'));
