@@ -3,7 +3,10 @@ import { addRows, getTable, updateEntry } from "../modules/table.js";
 
 export const _addRows = async (req, res) => {
     try {
-        addRows(req.body.table, req.body.rows);
+        // console.log('adding rows controller');
+        // console.log(`${req.body} table, and rows are ${req.body.rows}`)
+        const row = await addRows(req.body.table, req.body.rows);
+        res.status(200).json(row)
     } catch (error) {
         console.log('error in controller', error);
         res.status(500).json({msg : `error inserting rows ${req.body.rows} into table ${req.body.table}`});

@@ -1,5 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 import { HomePage } from "./components/Homepage";
+import { Service } from "./components/Service";
 import { Loading } from './components/misc/Loading';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from "react-redux";
@@ -125,6 +126,7 @@ function App() {
     </Collapse>
     <Routes>
       <Route path='/' Component={HomePage}/>
+      <Route path='/service' Component={Service}/>
     </Routes>
   </div> 
   );
