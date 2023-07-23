@@ -121,7 +121,7 @@ export const Table = (props) => {
         if (!shalowEqual) {
             try {
                 dispatch({type: 'SET_LOADING', payload: true})
-                const res = await fetch(`${root_url}/api/general/tables`, para);
+                const res = await fetch(`${root_url}/api/table`, para);
                 const result = await res.json()
                 // console.log('result', result)
                 if (res.status === 200) {
@@ -171,10 +171,11 @@ export const Table = (props) => {
                         if (params.reason === GridCellEditStopReasons.cellFocusOut) {
                         event.defaultMuiPrevented = true;
                         }
-                        //  else {
-                        //     console.log('here')
-                        //     dispatch(setEditMode(false))
-                        // }
+                         else if (params.reason === GridCellEditStopReasons.escapeKeyDown) {
+                                dispatch(setEditMode(false))
+                            }
+                        // console.log(GridCellEditStopReasons)
+                            // dispatch(setEditMode(false))
                     }}
 
                     onCellEditStart={(params, event) => {
