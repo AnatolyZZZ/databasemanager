@@ -1,9 +1,10 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { DataGrid, GridCellEditStopReasons, GridCellEditStartReasons, GridEditInputCell } from '@mui/x-data-grid';
-import { setEditMode, setAlertError, setAlertErrorMessage } from '../actions';
+import { setEditMode, setAlertError, setAlertErrorMessage, openNewRow } from '../actions';
 import { validateCellFailed } from './Validation';
 import { makeStyles } from '@mui/styles';
 import {useState} from 'react'
+import {Dialog , DialogActions, DialogContent, DialogTitle, Button}from '@mui/material';
 // import  { styled } from '@mui/styles';
 import {Box} from '@mui/material'
 
@@ -50,6 +51,7 @@ export const Table = (props) => {
     const root_url = useSelector(state => state.root_url);
     const editing = useSelector(state => state.editing);
     const constrains = useSelector(state => state.constrains);
+    const newRow = useSelector(state => state.newRow);
     const [editingColumnName, setEditingColumnName] = useState(null);
     const lengths = new Map();
     let columns = selected_columns.filter(elt => elt[1] === true);
@@ -94,6 +96,15 @@ export const Table = (props) => {
                 
             })
         );
+
+    // console.log(columns)
+    const edit_row = [{id : 1}]
+    columns.forEach(element => {
+        edit_row[0][element.field] = ''
+    });
+    // console.log(edit_row);
+
+    // console.log(table)
     
 
     const handleSave = async (updRow, originalRow) => {
@@ -197,6 +208,21 @@ export const Table = (props) => {
 
                     id="data-grid-main"
                 />
+                <Dialog disableEscapeKeyDown open={newRow}>
+                    <DialogTitle>Fill new row</DialogTitle>
+                    <DialogContent>
+                        <DataGrid
+                            columns={columns}
+                            rows={edit_row}
+                            hideBorders={false}
+                        />
+
+                    </DialogContent>
+
+                    <DialogActions>
+                        <Button onClick={()=> dispatch(openNewRow(false)) }>Close</Button>
+                    </DialogActions>
+                </Dialog>
             </Box>
         </div>
     </>

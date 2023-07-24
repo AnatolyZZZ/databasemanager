@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux';
 import {FormControl, InputLabel, MenuItem, Select, FormControlLabel, FormGroup, Checkbox, Button} from '@mui/material';
-import { setTableName, toggleSelected } from '../actions';
+import { setTableName, toggleSelected, openNewRow } from '../actions';
 import {useState} from 'react'
 // import Paper from '@mui/material/Paper';
 import {Dialog , DialogActions, DialogContent, DialogTitle}from '@mui/material';
@@ -103,6 +103,12 @@ export const Controllers = (props) => {
             <Button onClick={()=> openEditColumns(false) }>Ok</Button>
         </DialogActions>
     </Dialog>
+    <Button
+        variant='contained'
+        color='primary'
+        onClick={(e) => {if (!editing) {dispatch(openNewRow(true))}}}>
+            New row
+    </Button>
 
     <Button 
         variant='outlined' 
