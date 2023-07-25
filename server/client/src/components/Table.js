@@ -1,17 +1,15 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { DataGrid, GridCellEditStopReasons, GridCellEditStartReasons, GridEditInputCell } from '@mui/x-data-grid';
-import { setEditMode, setAlertError, setAlertErrorMessage, openNewRow } from '../actions';
+import { setEditMode, setAlertError, setAlertErrorMessage, openNewRow, openOnCellErrorMessage, setTable } from '../actions';
 import { validateCellFailed } from './Validation';
 import { makeStyles } from '@mui/styles';
-import {useState} from 'react'
+import {useState, useEffect} from 'react'
 import {Dialog , DialogActions, DialogContent, DialogTitle, Button}from '@mui/material';
-// import  { styled } from '@mui/styles';
 import {Box} from '@mui/material'
 
 
 
 const useStyles = makeStyles((theme) => {
-// console.log('theme', theme)
 return (
     {
     root: {
@@ -27,9 +25,6 @@ return (
 const StyledInput = (params) => {
     const classes = useStyles();
     const {error, ...other} = params;
-    if (params.error) {
-        // console.log('error, classses',classes)
-    }
     return (<GridEditInputCell {...other} className={error ? `${classes.root} Mui-error`: null}/>
     );
   };
@@ -40,21 +35,32 @@ function customRender (props) {
     return (<StyledInput {...props}/>);
   }
 
-
-
 export const Table = (props) => {
     const dispatch = useDispatch()
     const table = useSelector(state => state.table);
     const table_name = useSelector(state => state.table_name);
     const primaryKey = useSelector(state => state.primaryKey);
     const selected_columns = useSelector(state => state.selected_columns);
+    // console.log(selected_columns)
+    const allColumns = useSelector(state => state.columns)
     const root_url = useSelector(state => state.root_url);
     const editing = useSelector(state => state.editing);
     const constrains = useSelector(state => state.constrains);
+    // is dialog open, should rename
     const newRow = useSelector(state => state.newRow);
     const [editingColumnName, setEditingColumnName] = useState(null);
+    const [edit_row, setEditRow] = useState([]);
     const lengths = new Map();
-    let columns = selected_columns.filter(elt => elt[1] === true);
+    const filteredColumns = selected_columns.filter(elt => elt[1] === true);
+
+    useEffect(()=>{
+        const _edit_row = [{id : 1}]
+        newRowColumns.forEach(element => {
+            _edit_row[0][element.field] = ''
+        });
+    // console.log(_edit_row)
+    setEditRow(_edit_row);
+    },[table_name])
 
 
     for (let column of selected_columns) {
@@ -68,47 +74,39 @@ export const Table = (props) => {
     }
     const isSerial = (column) => {
         // console.log(constrains)
+        // console.log(column)
         const defaultValString = String(constrains[column]['defaultValue']);
         const nextVal = defaultValString.slice(0, 8);
         const res = nextVal === 'nextval(' ? true : false
         // console.log('nextVal', res)
         return res
     }
-    // if (Object.keys(constrains).length > 0) {
-    //     console.log('length', Object.keys(constrains).length)
-    //     isSerial('id')
-    // };
+    // function to create propper columns
+    const makeColumns = (columns) => columns.map(elt => Object({
+        field : elt[0],
+        headerName : elt[0].charAt(0).toUpperCase() + elt[0].slice(1), 
+        width : lengths.get(elt[0])*12+15, 
+        editable : !isSerial(elt[0]), 
+        preProcessEditCellProps : (params) => {
+            /// can find cur cell field by working with params.otherFieldProps (find one is not in keys)
+            /// => pass relevant constrains
+            // maybe set errorMessage to [] if this is first in params.row but objects dont have to keep order?
 
-    // console.log(lengths)
-    columns = columns.map(elt => Object({
-                field : elt[0],
-                headerName : elt[0].charAt(0).toUpperCase() + elt[0].slice(1), 
-                width : lengths.get(elt[0])*12+15, 
-                editable : !isSerial(elt[0]), 
-                preProcessEditCellProps : (params) => {
-                    const hasError = validateCellFailed(params, constrains[editingColumnName], dispatch);
-                    // if(hasError) {
-                        // console.log('param props', params.props)
-                    // }
-                    return { ...params.props, error: hasError };
-                  },
-                renderEditCell : customRender
-                
-            })
-        );
 
-    // console.log(columns)
-    const edit_row = [{id : 1}]
-    columns.forEach(element => {
-        edit_row[0][element.field] = ''
-    });
-    // console.log(edit_row);
+            /// should refactor this part
+            const hasError = validateCellFailed(params, constrains[editingColumnName], dispatch);
+            return { ...params.props, error: hasError };
+          },
+        renderEditCell : customRender
+        
+    })
+);
 
-    // console.log(table)
-    
+    let columns = makeColumns(filteredColumns);
+    const columnsEdit = makeColumns(selected_columns).filter(elt => elt.editable);
+    const newRowColumns = makeColumns(allColumns.map(elt => [elt, true]));
 
     const handleSave = async (updRow, originalRow) => {
-        // console.log(updRow);
        
         const upd = {
             tableName : table_name,
@@ -150,11 +148,63 @@ export const Table = (props) => {
                 console.log('error => ', error)
                 dispatch(setAlertErrorMessage('Failed to save in database, err'));
                 dispatch(setAlertError(true))
+                return originalRow
             }
         }
         dispatch(setEditMode(false));
         return updRow
     }; 
+
+    const saveNewRowToDatabase = async () => {
+        const readyToUpd =  {...edit_row[0]};
+        delete readyToUpd.id;
+   
+        const para = {
+            method : 'POST',
+            headers : {'Content-type' : 'application/json'},
+            body : JSON.stringify(
+                {
+                    table : table_name,
+                    rows : [readyToUpd]
+                }
+            )
+        }
+        
+        try {
+            dispatch({type: 'SET_LOADING', payload: true})
+            const res = await fetch(`${root_url}/api/table`, para);
+            if (res.status === 200) {
+                console.log(res);
+                const _edit_row = [{id : 1}]
+                newRowColumns.forEach(element => {
+                _edit_row[0][element.field] = ''
+                setEditRow(_edit_row);
+                });
+                const body = await res.json()
+                console.log('res body',body);
+                const newTable = [...table];
+                newTable.push(body);
+                dispatch(setTable(newTable));
+                dispatch({type: 'SET_LOADING', payload: false})
+            } else {
+                const body = await res.json()
+                // console.log('res body.msg',body.msg);
+                throw new Error(body.msg)
+            }
+        } catch (error) {
+            console.log('err message',error.message)
+            dispatch({type: 'SET_LOADING', payload: false});
+            dispatch(setAlertErrorMessage(error.message));
+            dispatch(setAlertError(true))
+        }
+    
+    }
+
+    const saveNew = async (updRow, originalRow) => {   
+        setEditRow([{...updRow}]);
+        return updRow
+    }
+
   
     return <>
         <div className='container'>
@@ -185,22 +235,16 @@ export const Table = (props) => {
                          else if (params.reason === GridCellEditStopReasons.escapeKeyDown) {
                                 dispatch(setEditMode(false))
                             }
-                        // console.log(GridCellEditStopReasons)
-                            // dispatch(setEditMode(false))
                     }}
 
                     onCellEditStart={(params, event) => {
-                        // console.log('params of start', params);
-                        // console.log('check', params.reason !== GridCellEditStartReasons.cellDoubleClick &  params.reason !== editing &  params.reason !== GridCellEditStartReasons.enterKeyDown)
-                        // console.log('left', params.reason);
-                        // console.log('right',GridCellEditStartReasons.cellDoubleClick || editing || GridCellEditStartReasons.enterKeyDown)
-                        // console.log(GridCellEditStartReasons.enterKeyDown)
                         if ((params.reason !== GridCellEditStartReasons.cellDoubleClick &  params.reason !== editing &  params.reason !== GridCellEditStartReasons.enterKeyDown)||(editing === true)) {
                             event.defaultMuiPrevented = true;
                         } else {
                             dispatch(setEditMode(true));
                             setEditingColumnName(params.field)
                         }
+                        // dispatch({type : ACTIONS.SET_EDIT_ERROR_MESSAGES, payload : []})
                     }}
 
                     processRowUpdate={async (updatedRow, originalRow) => handleSave(updatedRow, originalRow)}
@@ -208,19 +252,57 @@ export const Table = (props) => {
 
                     id="data-grid-main"
                 />
-                <Dialog disableEscapeKeyDown open={newRow}>
+                <Dialog disableEscapeKeyDown open={newRow} maxWidth={false}>
                     <DialogTitle>Fill new row</DialogTitle>
-                    <DialogContent>
-                        <DataGrid
-                            columns={columns}
-                            rows={edit_row}
-                            hideBorders={false}
-                        />
-
+                    <DialogContent >
+                        <Box sx={{
+                            width : '100%',
+                            height : '100%',
+                    '       .MuiDataGrid-cell' : {
+                            border : '1px solid #f6f6f6'
+                            }}}>
+                                <DataGrid
+                                    columns={columnsEdit}
+                                    rows={edit_row}
+                                    hideBorders={false}
+                                    // editMode="row"
+                                    onCellEditStart={(params, event) => {
+                                        if(editing) {
+                                            event.defaultMuiPrevented = true;
+                                        } else {
+                                            dispatch(setEditMode(true));
+                                            setEditingColumnName(params.field);
+                                        }
+                                    }}
+                                    processRowUpdate={async (updatedRow, originalRow) => saveNew(updatedRow, originalRow)}
+                                    onProcessRowUpdateError = {error => console.log('error saving', error)}
+                                    onCellEditStop={(params, event) => {
+                                        // console.log(params)
+                                        if (params.reason === GridCellEditStopReasons.cellFocusOut) {
+                                        event.defaultMuiPrevented = true;
+                                        } else {
+                                            dispatch(setEditMode(false))
+                                        }
+                                    }}
+                                />
+                        </Box>
                     </DialogContent>
-
+                    
                     <DialogActions>
-                        <Button onClick={()=> dispatch(openNewRow(false)) }>Close</Button>
+                        <Button onClick={()=>saveNewRowToDatabase()} variant="contained" color='secondary'>
+                            Save to DB
+                        </Button>
+                        <Button onClick={()=> {
+                            dispatch(openNewRow(false));
+                            dispatch(setEditMode(false));
+                            }}>
+                                Close
+                        </Button>
+                        <Button onClick={()=> {
+                            dispatch(openOnCellErrorMessage(true));
+                            }}>
+                                Show errors
+                        </Button>
                     </DialogActions>
                 </Dialog>
             </Box>

@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux';
 import {FormControl, InputLabel, MenuItem, Select, FormControlLabel, FormGroup, Checkbox, Button} from '@mui/material';
-import { setTableName, toggleSelected, openNewRow } from '../actions';
+import { setTableName, toggleSelected, openNewRow, openOnCellErrorMessage } from '../actions';
 import {useState} from 'react'
 // import Paper from '@mui/material/Paper';
 import {Dialog , DialogActions, DialogContent, DialogTitle}from '@mui/material';
@@ -16,7 +16,8 @@ export const Controllers = (props) => {
     const editing = useSelector(state => state.editing);
     const errorMessages = useSelector(state => state.errorMessages);
     const primaryKey = useSelector(state => state.primaryKey);
-    // console.log(errorMessages);
+    const onCellErrorMessage = useSelector(state => state.onCellErrorsMessage)
+    // console.log(onCellErrorMessage);
     
     const [editColumns, openEditColumns] = useState(false);
     const [showErrorMessage, setShowMessage] = useState(false);
@@ -115,7 +116,8 @@ export const Controllers = (props) => {
         onClick={()=>{
             if (!closedByHotkey) {
                 // console.log('showErrorMessage now is ', showErrorMessage)
-                setShowMessage(!showErrorMessage);
+                dispatch(openOnCellErrorMessage(!onCellErrorMessage))
+                // setShowMessage(!showErrorMessage);
                 // console.log('changing by button to', !showErrorMessage);
                 setClosedByHotkey(false)
             }
@@ -125,7 +127,7 @@ export const Controllers = (props) => {
         </Button>
 
     <Dialog 
-        open={showErrorMessage}
+        open={onCellErrorMessage}
         // PaperComponent={PaperComponent}
         id='#error-message-dialog'
      > 
@@ -136,7 +138,7 @@ export const Controllers = (props) => {
         </DialogContent>
 
         <DialogActions>
-            <Button onClick={()=> setShowMessage(false)}>Close</Button>
+            <Button onClick={()=> dispatch(openOnCellErrorMessage(false))}>Close</Button>
         </DialogActions>
     </Dialog>
 
