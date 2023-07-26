@@ -46,23 +46,18 @@ export const Table = (props) => {
     const root_url = useSelector(state => state.root_url);
     const editing = useSelector(state => state.editing);
     const constrains = useSelector(state => state.constrains);
-    // is dialog open, should rename
-    const newRow = useSelector(state => state.newRow);
+    const newDataDialogOpen = useSelector(state => state.newRow);
     const [editingColumnName, setEditingColumnName] = useState(null);
+    /// this is for creating new item 
+    const [newRowColumns, setNewRowColumns] = useState([])
     const [edit_row, setEditRow] = useState([]);
     const lengths = new Map();
     const filteredColumns = selected_columns.filter(elt => elt[1] === true);
+    
+    
+    /// calculate width of every column
 
-    useEffect(()=>{
-        const _edit_row = [{id : 1}]
-        newRowColumns.forEach(element => {
-            _edit_row[0][element.field] = ''
-        });
-    // console.log(_edit_row)
-    setEditRow(_edit_row);
-    },[table_name])
-
-
+    // first set width of every header  
     for (let column of selected_columns) {
         lengths.set(column[0], String(column[0]).length);
     }
@@ -72,15 +67,9 @@ export const Table = (props) => {
             lengths.set(key, Math.max(lengths.get(key), String(row[key]).length))
         }
     }
-    const isSerial = (column) => {
-        // console.log(constrains)
-        // console.log(column)
-        const defaultValString = String(constrains[column]['defaultValue']);
-        const nextVal = defaultValString.slice(0, 8);
-        const res = nextVal === 'nextval(' ? true : false
-        // console.log('nextVal', res)
-        return res
-    }
+    // later can use it for columns but it is in symbols! 
+
+
     // function to create propper columns
     const makeColumns = (columns) => columns.map(elt => Object({
         field : elt[0],
@@ -99,12 +88,48 @@ export const Table = (props) => {
           },
         renderEditCell : customRender
         
-    })
-);
+    }));
+    /// creating columns for new data table 
+    useEffect(()=>{
+         setNewRowColumns( makeColumns(allColumns.map(elt => [elt, true])) );
+    },[allColumns])
+    
 
+    /// creating for main table
     let columns = makeColumns(filteredColumns);
+
+
+    useEffect(()=>{
+        // console.log('table_name', table_name)
+        // console.log('newRowColumns', newRowColumns)
+        const _edit_row = [{id : 1}]
+        newRowColumns.forEach(element => {
+            _edit_row[0][element.field] = ''
+        });
+    // console.log('edit row when created', _edit_row)
+    setEditRow(_edit_row);
+    },[table_name, newRowColumns]);
+
+    useEffect(()=>{
+        
+    },[selected_columns])
+
+    
+
+    function isSerial (column) {
+        // console.log(constrains)
+        // console.log(column)
+        const defaultValString = String(constrains[column]['defaultValue']);
+        const nextVal = defaultValString.slice(0, 8);
+        const res = nextVal === 'nextval(' ? true : false
+        // console.log('nextVal', res)
+        return res
+    }
+    
+
+    
     const columnsEdit = makeColumns(selected_columns).filter(elt => elt.editable);
-    const newRowColumns = makeColumns(allColumns.map(elt => [elt, true]));
+
 
     const handleSave = async (updRow, originalRow) => {
        
@@ -174,16 +199,20 @@ export const Table = (props) => {
             dispatch({type: 'SET_LOADING', payload: true})
             const res = await fetch(`${root_url}/api/table`, para);
             if (res.status === 200) {
-                console.log(res);
+                // console.log(res);
                 const _edit_row = [{id : 1}]
                 newRowColumns.forEach(element => {
                 _edit_row[0][element.field] = ''
                 setEditRow(_edit_row);
                 });
                 const body = await res.json()
-                console.log('res body',body);
+                // console.log('res body',body);
                 const newTable = [...table];
-                newTable.push(body);
+                for (let row of body) {
+                    newTable.push(row);
+                }
+                
+                // console.log('newTable',newTable)
                 dispatch(setTable(newTable));
                 dispatch({type: 'SET_LOADING', payload: false})
             } else {
@@ -252,7 +281,7 @@ export const Table = (props) => {
 
                     id="data-grid-main"
                 />
-                <Dialog disableEscapeKeyDown open={newRow} maxWidth={false}>
+                <Dialog disableEscapeKeyDown open={newDataDialogOpen} maxWidth={false}>
                     <DialogTitle>Fill new row</DialogTitle>
                     <DialogContent >
                         <Box sx={{
