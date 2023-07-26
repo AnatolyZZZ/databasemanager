@@ -55,7 +55,9 @@ export const Table = (props) => {
     const filteredColumns = selected_columns.filter(elt => elt[1] === true);
     
     
-    /// calculate width of every column
+    /// !!!! might be problem because not recalculated when switch between tables, or not? 
+    
+    //calculate width of every column
 
     // first set width of every header  
     for (let column of selected_columns) {
@@ -109,28 +111,23 @@ export const Table = (props) => {
     // console.log('edit row when created', _edit_row)
     setEditRow(_edit_row);
     },[table_name, newRowColumns]);
-
-    useEffect(()=>{
-        
-    },[selected_columns])
-
     
-
     function isSerial (column) {
-        // console.log(constrains)
-        // console.log(column)
+        // serial columns are not editable 
         const defaultValString = String(constrains[column]['defaultValue']);
         const nextVal = defaultValString.slice(0, 8);
         const res = nextVal === 'nextval(' ? true : false
-        // console.log('nextVal', res)
         return res
     }
     
 
-    
+    // this are columns which can be edited (not serial) we use them in creating new element table as columns 
+    // for some reason I use selected_columns and then take [0] instead of using all columns
+    // frobably because I use same function with filtered columns for main table and they are filtered from selected_columns
     const columnsEdit = makeColumns(selected_columns).filter(elt => elt.editable);
 
 
+    // saves updated value of cell to database
     const handleSave = async (updRow, originalRow) => {
        
         const upd = {
@@ -152,6 +149,7 @@ export const Table = (props) => {
                 break
             }
         }
+        // dont fetch database if nothing have changed
         if (!shalowEqual) {
             try {
                 dispatch({type: 'SET_LOADING', payload: true})
@@ -165,13 +163,13 @@ export const Table = (props) => {
                 return row
                 } else {
                     console.log('error', result.msg, 'result.upd', result.upd);
-                    dispatch(setAlertErrorMessage('Failed to save in database, res status'));
+                    dispatch(setAlertErrorMessage(`Failed to save in database\n ${result.msg}`));
                     dispatch(setAlertError(true))
                     return result.upd.entry 
                 }
             } catch (error) {
                 console.log('error => ', error)
-                dispatch(setAlertErrorMessage('Failed to save in database, err'));
+                dispatch(setAlertErrorMessage('Failed to save in database, unknown error '));
                 dispatch(setAlertError(true))
                 return originalRow
             }
@@ -182,6 +180,7 @@ export const Table = (props) => {
 
     const saveNewRowToDatabase = async () => {
         const readyToUpd =  {...edit_row[0]};
+        /// dont send to DB id which is probably PK
         delete readyToUpd.id;
    
         const para = {
@@ -199,22 +198,22 @@ export const Table = (props) => {
             dispatch({type: 'SET_LOADING', payload: true})
             const res = await fetch(`${root_url}/api/table`, para);
             if (res.status === 200) {
-                // console.log(res);
+                // clear everything in newRow, 
+                // !!!!! ------------probably should do it another way loopinf trow current new row
                 const _edit_row = [{id : 1}]
                 newRowColumns.forEach(element => {
                 _edit_row[0][element.field] = ''
                 setEditRow(_edit_row);
                 });
                 const body = await res.json()
-                // console.log('res body',body);
                 const newTable = [...table];
                 for (let row of body) {
                     newTable.push(row);
                 }
-                
-                // console.log('newTable',newTable)
                 dispatch(setTable(newTable));
-                dispatch({type: 'SET_LOADING', payload: false})
+                dispatch({type: 'SET_LOADING', payload: false});
+                // and finaly closing creating new table
+                dispatch(openNewRow(false));
             } else {
                 const body = await res.json()
                 // console.log('res body.msg',body.msg);
@@ -229,7 +228,8 @@ export const Table = (props) => {
     
     }
 
-    const saveNew = async (updRow, originalRow) => {   
+    const saveNew = async (updRow, originalRow) => {
+        /// this is fo 1 dimensional only  
         setEditRow([{...updRow}]);
         return updRow
     }
@@ -237,13 +237,16 @@ export const Table = (props) => {
   
     return <>
         <div className='container'>
+            {/* should rename? */}
             <h1>Table component</h1>
             <Box sx={{
                 width : '100%',
                 height : '100%',
+                // make all cells bright
                 '.MuiDataGrid-cell' : {
                     opacity : 0.5
                 },
+                // then make editable solid again
                 '.MuiDataGrid-cell--editable' :{
                     opacity : "1 !important",
                 },
@@ -273,11 +276,10 @@ export const Table = (props) => {
                             dispatch(setEditMode(true));
                             setEditingColumnName(params.field)
                         }
-                        // dispatch({type : ACTIONS.SET_EDIT_ERROR_MESSAGES, payload : []})
                     }}
 
                     processRowUpdate={async (updatedRow, originalRow) => handleSave(updatedRow, originalRow)}
-                    onProcessRowUpdateError={(err)=> console.log('err', err)}
+                    onProcessRowUpdateError={(err)=> console.log('err in processRowUpdate', err)}
 
                     id="data-grid-main"
                 />
@@ -288,13 +290,15 @@ export const Table = (props) => {
                             width : '100%',
                             height : '100%',
                     '       .MuiDataGrid-cell' : {
+                        // make borders visible
                             border : '1px solid #f6f6f6'
                             }}}>
                                 <DataGrid
+                                    // only editable 
                                     columns={columnsEdit}
                                     rows={edit_row}
+                                    // not sure this is working
                                     hideBorders={false}
-                                    // editMode="row"
                                     onCellEditStart={(params, event) => {
                                         if(editing) {
                                             event.defaultMuiPrevented = true;
@@ -304,7 +308,7 @@ export const Table = (props) => {
                                         }
                                     }}
                                     processRowUpdate={async (updatedRow, originalRow) => saveNew(updatedRow, originalRow)}
-                                    onProcessRowUpdateError = {error => console.log('error saving', error)}
+                                    onProcessRowUpdateError = {error => console.log('error in onProcessRowUpdateError in while edditing newrow ', error)}
                                     onCellEditStop={(params, event) => {
                                         // console.log(params)
                                         if (params.reason === GridCellEditStopReasons.cellFocusOut) {
