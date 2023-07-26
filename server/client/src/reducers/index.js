@@ -14,7 +14,9 @@ const initialState = {
     constrains : {},
     errorMessages : [],
     alerErrorOn : false,
-    alertErrorMessage : ''
+    alertErrorMessage : '',
+    newRow : false,
+    onCellErrorsMessage : false
 }
 
 export const reducer = (state = initialState, action = {}) => {
@@ -50,6 +52,10 @@ export const reducer = (state = initialState, action = {}) => {
             return {...state, alerErrorOn : action.payload}
         case (ACTIONS.SET_ALERT_ERROR_MESSAGE) :
             return {...state, alertErrorMessage : action.payload}
+        case (ACTIONS.OPEN_NEW_ROW) : 
+            return {...state, newRow : action.payload}
+        case (ACTIONS.OPEN_ON_CELL_ERROR_MESSAGE) : 
+            return {...state, onCellErrorsMessage : action.payload}
         default :
             return {...state}
     }

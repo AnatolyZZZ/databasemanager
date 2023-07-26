@@ -1,6 +1,7 @@
 /// --------CHECKING CONSTRAINS --------------------
 import { ACTIONS } from "../actions";
 
+
 export const validateCellFailed = (params, constrains, dispatch) => {
     // console.log('validate cell constrains =>', constrains);
     // console.log('params', params);

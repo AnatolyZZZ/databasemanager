@@ -4,10 +4,11 @@ export const addRows = async (tableName, rows) => {
     try {
         // console.log('adding rows module');
         // console.log(`${tableName} table, and rows are ${rows}`)
-        db(tableName)
+        const result = await db(tableName)
         .insert(rows)
         .returning('*')
         // .then(console.log('added'))
+        return result
     } catch (error) {
         console.log(`error in module, error adding rows ${JSON.stringify(rows)} to table ${tableName}`, error);
         throw(error)

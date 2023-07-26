@@ -10,7 +10,9 @@ export const ACTIONS = {
     EDIT_MODE : 'EDIT_MODE',
     SET_EDIT_ERROR_MESSAGES : 'SET_ERROR_MESSAGE',
     SET_ALERT_ERROR : 'SET_ALERT_ERROR',
-    SET_ALERT_ERROR_MESSAGE : 'SET_ALERT_ERROR_MESSAGE'
+    SET_ALERT_ERROR_MESSAGE : 'SET_ALERT_ERROR_MESSAGE',
+    OPEN_NEW_ROW : 'OPEN_NEW_ROW',
+    OPEN_ON_CELL_ERROR_MESSAGE : 'OPEN_ON_CELL_ERROR_MESSAGE'
 }
 
 export const setTable = (table) => {
@@ -87,6 +89,20 @@ export const setAlertError = (val) => {
 export const setAlertErrorMessage = (val) => {
     return {
         type : ACTIONS.SET_ALERT_ERROR_MESSAGE,
+        payload : val
+    }
+}
+
+export const openNewRow = (val) => {
+    return {
+        type : ACTIONS.OPEN_NEW_ROW,
+        payload : val
+    }
+}
+
+export const openOnCellErrorMessage = (val) => {
+    return {
+        type : ACTIONS.OPEN_ON_CELL_ERROR_MESSAGE,
         payload : val
     }
 }
