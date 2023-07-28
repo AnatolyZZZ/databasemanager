@@ -1,22 +1,44 @@
 import { ACTIONS } from "../actions"
 
 const initialState = {
+    // current table name
     table_name : '',
+    // cur main table rows
     table : [],
+    // is loading on/of
     loading : false,
+    // cur table available columns
     columns : [],
+    /// for dev use localhost http://localhost:5002 for prod ''
     root_url : 'http://localhost:5002',
+    // all available tables in database
     tables : [],
+    // columns selected to display
     selected_columns : [],
+    // PK of current table
     primaryKey : '',
+    // editmode on/of
     editing : false,
-    edit_correct : true,
+    // constrains on cur table
     constrains : {},
+    // errors on curently editing cell
     errorMessages : [],
+    // show alert message on/of
     alerErrorOn : false,
+    // cur message in alert
     alertErrorMessage : '',
+    // show or not adding new row
     newRow : false,
-    onCellErrorsMessage : false
+    // show or not errors on curently editing cell
+    onCellErrorsMessage : false,
+    // rows for NewTable component
+    newTableRows : [],
+    // current edditing cell column name 
+    editingColumnName : null,
+    // current columns lengths 
+    lengths : new Map (),
+    // all editable columns
+    editable_columns : []
 }
 
 export const reducer = (state = initialState, action = {}) => {
@@ -56,6 +78,14 @@ export const reducer = (state = initialState, action = {}) => {
             return {...state, newRow : action.payload}
         case (ACTIONS.OPEN_ON_CELL_ERROR_MESSAGE) : 
             return {...state, onCellErrorsMessage : action.payload}
+        case (ACTIONS.SET_NEW_TABLE_ROWS) : 
+            return {...state, newTableRows : action.payload}
+        case (ACTIONS.SET_EDITING_COLUMN_NAME) :
+            return {...state, editingColumnName : action.payload}
+        case (ACTIONS.SET_LENGTHS) :
+            return {...state, lengths : action.payload}
+        case (ACTIONS.SET_EDITABLE_COLUMNS) :
+            return {...state, editable_columns : action.payload}
         default :
             return {...state}
     }

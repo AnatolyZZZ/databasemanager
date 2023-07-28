@@ -12,7 +12,12 @@ export const ACTIONS = {
     SET_ALERT_ERROR : 'SET_ALERT_ERROR',
     SET_ALERT_ERROR_MESSAGE : 'SET_ALERT_ERROR_MESSAGE',
     OPEN_NEW_ROW : 'OPEN_NEW_ROW',
-    OPEN_ON_CELL_ERROR_MESSAGE : 'OPEN_ON_CELL_ERROR_MESSAGE'
+    OPEN_ON_CELL_ERROR_MESSAGE : 'OPEN_ON_CELL_ERROR_MESSAGE',
+    SET_NEW_TABLE_ROWS : 'SET_NEW_TABLE_ROWS',
+ // probably should delete?
+    SET_EDITING_COLUMN_NAME : 'SET_EDITING_COLUMN_NAME',
+    SET_LENGTHS : 'SET_LENGTHS',
+    SET_EDITABLE_COLUMNS : 'SET_EDITABLE_COLUMNS'
 }
 
 export const setTable = (table) => {
@@ -107,3 +112,30 @@ export const openOnCellErrorMessage = (val) => {
     }
 }
 
+export const setNewTableRows = (val) => {
+    return {
+        type : ACTIONS.SET_NEW_TABLE_ROWS,
+        payload : val
+    }
+}
+
+// prop dont need this?
+export const setEditingColumnName = (val) => {
+    return {
+        type : ACTIONS.SET_EDITING_COLUMN_NAME,
+        payload : val
+    }
+}
+
+export const setLengths = (val) => {
+    return {
+        type : ACTIONS.SET_LENGTHS,
+        payload : val
+    }
+}
+export const setEditableColumns = (val) => {
+    return {
+        type : ACTIONS.SET_EDITABLE_COLUMNS,
+        payload : val
+    }
+}

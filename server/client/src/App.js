@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {ACTIONS} from './actions'
 import {Alert, IconButton, Collapse} from '@mui/material';
 import {Close} from '@mui/icons-material'
-import { setLoading, setTable, setColumns, setTableNames, setSelected, setPrimaryKey, setAlertError, setAlertErrorMessage} from './actions';
+import { setLoading, setTable, setColumns, setTableNames, setSelected, setPrimaryKey, setAlertError, setAlertErrorMessage, setLengths, setEditableColumns, setNewTableRows} from './actions';
 import './App.css'
 
 function App() {
@@ -28,35 +28,73 @@ function App() {
         const res2 = await fetch(`${root_url}/api/general/columnnames/${table_name}`, {signal : abortController2.signal});
         if (res1.status !== 200 || res2.status !== 200) {
           dispatch(setAlertErrorMessage('Failed to fetch data, please reload page'));
+          console.log(res1.status, res2.status)
           dispatch(setAlertError(true))
           dispatch(setLoading(false));
         } else {
-          const data1 = await res1.json();
-          const data2 = await res2.json();
-          dispatch(setLoading(false));
-          dispatch(setTable(data1));
-          dispatch(setColumns([data2[0], data2[2]]));
-          dispatch(setPrimaryKey(data2[1]));
-          // update selected 
-          const storedItem = localStorage.getItem(`${table_name}_selected`);
-          const previousSelected = storedItem ?  JSON.parse(storedItem) : []
-          const newSelected = data2[0].map(elt => ([elt, true]));
-          previousSelected.forEach(elt => {
-            const idx = newSelected.findIndex((element) => elt[0] === element[0]);
-            if (idx !== -1) {
-             newSelected[idx][1] = elt[1];
+            const data1 = await res1.json();
+            const data2 = await res2.json();
+            dispatch(setLoading(false));
+            dispatch(setTable(data1));
+            // [0] is columns [1] is constrains
+            dispatch(setColumns([data2[0], data2[2]]));
+            dispatch(setPrimaryKey(data2[1]));
+            // update selected 
+            const storedItem = localStorage.getItem(`${table_name}_selected`);
+            const previousSelected = storedItem ?  JSON.parse(storedItem) : []
+            const newSelected = data2[0].map(elt => ([elt, true]));
+            previousSelected.forEach(elt => {
+              const idx = newSelected.findIndex((element) => elt[0] === element[0]);
+              if (idx !== -1) {
+              newSelected[idx][1] = elt[1];
+              }
+            })
+          // turn off primary key
+          for (let elt of newSelected) {
+            if (elt[0] === data2[1]) {
+              elt[1] = false
             }
-          })
-        // turn off primary key
-        for (let elt of newSelected) {
-          if (elt[0] === data2[1]) {
-            elt[1] = false
           }
-        }
-        dispatch(setSelected(newSelected));
-        }
+          dispatch(setSelected(newSelected));
+          
+          // now update lengths 
+          const lengths = new Map();
+         
+          
+          // first set column names length
+          for (let column of data2[0]) {
+            lengths.set(column, String(column).length);
+          }
+          // for each row for each column update max length in symbols
+          for (let row of data1) {
+            for (let key in row) {
+            lengths.set(key, Math.max(lengths.get(key), String(row[key]).length))
+          }
+
+          dispatch(setLengths(lengths))
+          // later can use it for columns but it is in symbols! 
+
+          // now upd editable columns 
+          const editable = data2[0].filter(elt => !isSerial(elt))
+
+          function isSerial (column) {
+            const defaultValString = String(data2[2][column]['defaultValue']);
+            const nextVal = defaultValString.slice(0, 8);
+            return nextVal === 'nextval(' ? true : false
+          }
+          // when download new table lets set new table rows to 1 empty row
+          const editRow = [{id : 1}];
+          editable.forEach(elt => editRow[0][elt]='');
+          dispatch(setNewTableRows(editRow));
+
+          dispatch(setEditableColumns(editable));
+      }
+  }
+
+
       } catch (error) {
         dispatch(setAlertErrorMessage('Failed to fetch data, please reload page'));
+        console.log(error);
         dispatch(setAlertError(true))
         dispatch(setLoading(false));
       }
