@@ -16,14 +16,12 @@ export const Controllers = (props) => {
     const editing = useSelector(state => state.editing);
     const errorMessages = useSelector(state => state.errorMessages);
     const primaryKey = useSelector(state => state.primaryKey);
-    const onCellErrorMessage = useSelector(state => state.onCellErrorsMessage)
-    // console.log(onCellErrorMessage);
+    const onCellErrorMessage = useSelector(state => state.onCellErrorsMessage);
     
     const [editColumns, openEditColumns] = useState(false);
-    const [showErrorMessage, setShowMessage] = useState(false);
     // strange problem appeared: when using hotkey both useHotkey and pressing button happens 
-    // so first Hotkey changes showErrorMessege to false then button shows it again 
-    // therefore using this additional state
+    // so first Hotkey changes onCellErrorMessage to false then button shows it again 
+    // therefore I'm using this additional state
     const [closedByHotkey, setClosedByHotkey] = useState(false);
     const dispatch = useDispatch();
 
@@ -34,27 +32,15 @@ export const Controllers = (props) => {
     const handleColumsCheck = (idx) => {
         dispatch(toggleSelected(idx))
     }
-    // potential perfomance problem shouls make another component?
 
     useHotkeys('enter', () => {
-        setShowMessage(false);
+        dispatch(openOnCellErrorMessage(false));
         setClosedByHotkey(true);
-        // console.log('enter pressed')
         setTimeout(() => {
             setClosedByHotkey(false)
         }, 100);
     });
 
-    // function PaperComponent(props) {
-    //     return (
-    //       <Draggable
-    //         handle="#draggable-dialog-title"
-    //         cancel={'[class*="MuiDialogContent-root"]'}
-    //       >
-    //         <Paper {...props} />
-    //       </Draggable>
-    //     );
-    //   }
 
     return <div className="container controllers">
         <FormControl size='large' sx={{m: 1, width : 192}}>
@@ -76,8 +62,9 @@ export const Controllers = (props) => {
 
     <Button 
         variant="contained" 
-        color='secondary' 
-        onClick={(e) => {if (!editing) {openEditColumns(true)}}}>
+        color='secondary'
+        disabled={editing || table_name===''}
+        onClick={(e) =>  {openEditColumns(true)}}>
             Select columns
     </Button>
 
@@ -107,18 +94,17 @@ export const Controllers = (props) => {
     <Button
         variant='contained'
         color='primary'
-        onClick={(e) => {if (!editing) {dispatch(openNewRow(true))}}}>
+        disabled = { editing || primaryKey==='' }
+        onClick={(e) => {dispatch(openNewRow(true))}}>
             New row
     </Button>
 
     <Button 
-        variant='outlined' 
+        variant='outlined'
+        disabled={!editing}
         onClick={()=>{
             if (!closedByHotkey) {
-                // console.log('showErrorMessage now is ', showErrorMessage)
                 dispatch(openOnCellErrorMessage(!onCellErrorMessage))
-                // setShowMessage(!showErrorMessage);
-                // console.log('changing by button to', !showErrorMessage);
                 setClosedByHotkey(false)
             }
         }}
@@ -128,7 +114,6 @@ export const Controllers = (props) => {
 
     <Dialog 
         open={onCellErrorMessage}
-        // PaperComponent={PaperComponent}
         id='#error-message-dialog'
      > 
         <DialogTitle id="#draggable-dialog-title">Error on currently editing cell:</DialogTitle>
@@ -141,24 +126,6 @@ export const Controllers = (props) => {
             <Button onClick={()=> dispatch(openOnCellErrorMessage(false))}>Close</Button>
         </DialogActions>
     </Dialog>
-
-    {/* <Dialog isOpen={editColumns} cssClass={'columns-edit'}>
-      <FormControl sx={{ m: 3 }} component="fieldset" variant="standard">
-        <FormLabel component="legend">Which columns to display?</FormLabel>
-        <FormGroup>
-            {selected_columns.map((elt, idx) => 
-                <FormControlLabel
-                key={idx}
-                control={
-                  <Checkbox checked={elt[1]} onChange={(e) => handleColumsCheck(idx)} name={elt[0]} />
-                }
-                label={elt[0]}
-              />
-         )}
-        </FormGroup>
-      </FormControl>
-      <Button onClick={()=>openEditColumns(false)}>Close</Button>
-    </Dialog>  */}
 
     </div>
 }

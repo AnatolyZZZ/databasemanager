@@ -6,7 +6,7 @@ export const _addRows = async (req, res) => {
         // console.log('adding rows controller');
         // console.log(`${JSON.stringify(req.body.table)} table, and rows are ${JSON.stringify(req.body.rows)}`)
         const row = await addRows(req.body.table, req.body.rows);
-        console.log(row)
+        // console.log(row)
         res.status(200).json(row)
     } catch (error) {
         console.log('error in controller', error);
