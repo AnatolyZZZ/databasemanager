@@ -50,7 +50,7 @@ export const getColumnNames = async (tableName) => {
 export const getModels = async (tableName) => {
     try {
         const modelQuery = `SELECT DISTINCT model FROM ${tableName}`;
-        return await db(tableName).raw(modelQuery)
+        return await db.raw(modelQuery)
         
     } catch (error) {
         console.log(`error geting models from table  ${tableName}`, error);
@@ -62,7 +62,7 @@ export const getVersions = async (tableName, model) => {
     try {
         const versionsQuery = `SELECT DISTINCT version FROM ${tableName}
         WHERE model='${model}'`;
-        return await db(tableName).raw(versionsQuery)
+        return await db.raw(versionsQuery)
         
     } catch (error) {
         console.log(`error geting models from table  ${tableName} for model${model}`, error);
