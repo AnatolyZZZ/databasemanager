@@ -30,10 +30,35 @@ export const updateEntry = async (tableName, primaryKey, keyValue, entry) => {
     }
 }
 
-export const getTable = async (tableName) => {
+export const getTable = async (tableName, model, version) => {
     try {
-        const table = await db(tableName)
-        .select('*')
+        let typecast1;
+        let typecast2; 
+        const _version =`'${version}'`;
+        const _model =`'${model}'`
+        const constrains = await db(tableName).columnInfo();
+        let type = constrains.model?.type;
+        if (type === 'character varying' || type === 'text' || type === 'char') {
+            typecast1 = "::text";
+        } else {
+            typecast1 =  "::integer";
+        }
+        type = constrains.version?.type
+        if (type === 'character varying' || type === 'text' || type === 'char') {
+            typecast2 = "::text"
+        } else typecast2 =  "::integer"
+        let query = `SELECT * FROM ${tableName}`
+        if (model !== "All models") {
+            query += ` WHERE model${typecast1} = ${_model}${typecast1}`
+            if (version !== 'All versions') {
+                query += ` AND version${typecast2} = ${_version}${typecast2}`
+            }
+        } else if (version !=="All versions") {
+            query += ` WHERE version${typecast2} = ${_version}${typecast2}`
+        }
+        // console.log(query);
+        const table = await db.raw(query);
+        // console.log('table',table);
         return table
     } catch (error) {
         console.log(`error geting table ${tableName} from database`, error);

@@ -44,7 +44,7 @@ const initialState = {
     // cur versions
     versions : [],
     // choosen version
-    version : ''
+    version : 'All versions'
 }
 
 export const reducer = (state = initialState, action = {}) => {
@@ -56,7 +56,7 @@ export const reducer = (state = initialState, action = {}) => {
         case (ACTIONS.SET_LOADING) :
             return {...state, loading : action.payload}
         case (ACTIONS.SET_TABLE_NAME) :
-            return {...state, table_name : action.payload}
+            return {...state, table_name : action.payload, model : 'All models', version : 'All versions'}
         case (ACTIONS.GET_TABLES) :
             return {...state, tables : action.payload}
         case (ACTIONS.SET_SELECTED) :

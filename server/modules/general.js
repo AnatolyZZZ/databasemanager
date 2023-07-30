@@ -60,12 +60,24 @@ export const getModels = async (tableName) => {
 
 export const getVersions = async (tableName, model) => {
     try {
-        const versionsQuery = `SELECT DISTINCT version FROM ${tableName}
-        WHERE model='${model}'`;
-        return await db.raw(versionsQuery)
-        
+        const constrains = await db(tableName).columnInfo();
+        const type = constrains.model?.type;
+        let _model;
+        let typecast;
+        if (type === 'character varying' || type === 'text' || type ==='char') {
+            _model = `'${model}'`
+            typecast = '::text'
+        }
+        let query = `SELECT DISTINCT version FROM ${tableName}`
+        if (model !== 'All models') {
+            query += ` WHERE model${typecast} = ${_model}${typecast}`
+        };
+        const versions = await db.raw(query)
+        // console.log('query', query);       
+        // console.log('versions', versions);
+        return versions
     } catch (error) {
-        console.log(`error geting models from table  ${tableName} for model${model}`, error);
+        console.log(`error geting models from table  ${tableName} for model ${model}`, error);
         throw(error)
     }
 }

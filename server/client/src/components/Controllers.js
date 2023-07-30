@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux';
 import {FormControl, InputLabel, MenuItem, Select, FormControlLabel, FormGroup, Checkbox, Button} from '@mui/material';
-import { setTableName, toggleSelected, openNewRow, openOnCellErrorMessage, chooseModel } from '../actions';
+import { setTableName, toggleSelected, openNewRow, openOnCellErrorMessage, chooseModel, chooseVersion } from '../actions';
 import {useState} from 'react'
 // import Paper from '@mui/material/Paper';
 import {Dialog , DialogActions, DialogContent, DialogTitle}from '@mui/material';
@@ -18,7 +18,9 @@ export const Controllers = (props) => {
     const primaryKey = useSelector(state => state.primaryKey);
     const onCellErrorMessage = useSelector(state => state.onCellErrorsMessage);
     const models = useSelector(state => state.models);
-    const cur_model = useSelector(state => state.model)
+    const cur_model = useSelector(state => state.model);
+    const versions = useSelector(state => state.versions);
+    const cur_version = useSelector(state => state.version);
     // console.log(models)
     
     const [editColumns, openEditColumns] = useState(false);
@@ -35,10 +37,15 @@ export const Controllers = (props) => {
 
     const handleChangeModel = (e) => {
         dispatch(chooseModel(e.target.value));
+        dispatch(chooseVersion('All versions'));
     }
 
     const handleColumsCheck = (idx) => {
         dispatch(toggleSelected(idx))
+    }
+
+    const handleChangeVersion = (e) => {
+        dispatch(chooseVersion(e.target.value));
     }
 
     useHotkeys('enter', () => {
@@ -96,22 +103,23 @@ export const Controllers = (props) => {
                 </Select>
             </FormControl> 
 
-            {/* <FormControl size='large' sx={{m: 1, width : 192}}>
-            <InputLabel id="table_name_select_label">Table name</InputLabel>
+            <FormControl size='large' sx={{m: 1, width : 192}}>
+            <InputLabel id="version_select_label">Version</InputLabel>
                 <Select
-                    labelId="table_name_select_label"
-                    id="table_name_select"
-                    value={table_name}
-                    label="Table name"
-                    onChange={handleChangeTable}
-                    disabled={editing}
+                    labelId="version_select_label"
+                    id="version_select"
+                    value={cur_version}
+                    label="Version"
+                    onChange={handleChangeVersion}
+                    disabled={editing || versions.length === 0}
                 >   
                     <MenuItem disabled value="">
-                        <em>Select table name</em>
+                        <em>Select version</em>
                     </MenuItem>
-                    {tables.map(elt => <MenuItem value={elt} key={elt}>{elt}</MenuItem>)}
+                    {versions.map(elt => <MenuItem value={elt} key={elt}>{elt}</MenuItem>)}
+                    <MenuItem value='All versions'><span style={{color : 'green'}}>All versions</span></MenuItem>
                 </Select>
-            </FormControl>   */}
+            </FormControl>  
           
         </DialogContent>
 
