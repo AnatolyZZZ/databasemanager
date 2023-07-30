@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {ACTIONS} from './actions'
 import {Alert, IconButton, Collapse} from '@mui/material';
 import {Close} from '@mui/icons-material'
-import { setLoading, setTable, setColumns, setTableNames, setSelected, setPrimaryKey, setAlertError, setAlertErrorMessage, setLengths, setEditableColumns, setNewTableRows} from './actions';
+import { setLoading, setTable, setColumns, setTableNames, setSelected, setPrimaryKey, setAlertError, setAlertErrorMessage, setLengths, setEditableColumns, setNewTableRows, setModels} from './actions';
 import './App.css'
 
 function App() {
@@ -17,6 +17,9 @@ function App() {
   const alertMessage = useSelector(state => state.alertErrorMessage);
   const table_name = useSelector(state => state.table_name);
   const root_url = useSelector(state => state.root_url);
+  const column_names = useSelector(state => state.columns);
+  // console.log('column names', column_names)
+  const cur_model = useSelector(state => state.model);
 
   useEffect(() => {
     const abortController1 = new AbortController()
@@ -140,6 +143,37 @@ function App() {
     fetchTablenames();
     return () => abortController.abort()
   }, [dispatch, root_url])
+
+  useEffect(()=>{
+    const abortController = new AbortController();
+    // console.log('runing useEffect', column_names);
+    const getModels = async () => {
+      if (column_names.includes('model')) {
+        try {
+          const res = await fetch(`${root_url}/api/general/models?table=${table_name}`);
+          const data = await res.json()
+          if (res.status === 200) {
+            // console.log('status 200 dispatching', data)
+            dispatch(setModels(data.map(elt => elt.model)));
+            // console.log('got models', data.map(elt => elt.model))
+          } else {
+            console.log('res.status!==200 dispatching[]')
+            dispatch(setModels([]));
+          }
+        } catch (error) {
+            console.log(error);
+            dispatch(setAlertErrorMessage('error occured while getting models'));
+            dispatch(setAlertError(true))
+        }
+        
+      } else {
+        dispatch(setModels([]));
+      }
+    }
+    getModels();
+    return () => abortController.abort()
+
+  },[column_names])
 
   return (<div className="App">
     <Loading/>
