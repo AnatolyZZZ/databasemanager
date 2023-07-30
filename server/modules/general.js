@@ -29,27 +29,43 @@ export const getColumnNames = async (tableName) => {
             AND pg_attribute.attnum = any(pg_index.indkey)
             AND indisprimary
         `;
-
-        // const getColumInfo = () => db.columnInfo(tableName);
     
         const columnRes =  await db.raw(columnQuery);
         const primaryKeyRes = await db.raw(primaryKeyQuery);
-        // console.log('res =>', res); 
+
 
         const columns = columnRes.rows.map(elt => elt.attname);
 
-        // const infoPromise = Promise.all(columns.map(elt => getColumInfo(elt)));
-
         const constrains = await db(tableName).columnInfo()
-        // const info = await infoPromise;
-        // const constrains = info.map(elt => elt.constrains);
-        // console.log('constrains => ', constrains);
 
         const primaryKey = primaryKeyRes.rows[0].attname;
-        // console.log('PK =>', primaryKey); 
+      
         return [columns, primaryKey, constrains]
     } catch (error) {
         console.log(`error geting column names from table  ${tableName}`, error);
+        throw(error)
+    }
+}
+
+export const getModels = async (tableName) => {
+    try {
+        const modelQuery = `SELECT DISTINCT model FROM ${tableName}`;
+        return await db(tableName).raw(modelQuery)
+        
+    } catch (error) {
+        console.log(`error geting models from table  ${tableName}`, error);
+        throw(error)
+    }
+}
+
+export const getVersions = async (tableName, model) => {
+    try {
+        const versionsQuery = `SELECT DISTINCT version FROM ${tableName}
+        WHERE model='${model}'`;
+        return await db(tableName).raw(versionsQuery)
+        
+    } catch (error) {
+        console.log(`error geting models from table  ${tableName} for model${model}`, error);
         throw(error)
     }
 }

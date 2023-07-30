@@ -1,4 +1,4 @@
-import { getTableNames, getColumnNames} from "../modules/general.js";
+import { getTableNames, getColumnNames, getModels, getVersions} from "../modules/general.js";
 
 export const _getTableNames = async (req, res) => {
     try {
