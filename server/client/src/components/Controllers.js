@@ -1,11 +1,13 @@
 import { useSelector, useDispatch } from 'react-redux';
 import {FormControl, InputLabel, MenuItem, Select, FormControlLabel, FormGroup, Checkbox, Button} from '@mui/material';
-import { setTableName, toggleSelected, openNewRow, openOnCellErrorMessage, chooseModel, chooseVersion } from '../actions';
-import {useState} from 'react'
+import { setTableName, toggleSelected, openNewRow, openOnCellErrorMessage, chooseModel, chooseVersion, setEditMode } from '../actions';
+import { useState, useEffect } from 'react'
 // import Paper from '@mui/material/Paper';
-import {Dialog , DialogActions, DialogContent, DialogTitle}from '@mui/material';
+import { Dialog , DialogActions, DialogContent, DialogTitle, TextField, Box}from '@mui/material';
 // import Draggable from 'react-draggable';
 import { useHotkeys } from 'react-hotkeys-hook';
+import { Table } from './Table';
+import { validateCellFailed } from './Validation'
 import './Controllers.css'
 
 
@@ -16,15 +18,23 @@ export const Controllers = (props) => {
     const editing = useSelector(state => state.editing);
     const errorMessages = useSelector(state => state.errorMessages);
     const primaryKey = useSelector(state => state.primaryKey);
+    // initial value for primary key to mach datatype
+    const table = useSelector(state => state.table);
     const onCellErrorMessage = useSelector(state => state.onCellErrorsMessage);
     const models = useSelector(state => state.models);
     const cur_model = useSelector(state => state.model);
     const versions = useSelector(state => state.versions);
     const cur_version = useSelector(state => state.version);
-    // console.log(models)
+    const constrains = useSelector(state => state.constrains)
+    // console.log(constrains['model'])
     
     const [editColumns, openEditColumns] = useState(false);
     const [modelsDialog, openModelsDialog] = useState(false);
+    const [cloningVersion, openCloningVersion] = useState(false);
+    const [newVersion, setNewVersion] = useState('');
+    const [errorInVersion, setErrInVersion] = useState(false);
+    const [newModel, setNewModel] = useState('')
+    const [errorInModel, setErrInModel] = useState(false);
     // strange problem appeared: when using hotkey both useHotkey and pressing button happens 
     // so first Hotkey changes onCellErrorMessage to false then button shows it again 
     // therefore I'm using this additional state
@@ -47,6 +57,25 @@ export const Controllers = (props) => {
     const handleChangeVersion = (e) => {
         dispatch(chooseVersion(e.target.value));
     }
+    
+    const validate = (field, val) => {
+        if (Object.keys(constrains).length > 0) {
+            const res = validateCellFailed({props : {value : val}}, constrains[field], dispatch);
+            console.log(field, res)
+            return res
+        } else {
+            console.log('no constrains')
+            return false
+        }
+    }
+
+    useEffect(()=> {
+        setErrInVersion(validate('version', newVersion))
+    }, [newVersion])
+
+    useEffect(()=> {
+        setErrInModel(validate('model', newModel))
+    }, [newModel])
 
     useHotkeys('enter', () => {
         dispatch(openOnCellErrorMessage(false));
@@ -124,7 +153,7 @@ export const Controllers = (props) => {
         </DialogContent>
 
         <DialogActions>
-            <Button onClick={()=> openModelsDialog(false) }>Ok</Button>
+            <Button onClick={()=> {openModelsDialog(false)} }>Ok</Button>
         </DialogActions>
     </Dialog>
     
@@ -168,6 +197,51 @@ export const Controllers = (props) => {
         onClick={(e) => {dispatch(openNewRow(true))}}>
             New row
     </Button>
+
+
+    <Button
+        variant='contained'
+        color='warning'
+        disabled = {editing || cur_model === 'All models' || cur_version === 'All versions'}
+        onClick={(e) => {openCloningVersion(true)}}>
+            Clone version
+    </Button>
+
+    <Dialog disableEscapeKeyDown open={cloningVersion}>
+        <DialogTitle>You are up to clone model <span style={{color : 'red'}}>{cur_model}</span>, version <span style={{color : 'red'}}>{cur_version}</span></DialogTitle>
+
+        <DialogContent>
+            <p>Please choose new model and version</p>
+            <Box sx={{display: 'flex', gap : 3}}>
+                <TextField 
+                    id="model-input" 
+                    label="New model" 
+                    variant="standard" 
+                    error={errorInModel}
+                    onChange={(e)=>setNewModel(e.target.value)}/>
+                <TextField 
+                    id="version-input" 
+                    label="New version" 
+                    variant="standard"
+                    error={errorInVersion}
+                    onChange={(e)=>setNewVersion(e.target.value)} />
+            </Box>
+            
+        </DialogContent>
+        
+        <DialogActions>
+            <Button onClick={()=> {
+                openCloningVersion(false) 
+                dispatch(setEditMode(false))
+                }}>Cancel</Button>
+            <Button onClick={()=> {
+                dispatch(openOnCellErrorMessage(true))
+                dispatch(setEditMode(true))
+                }}>Errors</Button>
+        </DialogActions>
+    </Dialog>
+
+
 
     <Button 
         variant='outlined'
