@@ -14,10 +14,12 @@ export const ACTIONS = {
     OPEN_NEW_ROW : 'OPEN_NEW_ROW',
     OPEN_ON_CELL_ERROR_MESSAGE : 'OPEN_ON_CELL_ERROR_MESSAGE',
     SET_NEW_TABLE_ROWS : 'SET_NEW_TABLE_ROWS',
- // probably should delete?
-    SET_EDITING_COLUMN_NAME : 'SET_EDITING_COLUMN_NAME',
     SET_LENGTHS : 'SET_LENGTHS',
-    SET_EDITABLE_COLUMNS : 'SET_EDITABLE_COLUMNS'
+    SET_EDITABLE_COLUMNS : 'SET_EDITABLE_COLUMNS',
+    SET_MODELS : 'SET_MODELS',
+    CHOOSE_MODEL : 'CHOOSE_MODEL',
+    SET_VERSIONS : 'SET_VERSIONS',
+    CHOOSE_VERSION : 'CHOOSE_VERSION'
 }
 
 export const setTable = (table) => {
@@ -42,7 +44,6 @@ export const setColumns = (columnNames) => {
 }
 
 export const setLoading = (val) => {
-    // console.log(`loading is set to ${val} in action`)
     return {
         type : ACTIONS.SET_LOADING,
         payload : val
@@ -119,14 +120,6 @@ export const setNewTableRows = (val) => {
     }
 }
 
-// prop dont need this?
-export const setEditingColumnName = (val) => {
-    return {
-        type : ACTIONS.SET_EDITING_COLUMN_NAME,
-        payload : val
-    }
-}
-
 export const setLengths = (val) => {
     return {
         type : ACTIONS.SET_LENGTHS,
@@ -136,6 +129,33 @@ export const setLengths = (val) => {
 export const setEditableColumns = (val) => {
     return {
         type : ACTIONS.SET_EDITABLE_COLUMNS,
+        payload : val
+    }
+}
+
+export const setModels = (val) => {
+    return {
+        type : ACTIONS.SET_MODELS,
+        payload : val
+    }
+}
+
+export const setVersions = (val) => {
+    return {
+        type : ACTIONS.SET_VERSIONS,
+        payload : val
+    }
+}
+
+export const chooseModel = (val) => {
+    return {
+        type : ACTIONS.CHOOSE_MODEL,
+        payload : val
+    }
+}
+export const chooseVersion = (val) => {
+    return {
+        type : ACTIONS.CHOOSE_VERSION,
         payload : val
     }
 }

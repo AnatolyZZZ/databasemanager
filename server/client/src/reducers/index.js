@@ -33,12 +33,18 @@ const initialState = {
     onCellErrorsMessage : false,
     // rows for NewTable component
     newTableRows : [],
-    // current edditing cell column name 
-    editingColumnName : null,
     // current columns lengths 
     lengths : new Map (),
     // all editable columns
-    editable_columns : []
+    editable_columns : [],
+    // current table models
+    models : [],
+    // choosen model 
+    model : 'All models',
+    // cur versions
+    versions : [],
+    // choosen version
+    version : 'All versions'
 }
 
 export const reducer = (state = initialState, action = {}) => {
@@ -50,7 +56,7 @@ export const reducer = (state = initialState, action = {}) => {
         case (ACTIONS.SET_LOADING) :
             return {...state, loading : action.payload}
         case (ACTIONS.SET_TABLE_NAME) :
-            return {...state, table_name : action.payload}
+            return {...state, table_name : action.payload, model : 'All models', version : 'All versions'}
         case (ACTIONS.GET_TABLES) :
             return {...state, tables : action.payload}
         case (ACTIONS.SET_SELECTED) :
@@ -80,12 +86,18 @@ export const reducer = (state = initialState, action = {}) => {
             return {...state, onCellErrorsMessage : action.payload}
         case (ACTIONS.SET_NEW_TABLE_ROWS) : 
             return {...state, newTableRows : action.payload}
-        case (ACTIONS.SET_EDITING_COLUMN_NAME) :
-            return {...state, editingColumnName : action.payload}
         case (ACTIONS.SET_LENGTHS) :
             return {...state, lengths : action.payload}
         case (ACTIONS.SET_EDITABLE_COLUMNS) :
             return {...state, editable_columns : action.payload}
+        case (ACTIONS.SET_MODELS) :
+            return {...state, models : action.payload}
+        case (ACTIONS.CHOOSE_MODEL) :
+            return {...state, model : action.payload}
+        case (ACTIONS.SET_VERSIONS) :
+            return {...state, versions : action.payload}
+        case (ACTIONS.CHOOSE_VERSION) :
+            return {...state, version : action.payload}
         default :
             return {...state}
     }

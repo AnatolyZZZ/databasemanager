@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux';
 import {FormControl, InputLabel, MenuItem, Select, FormControlLabel, FormGroup, Checkbox, Button} from '@mui/material';
-import { setTableName, toggleSelected, openNewRow, openOnCellErrorMessage } from '../actions';
+import { setTableName, toggleSelected, openNewRow, openOnCellErrorMessage, chooseModel, chooseVersion } from '../actions';
 import {useState} from 'react'
 // import Paper from '@mui/material/Paper';
 import {Dialog , DialogActions, DialogContent, DialogTitle}from '@mui/material';
@@ -17,8 +17,14 @@ export const Controllers = (props) => {
     const errorMessages = useSelector(state => state.errorMessages);
     const primaryKey = useSelector(state => state.primaryKey);
     const onCellErrorMessage = useSelector(state => state.onCellErrorsMessage);
+    const models = useSelector(state => state.models);
+    const cur_model = useSelector(state => state.model);
+    const versions = useSelector(state => state.versions);
+    const cur_version = useSelector(state => state.version);
+    // console.log(models)
     
     const [editColumns, openEditColumns] = useState(false);
+    const [modelsDialog, openModelsDialog] = useState(false);
     // strange problem appeared: when using hotkey both useHotkey and pressing button happens 
     // so first Hotkey changes onCellErrorMessage to false then button shows it again 
     // therefore I'm using this additional state
@@ -29,8 +35,17 @@ export const Controllers = (props) => {
         dispatch(setTableName(e.target.value));
     }
 
+    const handleChangeModel = (e) => {
+        dispatch(chooseModel(e.target.value));
+        dispatch(chooseVersion('All versions'));
+    }
+
     const handleColumsCheck = (idx) => {
         dispatch(toggleSelected(idx))
+    }
+
+    const handleChangeVersion = (e) => {
+        dispatch(chooseVersion(e.target.value));
     }
 
     useHotkeys('enter', () => {
@@ -58,7 +73,62 @@ export const Controllers = (props) => {
                  </MenuItem>
                 {tables.map(elt => <MenuItem value={elt} key={elt}>{elt}</MenuItem>)}
             </Select>
-    </FormControl>
+        </FormControl>
+
+    <Button 
+        variant='outlined'
+        color='secondary'
+        disabled={editing || models.length === 0}
+        onClick={()=>{openModelsDialog(true)}}>
+            Models
+    </Button>
+
+    <Dialog disableEscapeKeyDown open={modelsDialog}>
+        <DialogContent>
+            <FormControl size='large' sx={{m: 1, width : 192}}>
+            <InputLabel id="models_select_label">Model</InputLabel>
+                <Select
+                    labelId="model_select_label"
+                    id="model_select"
+                    value={cur_model}
+                    label="Model"
+                    onChange={handleChangeModel}
+                    disabled={editing}
+                >   
+                    <MenuItem disabled value="">
+                        <em>Select model</em>
+                    </MenuItem>
+                    {models.map(elt => <MenuItem value={elt} key={elt}>{elt}</MenuItem>)}
+                    <MenuItem value='All models'><span style={{color : 'green'}}>All models</span></MenuItem>
+                </Select>
+            </FormControl> 
+
+            <FormControl size='large' sx={{m: 1, width : 192}}>
+            <InputLabel id="version_select_label">Version</InputLabel>
+                <Select
+                    labelId="version_select_label"
+                    id="version_select"
+                    value={cur_version}
+                    label="Version"
+                    onChange={handleChangeVersion}
+                    disabled={editing || versions.length === 0}
+                >   
+                    <MenuItem disabled value="">
+                        <em>Select version</em>
+                    </MenuItem>
+                    {versions.map(elt => <MenuItem value={elt} key={elt}>{elt}</MenuItem>)}
+                    <MenuItem value='All versions'><span style={{color : 'green'}}>All versions</span></MenuItem>
+                </Select>
+            </FormControl>  
+          
+        </DialogContent>
+
+        <DialogActions>
+            <Button onClick={()=> openModelsDialog(false) }>Ok</Button>
+        </DialogActions>
+    </Dialog>
+    
+
 
     <Button 
         variant="contained" 

@@ -16,8 +16,8 @@ export const _addRows = async (req, res) => {
 
 export const _getTable = async (req, res) => {
     try {
-        const table = await getTable(req.params.name);
-        res.status(200).json(table)
+        const table = await getTable(req.params.name, req.query.model, req.query.version);
+        res.status(200).json(table.rows)
     } catch (error) {
         console.log('error in controller', error);
         res.status(500).json({msg : `error geting table ${req.params.name}`})
