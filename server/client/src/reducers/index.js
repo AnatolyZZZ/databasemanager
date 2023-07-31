@@ -74,7 +74,7 @@ export const reducer = (state = initialState, action = {}) => {
         case (ACTIONS.EDIT_MODE) :
             return {...state, editing : action.payload}
         case (ACTIONS.SET_EDIT_ERROR_MESSAGES) :
-            console.log('setting in reducer', action.payload)
+            // console.log('setting in reducer', action.payload)
             return {...state, errorMessages : action.payload}
         case (ACTIONS.SET_ALERT_ERROR) :
             return {...state, alerErrorOn : action.payload}

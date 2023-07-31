@@ -10,7 +10,7 @@ export const _addRows = async (req, res) => {
         res.status(200).json(row)
     } catch (error) {
         console.log('error in controller', error);
-        res.status(500).json({msg : `error inserting rows ${JSON.stringify(req.body.rows)} into table ${req.body.table}`});
+        res.status(500).json({msg : `error inserting rows ${JSON.stringify(req.body.rows)} into table ${req.body.table} ${JSON.stringify(error.detail)}`});
     }
 }
 

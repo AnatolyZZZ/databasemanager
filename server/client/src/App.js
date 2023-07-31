@@ -4,7 +4,7 @@ import { Service } from "./components/Service";
 import { Loading } from './components/misc/Loading';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from "react-redux";
-import {ACTIONS} from './actions'
+import { ACTIONS } from './actions'
 import {Alert, IconButton, Collapse} from '@mui/material';
 import {Close} from '@mui/icons-material'
 import { setLoading, setTable, setColumns, setTableNames, setSelected, setPrimaryKey, setAlertError, setAlertErrorMessage, setLengths, setEditableColumns, setNewTableRows, setModels, setVersions} from './actions';
@@ -214,9 +214,10 @@ function App() {
 
   return (<div className="App">
     <Loading/>
-    <Collapse in={alertOpen}>
+    {/* <Collapse in={alertOpen}>
       <Alert 
         severity="error"
+        id="main-alert"
         action={
           <IconButton
             aria-label="close"
@@ -232,7 +233,7 @@ function App() {
           >
             {alertMessage}
       </Alert>
-    </Collapse>
+    </Collapse> */}
     <Routes>
       <Route path='/' Component={HomePage}/>
       <Route path='/service' Component={Service}/>

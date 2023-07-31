@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux';
 import {FormControl, InputLabel, MenuItem, Select, FormControlLabel, FormGroup, Checkbox, Button} from '@mui/material';
-import { setTableName, toggleSelected, openNewRow, openOnCellErrorMessage, chooseModel, chooseVersion, setEditMode } from '../actions';
+import { setTableName, toggleSelected, openNewRow, openOnCellErrorMessage, chooseModel, chooseVersion, setEditMode, setAlertErrorMessage, setAlertError, setNewTableRows } from '../actions';
 import { useState, useEffect } from 'react'
 // import Paper from '@mui/material/Paper';
 import { Dialog , DialogActions, DialogContent, DialogTitle, TextField, Box}from '@mui/material';
@@ -25,8 +25,10 @@ export const Controllers = (props) => {
     const cur_model = useSelector(state => state.model);
     const versions = useSelector(state => state.versions);
     const cur_version = useSelector(state => state.version);
-    const constrains = useSelector(state => state.constrains)
-    // console.log(constrains['model'])
+    const constrains = useSelector(state => state.constrains);
+    const root_url = useSelector(state => state.root_url);
+    const editable = useSelector(state => state.editable_columns);
+    // console.log(editable)
     
     const [editColumns, openEditColumns] = useState(false);
     const [modelsDialog, openModelsDialog] = useState(false);
@@ -35,6 +37,7 @@ export const Controllers = (props) => {
     const [errorInVersion, setErrInVersion] = useState(false);
     const [newModel, setNewModel] = useState('')
     const [errorInModel, setErrInModel] = useState(false);
+    
     // strange problem appeared: when using hotkey both useHotkey and pressing button happens 
     // so first Hotkey changes onCellErrorMessage to false then button shows it again 
     // therefore I'm using this additional state
@@ -57,25 +60,57 @@ export const Controllers = (props) => {
     const handleChangeVersion = (e) => {
         dispatch(chooseVersion(e.target.value));
     }
+
+    const setNewTableRowToDefault = ()=> {
+        console.log('runing', editable)
+        const editRow = [{[primaryKey] : 1}];
+        editable.forEach(elt => editRow[0][elt]='');
+        dispatch(setNewTableRows(editRow))
+    }
+
+    const goToEdit = async () => {
+        const prepareTable = () => {
+            const ed_table = table.map(elt => {return {...elt, model  : newModel, version : newVersion}})
+            dispatch(setNewTableRows(ed_table));
+            openCloningVersion(false);
+            dispatch(openNewRow(true));
+        }
+        if (models.includes(newModel)) {
+            
+            const res = await fetch(`${root_url}/api/general/versions?table=${table_name}&model=${newModel}`);
+            const thisModelVersions = await res.json();
+            
+            if( thisModelVersions.map(elt => String(elt.version)).includes(String(newVersion))) {
+                console.log('includes', thisModelVersions)
+                dispatch(setAlertErrorMessage(`Sorry, model ${newModel} already has version ${newVersion}`));
+                dispatch(setAlertError(true));
+            }  else { 
+                console.log('doesnt')
+                prepareTable() 
+            }
+        } else {
+            prepareTable()
+        }
+    }
     
     const validate = (field, val) => {
         if (Object.keys(constrains).length > 0) {
             const res = validateCellFailed({props : {value : val}}, constrains[field], dispatch);
-            console.log(field, res)
+            // console.log(field, res)
             return res
         } else {
-            console.log('no constrains')
+            // console.log('no constrains')
             return false
         }
     }
 
     useEffect(()=> {
         setErrInVersion(validate('version', newVersion))
-    }, [newVersion])
+    }, [newVersion, cur_version])
 
     useEffect(()=> {
         setErrInModel(validate('model', newModel))
-    }, [newModel])
+    }, [newModel, cur_model])
 
     useHotkeys('enter', () => {
         dispatch(openOnCellErrorMessage(false));
@@ -204,24 +239,24 @@ export const Controllers = (props) => {
         color='warning'
         disabled = {editing || cur_model === 'All models' || cur_version === 'All versions'}
         onClick={(e) => {openCloningVersion(true)}}>
-            Clone version
+            Copy to new version
     </Button>
 
     <Dialog disableEscapeKeyDown open={cloningVersion}>
         <DialogTitle>You are up to clone model <span style={{color : 'red'}}>{cur_model}</span>, version <span style={{color : 'red'}}>{cur_version}</span></DialogTitle>
 
         <DialogContent>
-            <p>Please choose new model and version</p>
+            <p>Please choose destination model and version</p>
             <Box sx={{display: 'flex', gap : 3}}>
                 <TextField 
                     id="model-input" 
-                    label="New model" 
+                    label="model" 
                     variant="standard" 
                     error={errorInModel}
                     onChange={(e)=>setNewModel(e.target.value)}/>
                 <TextField 
                     id="version-input" 
-                    label="New version" 
+                    label="version" 
                     variant="standard"
                     error={errorInVersion}
                     onChange={(e)=>setNewVersion(e.target.value)} />
@@ -231,13 +266,15 @@ export const Controllers = (props) => {
         
         <DialogActions>
             <Button onClick={()=> {
-                openCloningVersion(false) 
-                dispatch(setEditMode(false))
+                openCloningVersion(false);
+                dispatch(setEditMode(false));
+                setNewTableRowToDefault();
                 }}>Cancel</Button>
             <Button onClick={()=> {
                 dispatch(openOnCellErrorMessage(true))
                 dispatch(setEditMode(true))
                 }}>Errors</Button>
+            <Button onClick={()=> {goToEdit()}}>Next step</Button>
         </DialogActions>
     </Dialog>
 
