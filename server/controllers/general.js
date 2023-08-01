@@ -34,9 +34,12 @@ export const _getModels = async (req, res) => {
 
 export const _getVersions = async (req, res) => {
     try {
-        const models = await getVersions(req.query.table, req.query.model);
-        res.status(200).json(models.rows);
-        
+        if (req.query.model !== 'All models') {
+            const versions = await getVersions(req.query.table, req.query.model);
+            res.status(200).json(versions.rows);
+        } else {
+            res.status(200).json([])
+        } 
     } catch (error) {
         console.log('error in controller', error);
         res.status(500).json({msg : `error versions from table ${req.query.table} and model ${req.query.model}`})

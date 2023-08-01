@@ -1,21 +1,35 @@
 import { Box } from '@mui/material'
 import { useDispatch, useSelector } from 'react-redux';
-import { setNewTableRows } from '../actions';
+import { setAlertError, setAlertErrorMessage, setNewTableRows } from '../actions';
 import { Table } from './Table';
 
 export const NewTable = (props) => {
     const newTableRows = useSelector(state => state.newTableRows);
     const columns = useSelector(state => state.editable_columns);
+    const primaryKey = useSelector(state => state.primaryKey)
 
     const dispatch = useDispatch();
 
     const updateRows = async (updRow, originalRow) => {
         const newRowsState = [...newTableRows];
 
-        // what if PK is not id? ??????
-        const idx = newRowsState.findIndex(row => row.id === updRow.id);
+        const idx = newRowsState.findIndex(row => row[primaryKey] === originalRow[primaryKey]);
         newRowsState[idx] = updRow;
-        dispatch(setNewTableRows(newRowsState));
+        console.log(newRowsState)
+         /// check that PK is still unique
+         let i = 0;
+         for (let row of newRowsState) {
+             if (row[primaryKey] === updRow[primaryKey]) {
+                i++;
+             }
+         }
+         console.log('i', i)
+         if (i > 1) {
+            dispatch(setAlertErrorMessage(`PK ${updRow[primaryKey]} already exists`));
+            dispatch(setAlertError(true));
+         } else {
+            dispatch(setNewTableRows(newRowsState));
+         }
         return updRow
     }
 
