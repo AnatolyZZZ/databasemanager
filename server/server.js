@@ -1,6 +1,7 @@
 import express  from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import  bodyParser  from 'body-parser';
 // import cookieParser from 'cookie-parser';
 import path from 'path'
 import { fileURLToPath } from 'url';
@@ -12,8 +13,12 @@ dotenv.config();
 
 const server = express();
 server.use(cors());
-server.use(express.urlencoded({extended:true}));
-server.use(express.json())
+// server.use(express.urlencoded({extended:true}));
+// server.use(express.json())
+server.use(bodyParser.json({ limit: '50mb' }));
+server.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
+
+
 
 server.use('/api/general', generalRouter);
 server.use('/api/table', tableRouter);

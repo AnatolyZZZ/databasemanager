@@ -1,20 +1,50 @@
 import { ACTIONS } from "../actions"
 
 const initialState = {
+    // current table name
     table_name : '',
+    // cur main table rows
     table : [],
+    // is loading on/of
     loading : false,
+    // cur table available columns
     columns : [],
+    /// for dev use localhost http://localhost:5002 for prod ''
     root_url : 'http://localhost:5002',
+    // all available tables in database
     tables : [],
+    // columns selected to display
     selected_columns : [],
+    // PK of current table
     primaryKey : '',
+    // editmode on/of
     editing : false,
-    edit_correct : true,
+    // constrains on cur table
     constrains : {},
+    // errors on curently editing cell
     errorMessages : [],
+    // show alert message on/of
     alerErrorOn : false,
-    alertErrorMessage : ''
+    // cur message in alert
+    alertErrorMessage : '',
+    // show or not adding new row
+    newRow : false,
+    // show or not errors on curently editing cell
+    onCellErrorsMessage : false,
+    // rows for NewTable component
+    newTableRows : [],
+    // current columns lengths 
+    lengths : new Map (),
+    // all editable columns
+    editable_columns : [],
+    // current table models
+    models : [],
+    // choosen model 
+    model : 'All models',
+    // cur versions
+    versions : [],
+    // choosen version
+    version : 'All versions'
 }
 
 export const reducer = (state = initialState, action = {}) => {
@@ -26,7 +56,7 @@ export const reducer = (state = initialState, action = {}) => {
         case (ACTIONS.SET_LOADING) :
             return {...state, loading : action.payload}
         case (ACTIONS.SET_TABLE_NAME) :
-            return {...state, table_name : action.payload}
+            return {...state, table_name : action.payload, model : 'All models', version : 'All versions'}
         case (ACTIONS.GET_TABLES) :
             return {...state, tables : action.payload}
         case (ACTIONS.SET_SELECTED) :
@@ -50,6 +80,24 @@ export const reducer = (state = initialState, action = {}) => {
             return {...state, alerErrorOn : action.payload}
         case (ACTIONS.SET_ALERT_ERROR_MESSAGE) :
             return {...state, alertErrorMessage : action.payload}
+        case (ACTIONS.OPEN_NEW_ROW) : 
+            return {...state, newRow : action.payload}
+        case (ACTIONS.OPEN_ON_CELL_ERROR_MESSAGE) : 
+            return {...state, onCellErrorsMessage : action.payload}
+        case (ACTIONS.SET_NEW_TABLE_ROWS) : 
+            return {...state, newTableRows : action.payload}
+        case (ACTIONS.SET_LENGTHS) :
+            return {...state, lengths : action.payload}
+        case (ACTIONS.SET_EDITABLE_COLUMNS) :
+            return {...state, editable_columns : action.payload}
+        case (ACTIONS.SET_MODELS) :
+            return {...state, models : action.payload}
+        case (ACTIONS.CHOOSE_MODEL) :
+            return {...state, model : action.payload}
+        case (ACTIONS.SET_VERSIONS) :
+            return {...state, versions : action.payload}
+        case (ACTIONS.CHOOSE_VERSION) :
+            return {...state, version : action.payload}
         default :
             return {...state}
     }

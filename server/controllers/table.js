@@ -3,17 +3,21 @@ import { addRows, getTable, updateEntry } from "../modules/table.js";
 
 export const _addRows = async (req, res) => {
     try {
-        addRows(req.body.table, req.body.rows);
+        // console.log('adding rows controller');
+        // console.log(`${JSON.stringify(req.body.table)} table, and rows are ${JSON.stringify(req.body.rows)}`)
+        const row = await addRows(req.body.table, req.body.rows);
+        // console.log(row)
+        res.status(200).json(row)
     } catch (error) {
         console.log('error in controller', error);
-        res.status(500).json({msg : `error inserting rows ${req.body.rows} into table ${req.body.table}`});
+        res.status(500).json({msg : `error inserting rows ${JSON.stringify(req.body.rows)} into table ${req.body.table} ${JSON.stringify(error.detail)}`});
     }
 }
 
 export const _getTable = async (req, res) => {
     try {
-        const table = await getTable(req.params.name);
-        res.status(200).json(table)
+        const table = await getTable(req.params.name, req.query.model, req.query.version);
+        res.status(200).json(table.rows)
     } catch (error) {
         console.log('error in controller', error);
         res.status(500).json({msg : `error geting table ${req.params.name}`})
