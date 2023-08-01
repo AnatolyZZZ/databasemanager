@@ -84,7 +84,12 @@ export const CurrTable = (props) => {
                     'minHeight' : "400px"
                 }
             }} id="style-box">
-                <Table columns={filteredColumns} rows={table} handleSave={handleSave}/>
+                <Table 
+                    columns={filteredColumns} 
+                    rows={table} 
+                    handleSave={handleSave}
+                    showColumnVerticalBorder={false}
+                    showCellVerticalBorder={false}/>
             </Box>
         </div>
     </>
