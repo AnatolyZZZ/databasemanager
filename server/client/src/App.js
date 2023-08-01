@@ -5,16 +5,12 @@ import { Loading } from './components/misc/Loading';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { ACTIONS } from './actions'
-import {Alert, IconButton, Collapse} from '@mui/material';
-import {Close} from '@mui/icons-material'
 import { setLoading, setTable, setColumns, setTableNames, setSelected, setPrimaryKey, setAlertError, setAlertErrorMessage, setLengths, setEditableColumns, setNewTableRows, setModels, setVersions} from './actions';
 import './App.css'
 
 function App() {
 
   const dispatch = useDispatch();
-  const alertOpen = useSelector(state => state.alerErrorOn);
-  const alertMessage = useSelector(state => state.alertErrorMessage);
   const table_name = useSelector(state => state.table_name);
   const root_url = useSelector(state => state.root_url);
   const column_names = useSelector(state => state.columns);
@@ -179,7 +175,7 @@ function App() {
     getModels();
     return () => abortController.abort()
 
-  },[column_names])
+  },[column_names, root_url])
 
   // geting versions every time when change model
   useEffect(()=>{

@@ -2,11 +2,11 @@ import { useSelector, useDispatch } from 'react-redux';
 import {FormControl, InputLabel, MenuItem, Select, FormControlLabel, FormGroup, Checkbox, Button} from '@mui/material';
 import { setTableName, toggleSelected, openNewRow, openOnCellErrorMessage, chooseModel, chooseVersion, setEditMode, setAlertErrorMessage, setAlertError, setNewTableRows } from '../actions';
 import { useState, useEffect } from 'react'
-// import Paper from '@mui/material/Paper';
+
 import { Dialog , DialogActions, DialogContent, DialogTitle, TextField, Box}from '@mui/material';
-// import Draggable from 'react-draggable';
+
 import { useHotkeys } from 'react-hotkeys-hook';
-import { Table } from './Table';
+
 import { validateCellFailed } from './Validation'
 import './Controllers.css'
 
@@ -76,17 +76,20 @@ export const Controllers = (props) => {
             dispatch(openNewRow(true));
         }
         if (models.includes(newModel)) {
-            
-            const res = await fetch(`${root_url}/api/general/versions?table=${table_name}&model=${newModel}`);
-            const thisModelVersions = await res.json();
-            
-            if( thisModelVersions.map(elt => String(elt.version)).includes(String(newVersion))) {
-                console.log('includes', thisModelVersions)
-                dispatch(setAlertErrorMessage(`Sorry, model ${newModel} already has version ${newVersion}`));
+            try {
+                const res = await fetch(`${root_url}/api/general/versions?table=${table_name}&model=${newModel}`);
+                const thisModelVersions = await res.json();
+                if( thisModelVersions.map(elt => String(elt.version)).includes(String(newVersion))) {
+                    // console.log('includes', thisModelVersions)
+                    dispatch(setAlertErrorMessage(`Sorry, model ${newModel} already has version ${newVersion}`));
+                    dispatch(setAlertError(true));
+                }  else { 
+                    // console.log('doesnt')
+                    prepareTable() 
+                }
+            } catch (error) {
+                dispatch(setAlertErrorMessage(JSON.stringify(error)));
                 dispatch(setAlertError(true));
-            }  else { 
-                console.log('doesnt')
-                prepareTable() 
             }
         } else {
             prepareTable()
