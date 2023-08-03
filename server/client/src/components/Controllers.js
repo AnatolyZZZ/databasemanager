@@ -1,7 +1,8 @@
 import { useSelector, useDispatch } from 'react-redux';
-import {FormControl, InputLabel, MenuItem, Select, FormControlLabel, FormGroup, Checkbox, Button} from '@mui/material';
+import { FormControl, InputLabel, MenuItem, Select, FormControlLabel, FormGroup, Checkbox, Button} from '@mui/material';
 import { setTableName, toggleSelected, openNewRow, openOnCellErrorMessage, chooseModel, chooseVersion, setEditMode, setAlertErrorMessage, setAlertError, setNewTableRows } from '../actions';
-import { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react';
+import { Filters } from './Filters';
 
 import { Dialog , DialogActions, DialogContent, DialogTitle, TextField, Box}from '@mui/material';
 
@@ -75,7 +76,11 @@ export const Controllers = (props) => {
             openCloningVersion(false);
             dispatch(openNewRow(true));
         }
-        if (models.includes(newModel)) {
+        if (newModel == '' || newVersion == '') {
+            dispatch(setAlertErrorMessage(`Should not be empty`));
+            dispatch(setAlertError(true));
+        } else 
+            if (models.includes(newModel)) {
             try {
                 const res = await fetch(`${root_url}/api/general/versions?table=${table_name}&model=${newModel}`);
                 const thisModelVersions = await res.json();
@@ -228,6 +233,9 @@ export const Controllers = (props) => {
             <Button onClick={()=> openEditColumns(false) }>Ok</Button>
         </DialogActions>
     </Dialog>
+
+    <Filters/>
+
     <Button
         variant='contained'
         color='primary'
@@ -256,11 +264,13 @@ export const Controllers = (props) => {
                     label="model" 
                     variant="standard" 
                     error={errorInModel}
+                    required
                     onChange={(e)=>setNewModel(e.target.value)}/>
                 <TextField 
                     id="version-input" 
                     label="version" 
                     variant="standard"
+                    required
                     error={errorInVersion}
                     onChange={(e)=>setNewVersion(e.target.value)} />
             </Box>
@@ -273,10 +283,10 @@ export const Controllers = (props) => {
                 dispatch(setEditMode(false));
                 setNewTableRowToDefault();
                 }}>Cancel</Button>
-            <Button onClick={()=> {
+            {/* <Button onClick={()=> {
                 dispatch(openOnCellErrorMessage(true))
                 dispatch(setEditMode(true))
-                }}>Errors</Button>
+                }}>Errors</Button> */}
             <Button onClick={()=> {goToEdit()}}>Next step</Button>
         </DialogActions>
     </Dialog>

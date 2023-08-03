@@ -44,8 +44,14 @@ const initialState = {
     // cur versions
     versions : [],
     // choosen version
-    version : 'All versions'
+    version : 'All versions',
+    // filters { table_name : [{column_name, operand, value }]
+    filters : {},
+    // turn filters on/of
+    apply_filters : false
 }
+let curTableFiters;
+let newFilterState;
 
 export const reducer = (state = initialState, action = {}) => {
     switch(action.type) {
@@ -98,6 +104,34 @@ export const reducer = (state = initialState, action = {}) => {
             return {...state, versions : action.payload}
         case (ACTIONS.CHOOSE_VERSION) :
             return {...state, version : action.payload}
+        case (ACTIONS.DEL_FILTER) :
+            curTableFiters = [...state.filters[action.payload.table]]
+            curTableFiters.splice(action.payload.id, 1);
+            newFilterState = {...state.filters, [action.payload.table] : curTableFiters};
+            console.log('saving to ls del', newFilterState)
+            localStorage.setItem('dbm_filters', JSON.stringify(newFilterState));
+            return {...state, filters : newFilterState}
+        case (ACTIONS.NEW_FILTER) :
+            console.log('state.filters[action.payload]', state.filters[action.payload])
+            curTableFiters = state.filters[action.payload] ? [...state.filters[action.payload]] : []
+            console.log('curTableFilters => ', curTableFiters)
+            console.log('cur state.filters', state.filters)
+            curTableFiters.push({column_name : '', operand : '', value : ''});
+            newFilterState = {...state.filters, [action.payload] : curTableFiters}
+            console.log('saving to ls new', newFilterState)
+            localStorage.setItem('dbm_filters', JSON.stringify(newFilterState));
+            return {...state, filters : newFilterState}
+        case (ACTIONS.MODIFY_FILTER) :
+            curTableFiters = [...state.filters[action.payload.table]];
+            curTableFiters[action.payload.id] = action.payload.filter;
+            newFilterState = {...state.filters, [action.payload.table] : curTableFiters};
+            console.log('saving to ls mod', newFilterState)
+            localStorage.setItem('dbm_filters', JSON.stringify(newFilterState));
+            return {...state, filters : newFilterState}
+        case (ACTIONS.APPLY_FILTERS) :
+            return {...state, apply_filters : action.payload}
+        case (ACTIONS.RESTORE_FILTERS) : 
+            return {...state, filters : action.payload}
         default :
             return {...state}
     }

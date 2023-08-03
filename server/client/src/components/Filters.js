@@ -1,0 +1,48 @@
+import { useDispatch, useSelector } from "react-redux";
+import { Filter } from "./Filter";
+import { useState } from "react";
+import { Button, Dialog, DialogActions, DialogContent, Stack, Switch, FormControlLabel} from "@mui/material";
+import AddIcon from '@mui/icons-material/Add';
+import { applyFilters, newFilter,  } from "../actions";
+
+export const Filters = (props) => {
+    const table_name = useSelector(state => state.table_name);
+    const filters = useSelector(state => state.filters);
+    const [filtersDialog, openFiltersDialog] = useState(false);
+    const editing = useSelector(state => state.editing);
+    const apply_filters = useSelector(state => state.apply_filters);
+    // console.log(apply_filters)
+    const dispatch = useDispatch();
+
+    return <>
+    <Button 
+        color='secondary'
+        disabled={editing || table_name === ''}
+        onClick={()=>{openFiltersDialog(true)}}>
+            Filters
+    </Button>
+    <Dialog open={filtersDialog} maxWidth={false}>
+        <DialogContent>
+            {filters[table_name]?.map((elt, idx) => <Filter key={idx} table={table_name} id={idx}/>)}
+
+            <Stack direction='row' justifyContent='center'>
+                <Button color='success' onClick={(e) => dispatch(newFilter(table_name))}> New <AddIcon/></Button>
+            </Stack>
+            
+        </DialogContent>
+
+        <DialogActions>
+            <FormControlLabel 
+                control={<Switch 
+                    onChange={(e) => {
+                        dispatch(applyFilters(e.target.checked))
+                        // console.log(e.target.checked)
+                    }}
+                    checked={apply_filters}
+                    color='warning'/>}
+                label="Apply filters" />
+            <Button onClick={() => openFiltersDialog(false)}>Close</Button>
+        </DialogActions>
+    </Dialog>
+    </>
+}
