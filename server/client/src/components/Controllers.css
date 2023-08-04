@@ -16,3 +16,8 @@
 #open-error-dialog-button {
     margin-left: auto;
 }
+
+#settings:hover, #settings:focus {
+    cursor: pointer;
+}
+

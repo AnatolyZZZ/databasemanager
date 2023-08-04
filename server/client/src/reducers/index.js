@@ -80,7 +80,6 @@ export const reducer = (state = initialState, action = {}) => {
         case (ACTIONS.EDIT_MODE) :
             return {...state, editing : action.payload}
         case (ACTIONS.SET_EDIT_ERROR_MESSAGES) :
-            // console.log('setting in reducer', action.payload)
             return {...state, errorMessages : action.payload}
         case (ACTIONS.SET_ALERT_ERROR) :
             return {...state, alerErrorOn : action.payload}
@@ -108,24 +107,19 @@ export const reducer = (state = initialState, action = {}) => {
             curTableFiters = [...state.filters[action.payload.table]]
             curTableFiters.splice(action.payload.id, 1);
             newFilterState = {...state.filters, [action.payload.table] : curTableFiters};
-            console.log('saving to ls del', newFilterState)
             localStorage.setItem('dbm_filters', JSON.stringify(newFilterState));
             return {...state, filters : newFilterState}
         case (ACTIONS.NEW_FILTER) :
-            console.log('state.filters[action.payload]', state.filters[action.payload])
             curTableFiters = state.filters[action.payload] ? [...state.filters[action.payload]] : []
-            console.log('curTableFilters => ', curTableFiters)
-            console.log('cur state.filters', state.filters)
             curTableFiters.push({column_name : '', operand : '', value : ''});
             newFilterState = {...state.filters, [action.payload] : curTableFiters}
-            console.log('saving to ls new', newFilterState)
+
             localStorage.setItem('dbm_filters', JSON.stringify(newFilterState));
             return {...state, filters : newFilterState}
         case (ACTIONS.MODIFY_FILTER) :
             curTableFiters = [...state.filters[action.payload.table]];
             curTableFiters[action.payload.id] = action.payload.filter;
             newFilterState = {...state.filters, [action.payload.table] : curTableFiters};
-            console.log('saving to ls mod', newFilterState)
             localStorage.setItem('dbm_filters', JSON.stringify(newFilterState));
             return {...state, filters : newFilterState}
         case (ACTIONS.APPLY_FILTERS) :

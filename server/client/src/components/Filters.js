@@ -14,14 +14,21 @@ export const Filters = (props) => {
     // console.log(apply_filters)
     const dispatch = useDispatch();
 
+    const handleListKeyDown = (e) => {
+        if (e.key === 'Escape' || e.key === 'Tab' || e.key === 'Enter' ) {
+            setTimeout(() => openFiltersDialog(false), 10)
+        }
+    }
+
     return <>
     <Button 
         color='secondary'
+        variant="outlined"
         disabled={editing || table_name === ''}
         onClick={()=>{openFiltersDialog(true)}}>
             Filters
     </Button>
-    <Dialog open={filtersDialog} maxWidth={false}>
+    <Dialog open={filtersDialog} maxWidth={false} onKeyDown={handleListKeyDown}>
         <DialogContent>
             {filters[table_name]?.map((elt, idx) => <Filter key={idx} table={table_name} id={idx}/>)}
 

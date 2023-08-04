@@ -15,44 +15,42 @@ export const CurrTable = (props) => {
     const filters = useSelector(state => state.filters);
     const apply_filters = useSelector(state => state.apply_filters);
     const [filteredRows, filterRows] = useState([...table]);
-    console.log('filtered', filteredRows);
-
-    const applyFilter = (idx, arr) => {
-        const curFilter = filters[table_name][idx];
-        console.log('applying filter', curFilter)
-        switch (curFilter.operand) {
-            case ('=') :
-                arr = arr.filter(elt => elt[curFilter.column_name] == curFilter.value);
-                break;
-            case ('<') :
-                arr = arr.filter(elt => elt[curFilter.column_name] < curFilter.value);
-                break;
-            case ('>') :
-                arr = arr.filter(elt => elt[curFilter.column_name] > curFilter.value);
-                break;
-            case ('<=') :
-                arr = arr.filter(elt => elt[curFilter.column_name] <= curFilter.value);
-                break;
-            case ('>=') :
-                arr = arr.filter(elt => elt[curFilter.column_name] >= curFilter.value);
-                break;
-        }
-        if (idx === 0) {
-            console.log(arr)
-            return arr
-        } else 
-            return applyFilter(idx - 1, arr)
-    }
 
     useEffect(()=>{
+        const applyFilter = (idx, arr) => {
+            const curFilter = filters[table_name][idx];
+            switch (curFilter.operand) {
+                case ('=') :
+                    arr = arr.filter(elt => elt[curFilter.column_name] == curFilter.value);
+                    break;
+                case ('<') :
+                    arr = arr.filter(elt => elt[curFilter.column_name] < curFilter.value);
+                    break;
+                case ('>') :
+                    arr = arr.filter(elt => elt[curFilter.column_name] > curFilter.value);
+                    break;
+                case ('<=') :
+                    arr = arr.filter(elt => elt[curFilter.column_name] <= curFilter.value);
+                    break;
+                case ('>=') :
+                    arr = arr.filter(elt => elt[curFilter.column_name] >= curFilter.value);
+                    break;
+                default :
+            }
+            if (idx === 0) {
+                // console.log(arr)
+                return arr
+            } else 
+                return applyFilter(idx - 1, arr)
+        }
+        /// if filters are not applid or there is no setup filters for this table 
         if (!apply_filters || !filters[table_name]) {
-            console.log('switch app filters to', apply_filters)
             filterRows([...table]);
+        // otherwise should upply them
         } else {
-            console.log(filters)
             filterRows(applyFilter(filters[table_name].length - 1, table))
         }
-    }, [filters, apply_filters, table])
+    }, [filters, apply_filters, table, table_name])
 
     const filteredColumns = selected_columns.filter(elt => elt[1] === true).map(elt =>elt[0]);
     
@@ -110,7 +108,7 @@ export const CurrTable = (props) => {
 
     return <>
         <div className='container'>
-            {table_name !=='' &&<h1>This is table "{table_name}"{apply_filters ? " filters applyed" : ' filters are NOT applyed'}</h1>}
+            {table_name !=='' &&<h1>This is table "{table_name}."{apply_filters ? " Filters applied" : ' Filters are NOT applied'}</h1>}
             <Box sx={{
                 width : '100%',
                 height : '100%',
