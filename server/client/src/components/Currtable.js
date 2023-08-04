@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from 'react-redux';
-import { setEditMode, setAlertError, setAlertErrorMessage } from '../actions';
+import { setEditMode, setAlertError, setAlertErrorMessage, setLoading } from '../actions';
 import { Box } from '@mui/material';
 import { Table } from './Table';
 import { useState, useEffect } from 'react';
@@ -92,12 +92,14 @@ export const CurrTable = (props) => {
                     // console.log('error', result.msg, 'result.upd', result.upd);
                     dispatch(setAlertErrorMessage(`Failed to save in database\n ${result.msg}`));
                     dispatch(setAlertError(true))
-                    return result.upd.entry 
+                    dispatch(setLoading(false))
+                    return originalRow
                 }
             } catch (error) {
                 console.log('error => ', error)
                 dispatch(setAlertErrorMessage('Failed to save in database, unknown error '));
                 dispatch(setAlertError(true))
+                dispatch(setLoading(false))
                 return originalRow
             }
         }
@@ -108,7 +110,7 @@ export const CurrTable = (props) => {
 
     return <>
         <div className='container'>
-            {table_name !=='' &&<h1>This is table "{table_name}."{apply_filters ? " Filters applied" : ' Filters are NOT applied'}</h1>}
+            {table_name !=='' &&<h1>This is table "{table_name}".{apply_filters ? " Filters applied" : ' Filters are NOT applied'}</h1>}
             <Box sx={{
                 width : '100%',
                 height : '100%',

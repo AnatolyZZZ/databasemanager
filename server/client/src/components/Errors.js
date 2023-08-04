@@ -1,13 +1,8 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
-import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { openOnCellErrorMessage } from "../actions";
 
 export const Errors = (props) => {
-    // strange problem appeared: when using hotkey both useHotkey and pressing button happens 
-    // so first Hotkey changes onCellErrorMessage to false then button shows it again 
-    // therefore I'm using this additional state
-    const [closedByHotkey, setClosedByHotkey] = useState(false);
     const dispatch = useDispatch();
     const onCellErrorsMessage = useSelector(state => state.onCellErrorsMessage);
     const errorMessages = useSelector(state => state.errorMessages);
@@ -25,13 +20,9 @@ return <>
         variant='outlined'
         disabled={!editing || errorMessages.length === 0}
         color="error"
-        onClick={()=>{
-            if (!closedByHotkey) {
-                dispatch(openOnCellErrorMessage(!onCellErrorsMessage))
-                setClosedByHotkey(false)
-            }
-        }}
-        id='open-error-dialog-button'>
+        onClick={()=>dispatch(openOnCellErrorMessage(!onCellErrorsMessage))}
+        id='open-error-dialog-button'
+        sx={{whiteSpace : 'nowrap'}}>
             Show errors
     </Button>
 
