@@ -1,11 +1,12 @@
 import { useSelector, useDispatch } from 'react-redux';
-import {FormControl, InputLabel, MenuItem, Select, FormControlLabel, FormGroup, Checkbox, Button} from '@mui/material';
-import { setTableName, toggleSelected, openNewRow, openOnCellErrorMessage, chooseModel, chooseVersion, setEditMode, setAlertErrorMessage, setAlertError, setNewTableRows } from '../actions';
-import { useState, useEffect } from 'react'
+import { FormControl, InputLabel, MenuItem, Select, Button, Popper, MenuList, Paper, Grow,  Dialog , DialogActions, DialogContent, DialogTitle, TextField, Box, ClickAwayListener} from '@mui/material';
+import { setTableName,  openNewRow, chooseModel, chooseVersion, setEditMode, setAlertErrorMessage, setAlertError, setNewTableRows } from '../actions';
+import { useState, useEffect, useRef} from 'react';
+import { Filters } from './Filters';
+import { ColumnsController } from './Columnscontroller';
+import { Errors } from './Errors';
 
-import { Dialog , DialogActions, DialogContent, DialogTitle, TextField, Box}from '@mui/material';
-
-import { useHotkeys } from 'react-hotkeys-hook';
+import SettingsIcon from '@mui/icons-material/Settings';
 
 import { validateCellFailed } from './Validation'
 import './Controllers.css'
@@ -14,13 +15,10 @@ import './Controllers.css'
 export const Controllers = (props) => {
     const table_name = useSelector(state => state.table_name);
     const tables = useSelector(state => state.tables);
-    const selected_columns = useSelector(state => state.selected_columns);
     const editing = useSelector(state => state.editing);
-    const errorMessages = useSelector(state => state.errorMessages);
     const primaryKey = useSelector(state => state.primaryKey);
     // initial value for primary key to mach datatype
     const table = useSelector(state => state.table);
-    const onCellErrorMessage = useSelector(state => state.onCellErrorsMessage);
     const models = useSelector(state => state.models);
     const cur_model = useSelector(state => state.model);
     const versions = useSelector(state => state.versions);
@@ -29,6 +27,9 @@ export const Controllers = (props) => {
     const root_url = useSelector(state => state.root_url);
     const editable = useSelector(state => state.editable_columns);
     // console.log(editable)
+
+    // for menu button
+    const menuRef = useRef(null);
     
     const [editColumns, openEditColumns] = useState(false);
     const [modelsDialog, openModelsDialog] = useState(false);
@@ -37,11 +38,8 @@ export const Controllers = (props) => {
     const [errorInVersion, setErrInVersion] = useState(false);
     const [newModel, setNewModel] = useState('')
     const [errorInModel, setErrInModel] = useState(false);
+    const [settingsMenuOpen, setSettingsMenuOpen] = useState(false);
     
-    // strange problem appeared: when using hotkey both useHotkey and pressing button happens 
-    // so first Hotkey changes onCellErrorMessage to false then button shows it again 
-    // therefore I'm using this additional state
-    const [closedByHotkey, setClosedByHotkey] = useState(false);
     const dispatch = useDispatch();
 
     const handleChangeTable = (e) => {
@@ -53,12 +51,20 @@ export const Controllers = (props) => {
         dispatch(chooseVersion('All versions'));
     }
 
-    const handleColumsCheck = (idx) => {
-        dispatch(toggleSelected(idx))
-    }
 
     const handleChangeVersion = (e) => {
         dispatch(chooseVersion(e.target.value));
+    }
+
+    const handleOpenColumns = (e) => {
+        openEditColumns(true);
+        setSettingsMenuOpen(false);
+    }
+
+    const handleListKeyDown = (e) => {
+        if (e.key === 'Tab' || e.key === 'Escape') {
+        setSettingsMenuOpen(false);
+        }
     }
 
     const setNewTableRowToDefault = ()=> {
@@ -75,7 +81,11 @@ export const Controllers = (props) => {
             openCloningVersion(false);
             dispatch(openNewRow(true));
         }
-        if (models.includes(newModel)) {
+        if (newModel === '' || newVersion === '') {
+            dispatch(setAlertErrorMessage(`Should not be empty`));
+            dispatch(setAlertError(true));
+        } else 
+            if (models.includes(newModel)) {
             try {
                 const res = await fetch(`${root_url}/api/general/versions?table=${table_name}&model=${newModel}`);
                 const thisModelVersions = await res.json();
@@ -96,6 +106,7 @@ export const Controllers = (props) => {
         }
     }
     
+    // using validate cell for validating model and verion inputs are filled correctly
     const validate = (field, val) => {
         if (Object.keys(constrains).length > 0) {
             const res = validateCellFailed({props : {value : val}}, constrains[field], dispatch);
@@ -115,13 +126,7 @@ export const Controllers = (props) => {
         setErrInModel(validate('model', newModel))
     }, [newModel, cur_model])
 
-    useHotkeys('enter', () => {
-        dispatch(openOnCellErrorMessage(false));
-        setClosedByHotkey(true);
-        setTimeout(() => {
-            setClosedByHotkey(false)
-        }, 100);
-    });
+   
 
 
     return <div className="container controllers">
@@ -197,37 +202,8 @@ export const Controllers = (props) => {
     
 
 
-    <Button 
-        variant="contained" 
-        color='secondary'
-        disabled={editing || table_name===''}
-        onClick={(e) =>  {openEditColumns(true)}}>
-            Select columns
-    </Button>
+    <Filters/>
 
-    <Dialog disableEscapeKeyDown open={editColumns}>
-        <DialogTitle>Which columns to display?</DialogTitle>
-
-        <DialogContent>
-            <FormControl sx={{ m: 1 }} component="fieldset" variant="standard">
-                <FormGroup>
-                    {selected_columns.map((elt, idx) => 
-                        <FormControlLabel
-                        key={idx}
-                        control={
-                        <Checkbox checked={elt[1]} onChange={(e) => handleColumsCheck(idx)} name={elt[0]} />
-                        }
-                        label={elt[0] === primaryKey ? `${elt[0]} (PK)` : elt[0]}
-                    />
-                )}
-                </FormGroup>
-            </FormControl>
-        </DialogContent>
-        
-        <DialogActions>
-            <Button onClick={()=> openEditColumns(false) }>Ok</Button>
-        </DialogActions>
-    </Dialog>
     <Button
         variant='contained'
         color='primary'
@@ -256,11 +232,13 @@ export const Controllers = (props) => {
                     label="model" 
                     variant="standard" 
                     error={errorInModel}
+                    required
                     onChange={(e)=>setNewModel(e.target.value)}/>
                 <TextField 
                     id="version-input" 
                     label="version" 
                     variant="standard"
+                    required
                     error={errorInVersion}
                     onChange={(e)=>setNewVersion(e.target.value)} />
             </Box>
@@ -273,30 +251,58 @@ export const Controllers = (props) => {
                 dispatch(setEditMode(false));
                 setNewTableRowToDefault();
                 }}>Cancel</Button>
-            <Button onClick={()=> {
+            {/* <Button onClick={()=> {
                 dispatch(openOnCellErrorMessage(true))
                 dispatch(setEditMode(true))
-                }}>Errors</Button>
+                }}>Errors</Button> */}
             <Button onClick={()=> {goToEdit()}}>Next step</Button>
         </DialogActions>
     </Dialog>
 
+    <Errors/>
 
+    <SettingsIcon 
+        id='settings' 
+        ref={menuRef} 
+        onClick={()=> setSettingsMenuOpen(!settingsMenuOpen)}
+        aria-controls={settingsMenuOpen ? 'composition-menu' : undefined}
+        aria-expanded={settingsMenuOpen ? 'true' : undefined}
+        aria-haspopup="true"/>
 
-    <Button 
-        variant='outlined'
-        disabled={!editing}
-        onClick={()=>{
-            if (!closedByHotkey) {
-                dispatch(openOnCellErrorMessage(!onCellErrorMessage))
-                setClosedByHotkey(false)
-            }
-        }}
-        id='open-error-dialog-button'>
-            Show errors
-        </Button>
+    <Popper
+        open={settingsMenuOpen}
+        anchorEl={menuRef.current}
+        role={'menu'}
+        placement="bottom-start"
+        transition
+        disablePortal
+        >
+        {({ TransitionProps, placement }) => (
+        <Grow
+          {...TransitionProps}
+            style={{
+            transformOrigin:
+                placement === 'bottom-start' ? 'left top' : 'left bottom',}}>
+            <Paper id='settings-menu'>
+                <ClickAwayListener onClickAway={(e)=> setSettingsMenuOpen(false)}>
+                  <MenuList
+                    autoFocusItem={settingsMenuOpen}
+                    id="composition-menu"
+                    aria-labelledby="composition-button"
+                    onKeyDown={handleListKeyDown}
+                  >
+                    <MenuItem onClick={handleOpenColumns} disabled={editing || table_name===''}>Edit displayed columns</MenuItem>
+                  </MenuList>
+                </ClickAwayListener>
+            </Paper>
+        </Grow>
+          )}
+    </Popper>
 
-    <Dialog 
+    <ColumnsController opener={openEditColumns} open={editColumns}/>
+
+    
+    {/* <Dialog 
         open={onCellErrorMessage}
         id='#error-message-dialog'
      > 
@@ -309,7 +315,7 @@ export const Controllers = (props) => {
         <DialogActions>
             <Button onClick={()=> dispatch(openOnCellErrorMessage(false))}>Close</Button>
         </DialogActions>
-    </Dialog>
+    </Dialog> */}
 
     </div>
 }

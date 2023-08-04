@@ -5,7 +5,7 @@ import { Loading } from './components/misc/Loading';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { ACTIONS } from './actions'
-import { setLoading, setTable, setColumns, setTableNames, setSelected, setPrimaryKey, setAlertError, setAlertErrorMessage, setLengths, setEditableColumns, setNewTableRows, setModels, setVersions} from './actions';
+import { setLoading, setTable, setColumns, setTableNames, setSelected, setPrimaryKey, setAlertError, setAlertErrorMessage, setLengths, setEditableColumns, setNewTableRows, setModels, setVersions, restoreFilters} from './actions';
 import './App.css'
 
 function App() {
@@ -139,6 +139,11 @@ function App() {
       }
     }
     fetchTablenames();
+    const filters = localStorage.getItem('dbm_filters');
+    if (filters) {
+      // console.log(filters)
+      dispatch(restoreFilters(JSON.parse(filters)))
+    }
     return () => abortController.abort()
   }, [dispatch, root_url])
 
