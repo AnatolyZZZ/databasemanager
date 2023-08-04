@@ -3,7 +3,7 @@ import { DataGrid, GridCellEditStopReasons, GridCellEditStartReasons, GridEditIn
 import { setEditMode } from '../actions';
 import { validateCellFailed } from './Validation';
 import { makeStyles } from '@mui/styles';
-import {useState} from 'react'
+import { useState } from 'react'
 
 
 
@@ -31,11 +31,14 @@ function customRender (props) {
   }
 
 export const Table = (props) => {
+    // console.log(props)
     const dispatch = useDispatch()
     const primaryKey = useSelector(state => state.primaryKey);
     const editing = useSelector(state => state.editing);
     const lengths = useSelector(state => state.lengths);
     const constrains = useSelector(state => state.constrains);
+    // const loading = useSelector(state => state.loading);
+    // console.log(loading)
 
     const [editingColumnName, setEditingColumnName] = useState(null);
 
@@ -68,6 +71,9 @@ export const Table = (props) => {
                     columns={makeColumns(props.columns)}
                     rows={props.rows}
                     getRowId={row => row[primaryKey]}
+                    showCellVerticalBorder={props.showCellVerticalBorder}
+                    showColumnVerticalBorder={props.showColumnVerticalBorder}
+                    // loading={loading}
                     
                     onCellEditStop={(params, event) => {
                         // console.log(params)

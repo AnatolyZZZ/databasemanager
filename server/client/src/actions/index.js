@@ -19,7 +19,12 @@ export const ACTIONS = {
     SET_MODELS : 'SET_MODELS',
     CHOOSE_MODEL : 'CHOOSE_MODEL',
     SET_VERSIONS : 'SET_VERSIONS',
-    CHOOSE_VERSION : 'CHOOSE_VERSION'
+    CHOOSE_VERSION : 'CHOOSE_VERSION',
+    DEL_FILTER : 'DEL_FILTER',
+    NEW_FILTER : 'NEW_FILTER',
+    MODIFY_FILTER : 'MODIFY_FILTER',
+    APPLY_FILTERS : 'APPLY_FILTERS',
+    RESTORE_FILTERS : 'RESTORE_FILTERS'
 }
 
 export const setTable = (table) => {
@@ -156,6 +161,41 @@ export const chooseModel = (val) => {
 export const chooseVersion = (val) => {
     return {
         type : ACTIONS.CHOOSE_VERSION,
+        payload : val
+    }
+}
+
+export const delFilter = (table_name, id) => {
+    return {
+        type : ACTIONS.DEL_FILTER,
+        payload : {table : table_name, id : id}
+    }
+}
+
+export const modifyFilter = (table_name, id, new_filter) => {
+    return {
+        type : ACTIONS.MODIFY_FILTER,
+        payload : {table : table_name, id : id, filter : new_filter}
+    }
+}
+
+export const newFilter = (table_name) => {
+    return {
+        type : ACTIONS.NEW_FILTER,
+        payload : table_name
+    }
+}
+
+export const applyFilters = (val) => {
+    return {
+        type : ACTIONS.APPLY_FILTERS,
+        payload : val
+    }
+}
+
+export const restoreFilters = (val) => {
+    return {
+        type : ACTIONS.RESTORE_FILTERS,
         payload : val
     }
 }

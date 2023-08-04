@@ -32,16 +32,21 @@ export const NewTable = (props) => {
          }
         return updRow
     }
-
+    // probably don't need Box component, but keep if want to change some styles later
     return <Box sx={{
             width : '100%',
             height : '100%',
     '       .MuiDataGrid-cell' : {
             // make borders visible
-            border : '1px solid #f6f6f6'
+            // border : '1px solid #f6f6f6'
             }}}>
             
-                <Table columns={columns} rows={newTableRows} handleSave={updateRows} />
+                <Table 
+                    columns={columns} 
+                    rows={newTableRows} 
+                    showColumnVerticalBorder={true}
+                    showCellVerticalBorder={true}
+                    handleSave={updateRows} />
                 
             </Box>
     }

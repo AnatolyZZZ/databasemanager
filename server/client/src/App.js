@@ -5,7 +5,7 @@ import { Loading } from './components/misc/Loading';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { ACTIONS } from './actions'
-import { setLoading, setTable, setColumns, setTableNames, setSelected, setPrimaryKey, setAlertError, setAlertErrorMessage, setLengths, setEditableColumns, setNewTableRows, setModels, setVersions} from './actions';
+import { setLoading, setTable, setColumns, setTableNames, setSelected, setPrimaryKey, setAlertError, setAlertErrorMessage, setLengths, setEditableColumns, setNewTableRows, setModels, setVersions, restoreFilters} from './actions';
 import './App.css'
 
 function App() {
@@ -14,9 +14,7 @@ function App() {
   const table_name = useSelector(state => state.table_name);
   const root_url = useSelector(state => state.root_url);
   const column_names = useSelector(state => state.columns);
-  // console.log('column names', column_names)
   const cur_model = useSelector(state => state.model);
-  const cur_version = useSelector(state => state.version);
 
   useEffect(() => {
     const abortController1 = new AbortController()
@@ -24,7 +22,7 @@ function App() {
     async function fetchData () {
       dispatch({type: ACTIONS.SET_LOADING, payload: true})
       try {
-        const res1 = await fetch(`${root_url}/api/table/${table_name}?model=${cur_model}&version=${cur_version}`, {signal : abortController1.signal});
+        const res1 = await fetch(`${root_url}/api/table/${table_name}?model=All models&version=All versions`, {signal : abortController1.signal});
         const res2 = await fetch(`${root_url}/api/general/columnnames/${table_name}`, {signal : abortController2.signal});
         if (res1.status !== 200 || res2.status !== 200) {
           dispatch(setAlertErrorMessage('Failed to fetch data, please reload page'));
@@ -111,7 +109,7 @@ function App() {
       abortController2.abort();
     }
   ;
-  }, [table_name, dispatch, root_url, cur_model, cur_version]);
+  }, [table_name, dispatch, root_url]);
 
   // 
 
@@ -139,25 +137,28 @@ function App() {
       }
     }
     fetchTablenames();
+    const filters = localStorage.getItem('dbm_filters');
+    if (filters) {
+      // console.log(filters)
+      dispatch(restoreFilters(JSON.parse(filters)))
+    }
     return () => abortController.abort()
   }, [dispatch, root_url])
 
 
   // getting models every time when change column_names
-
-  /// !!!!! ----- probably should change to column name what if  column names are similar in two tables?!
+  // NOTE sometimes it fires fetch with previous columns. If it includes model, that can happen before state changes -  that's OK 
+  // can solve this with timeOut???
+  // should move this from App to Modelcopy?
   useEffect(()=>{
     const abortController = new AbortController();
-    // console.log('runing useEffect', column_names);
     const getModels = async () => {
       if (column_names.includes('model')) {
         try {
           const res = await fetch(`${root_url}/api/general/models?table=${table_name}`);
           const data = await res.json()
           if (res.status === 200) {
-            // console.log('status 200 dispatching', data)
             dispatch(setModels(data.map(elt => elt.model)));
-            // console.log('got models', data.map(elt => elt.model))
           } else {
             console.log('res.status!==200 dispatching[]')
             dispatch(setModels([]));
@@ -175,7 +176,7 @@ function App() {
     getModels();
     return () => abortController.abort()
 
-  },[column_names, root_url])
+  },[column_names, root_url, dispatch, table_name])
 
   // geting versions every time when change model
   useEffect(()=>{
@@ -186,11 +187,9 @@ function App() {
           const res = await fetch(`${root_url}/api/general/versions?table=${table_name}&model=${cur_model}`);
           const data = await res.json()
           if (res.status === 200) {
-            // console.log('status 200 dispatching', data)
             dispatch(setVersions(data.map(elt => elt.version)));
-            // console.log('got models', data.map(elt => elt.model))
           } else {
-            console.log('res.status!==200 dispatching []to versions')
+            console.log('res.status!==200 dispatching [] to versions')
             dispatch(setVersions([]));
           }
         } catch (error) {
@@ -206,30 +205,10 @@ function App() {
     getVersions();
     return () => abortController.abort()
     
-  },[cur_model])
+  },[cur_model, root_url, dispatch, table_name, column_names])
 
   return (<div className="App">
     <Loading/>
-    {/* <Collapse in={alertOpen}>
-      <Alert 
-        severity="error"
-        id="main-alert"
-        action={
-          <IconButton
-            aria-label="close"
-            color="inherit"
-            size="small"
-            onClick={() => {
-              dispatch(setAlertError(false));
-            }}>
-              <Close fontSize="inherit" />
-          </IconButton>
-            }
-            sx={{ mb: 2 }}
-          >
-            {alertMessage}
-      </Alert>
-    </Collapse> */}
     <Routes>
       <Route path='/' Component={HomePage}/>
       <Route path='/service' Component={Service}/>
