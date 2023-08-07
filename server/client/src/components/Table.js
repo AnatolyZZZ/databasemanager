@@ -66,7 +66,7 @@ export const Table = (props) => {
     }
 
     return <>
-        <div className='container'>
+        
                 <DataGrid 
                     columns={makeColumns(props.columns)}
                     rows={props.rows}
@@ -100,6 +100,6 @@ export const Table = (props) => {
 
                     id="data-grid-main"
                 />
-        </div>
+      
     </>
 }
