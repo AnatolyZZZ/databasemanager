@@ -36,7 +36,7 @@ export const Service = (props) => {
     const root_url = useSelector(state => state.root_url);
 
     const insertInto = async () => {
-        for (let i = 0; i < 1; i++) {
+        for (let i = 0; i < 1000; i++) {
             const rows = genRows(100);
             console.log(`generated ${i+1}`)
             const para = {

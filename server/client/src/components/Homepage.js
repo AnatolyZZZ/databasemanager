@@ -5,6 +5,7 @@ import { setTable, setNewTableRows, openNewRow, setAlertErrorMessage, setAlertEr
 import { Dialog , DialogActions, DialogContent, DialogTitle, Button, Alert, IconButton, Collapse } from '@mui/material';
 import { Close } from '@mui/icons-material'
 import { useSelector, useDispatch } from "react-redux";
+import { Link } from 'react-router-dom'
 
 
 
@@ -133,5 +134,6 @@ export const HomePage = (props) => {
                         </Button>
                     </DialogActions>
                 </Dialog>
+        <Link to="/service">Service page</Link>
     </>
 }
