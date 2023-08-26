@@ -26,6 +26,6 @@ server.use('/api/table', tableRouter);
 server.use(express.static(path.resolve(__dirname, "./client/build")));
 server.use(express.static(path.join(__dirname, "client/build")));
 
-server.listen(process.env.PORT, ()=>{
-    console.log(`run on port ${process.env.PORT}`);
+server.listen(process.env.PORT || 5002, ()=>{
+    console.log(`run on port ${process.env.PORT || 5002}`);
   })
