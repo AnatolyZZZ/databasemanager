@@ -5,3 +5,10 @@
     position: relative;
     z-index: 100000;
 }
+.Mui-error {
+    background-color: rgba(255, 65, 65, 0.858);
+    color: white !important;
+}
+.MuiInputBase-root {
+    height: 100%;
+}

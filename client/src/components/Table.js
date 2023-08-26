@@ -2,28 +2,12 @@ import { useSelector, useDispatch } from 'react-redux';
 import { DataGrid, GridCellEditStopReasons, GridCellEditStartReasons, GridEditInputCell } from '@mui/x-data-grid';
 import { setEditMode } from '../actions';
 import { validateCellFailed } from './Validation';
-import { makeStyles } from '@mui/styles';
 import { useState } from 'react'
 
 
-
-const useStyles = makeStyles((theme) => {
-return (
-    {
-    root: {
-      background: 'rgba(255, 0, 0, 0.6);',
-      color: 'white',
-      height: '100%'
-    },
-  })
-}
-);
-
 const StyledInput = (params) => {
-    const classes = useStyles();
     const {error, ...other} = params;
-    return (<GridEditInputCell {...other} className={error ? `${classes.root} Mui-error`: null}/>
-    );
+    return (<GridEditInputCell {...other} className={error ? `Mui-error`: null}/>);
   };
 
 function customRender (props) {
