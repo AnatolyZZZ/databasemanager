@@ -3,34 +3,34 @@ import { ACTIONS } from "../actions";
 
 
 export const validateCellFailed = (params, constrains, dispatch) => {
-    // console.log('validate cell constrains =>', constrains);
+    console.log('validate cell constrains =>', constrains);
     // console.log('params', params);
     let errorMessages = new Set();
     let newMessege = '';
     let intPass = true, notEmptyPass=true;
-    if (constrains.type === 'integer') {
-        // console.log('check for int');
-        // console.log(isInteger(params.props.value));
-        [intPass, newMessege] = isInteger(params.props.value);
-        if (newMessege) {
-            errorMessages.add(newMessege)
-        }  
+    let typePass = true;
+    const typesToCheck = {
+        'integer' : isInteger,
+        'character varying' : varCharMaxLengh
     }
+    if (typesToCheck[constrains.type]) {
+        [typePass, newMessege] = typesToCheck[constrains.type](params.props.value, constrains);
+    }
+    if (newMessege) {
+            errorMessages.add(newMessege)
+        }
+    
     if (!constrains.nullable) {
-        // console.log('check for empty');
-        // console.log(notEmpty(params.props.value));
         [notEmptyPass, newMessege] = notEmpty(params.props.value);
         if (newMessege) {
             errorMessages.add(newMessege)
         } 
     }
-    // console.log(intPass, notEmptyPass);
-    // console.log('returning', !intPass || !notEmptyPass)
-    // console.log('errors in validation', Array.from(errorMessages))
+
     dispatch({type : ACTIONS.SET_EDIT_ERROR_MESSAGES, payload : Array.from(errorMessages)})
-    return !intPass || !notEmptyPass
+    return !typePass || !notEmptyPass
 }
-const notEmpty = (value) => {
+function notEmpty (value) {
     if (!value || value === "") {
       return [false, 'should not be empty'];
     } else {
@@ -38,16 +38,23 @@ const notEmpty = (value) => {
     }
 }
 
-const isInteger = (value) => {
+function isInteger  (value) {
     if (value === '') {
         return [false, 'should be integer']
     }
     const int = Number(value);
-    // console.log('int',int);
-    // console.log('number', Number(value))
     if( isNaN(int)) {
         return [false, 'should be integer']
     } else {
         return [true, '']
     }
+}
+function varCharMaxLengh (value, constrains) {
+    const length = String(value).length;
+    if (length > constrains.maxLength) {
+        return [false, `should be no longer then ${constrains.maxLength} symbols`]
+    } else {
+        return [true, '']
+    }
+
 }

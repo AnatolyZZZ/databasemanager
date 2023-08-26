@@ -30,7 +30,8 @@ export const Table = (props) => {
         field : elt,
         headerName : elt.charAt(0).toUpperCase() + elt.slice(1), 
         width : lengths.get(elt)*11+15, 
-        editable : !isSerial(elt), 
+        editable : !isSerial(elt),
+        type : getCellType(elt), 
         preProcessEditCellProps : (params) => {
             // console.log(constrains)
             // console.log('preproces', editingColumnName)
@@ -47,6 +48,20 @@ export const Table = (props) => {
         const defaultValString = String(constrains[column]['defaultValue']);
         const nextVal = defaultValString.slice(0, 8);
         return nextVal === 'nextval(' ? true : false
+    }
+
+    function getCellType(column) {
+        const  typesConvert = 
+        {   
+            'boolean' : 'boolean',
+            'integer' : 'integer',
+            'character varying' : 'string',
+            'text' : 'string',
+            'character' : 'string',
+            'enum': 'string',
+        }
+        const result = typesConvert[constrains[column].type];
+        return  result ? result : 'string'
     }
 
     return <>
