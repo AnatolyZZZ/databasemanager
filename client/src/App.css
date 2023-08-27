@@ -5,7 +5,7 @@
     position: relative;
     z-index: 100000;
 }
-.Mui-error {
+.cell-error {
     background-color: rgba(255, 65, 65, 0.858);
     color: white !important;
 }

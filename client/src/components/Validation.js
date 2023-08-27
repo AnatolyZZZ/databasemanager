@@ -3,7 +3,7 @@ import { ACTIONS } from "../actions";
 
 
 export const validateCellFailed = (params, constrains, dispatch) => {
-    console.log('validate cell constrains =>', constrains);
+    // console.log('validate cell constrains =>', constrains);
     // console.log('params', params);
     let errorMessages = new Set();
     let newMessege = '';
@@ -11,7 +11,8 @@ export const validateCellFailed = (params, constrains, dispatch) => {
     let typePass = true;
     const typesToCheck = {
         'integer' : isInteger,
-        'character varying' : varCharMaxLengh
+        'character varying' : varCharMaxLengh,
+        'boolean' : isBoolean
     }
     if (typesToCheck[constrains.type]) {
         [typePass, newMessege] = typesToCheck[constrains.type](params.props.value, constrains);
@@ -30,6 +31,7 @@ export const validateCellFailed = (params, constrains, dispatch) => {
     dispatch({type : ACTIONS.SET_EDIT_ERROR_MESSAGES, payload : Array.from(errorMessages)})
     return !typePass || !notEmptyPass
 }
+
 function notEmpty (value) {
     if (!value || value === "") {
       return [false, 'should not be empty'];
@@ -49,6 +51,7 @@ function isInteger  (value) {
         return [true, '']
     }
 }
+
 function varCharMaxLengh (value, constrains) {
     const length = String(value).length;
     if (length > constrains.maxLength) {
@@ -56,5 +59,16 @@ function varCharMaxLengh (value, constrains) {
     } else {
         return [true, '']
     }
-
 }
+
+function isBoolean (value) {
+    const possible = [0, 1, true, false, '0', '1', 'true', 'false']
+    if (possible.includes(value)) {
+        return [true , ''];
+    } else {
+        return [false, 'should be "true", "false", "0" or "1"']
+    }
+}
+    
+
+

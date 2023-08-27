@@ -7,7 +7,7 @@ import { useState } from 'react'
 
 const StyledInput = (params) => {
     const {error, ...other} = params;
-    return (<GridEditInputCell {...other} className={error ? `Mui-error`: null}/>);
+    return (<GridEditInputCell {...other} className={error ? `cell-error`: null}/>);
   };
 
 function customRender (props) {
