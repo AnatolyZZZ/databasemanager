@@ -32,6 +32,7 @@ function App() {
         } else {
             const data1 = await res1.json();
             const data2 = await res2.json();
+            console.log(data2)
             dispatch(setLoading(false));
             dispatch(setTable(data1));
             // console.log('data1', data1)
@@ -164,16 +165,18 @@ function App() {
             dispatch(setModels([]));
           }
         } catch (error) {
-            console.log(error);
+          console.log(error);
+          if (column_names.includes('model')) {
             dispatch(setAlertErrorMessage('error occured while getting models'));
             dispatch(setAlertError(true))
+          }
         }
         
       } else {
         dispatch(setModels([]));
       }
     }
-    getModels();
+    setTimeout(() => getModels(), 200);
     return () => abortController.abort()
 
   },[column_names, root_url, dispatch, table_name])

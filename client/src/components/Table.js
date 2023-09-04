@@ -1,5 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { DataGrid, GridCellEditStopReasons, GridCellEditStartReasons, GridEditInputCell } from '@mui/x-data-grid';
+import { Select, MenuItem } from '@mui/material';
 import { setEditMode } from '../actions';
 import { validateCellFailed } from './Validation';
 import { useState } from 'react'
@@ -10,19 +11,17 @@ const StyledInput = (params) => {
     return (<GridEditInputCell {...other} className={error ? `cell-error`: null}/>);
   };
 
-function customRender (props) {
-    return (<StyledInput {...props}/>);
-  }
+
+function enumRender (props) {
+    return (<></>)
+}
 
 export const Table = (props) => {
-    // console.log(props)
     const dispatch = useDispatch()
     const primaryKey = useSelector(state => state.primaryKey);
     const editing = useSelector(state => state.editing);
     const lengths = useSelector(state => state.lengths);
     const constrains = useSelector(state => state.constrains);
-    // const loading = useSelector(state => state.loading);
-    // console.log(loading)
 
     const [editingColumnName, setEditingColumnName] = useState(null);
 
@@ -33,13 +32,11 @@ export const Table = (props) => {
         editable : !isSerial(elt),
         type : getCellType(elt), 
         preProcessEditCellProps : (params) => {
-            // console.log(constrains)
-            // console.log('preproces', editingColumnName)
             /// should refactor this part
             const hasError = validateCellFailed(params, constrains[editingColumnName], dispatch);
             return { ...params.props, error: hasError };
           },
-        renderEditCell : customRender
+        renderEditCell : StyledInput,
         
     }));
 

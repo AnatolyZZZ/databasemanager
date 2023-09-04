@@ -69,7 +69,7 @@ export const getColumnNames = async (tableName) => {
                         if (res) {
                             console.log('in if', res)
                             new_constrains[columnName].type = 'Enum';
-                            new_constrains[columnName]['EnumValues'] = res.rows;
+                            new_constrains[columnName]['EnumValues'] = res.rows.map(elt => elt.enumlabel);
                         }
                      })
                 }
