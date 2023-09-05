@@ -1,9 +1,9 @@
 import { useSelector, useDispatch } from 'react-redux';
-import { DataGrid, GridCellEditStopReasons, GridCellEditStartReasons, GridEditInputCell } from '@mui/x-data-grid';
-import { Select, MenuItem } from '@mui/material';
+import { DataGrid, GridCellEditStopReasons, GridCellEditStartReasons, GridEditInputCell, useGridApiContext } from '@mui/x-data-grid';
+import { Select } from '@mui/material';
 import { setEditMode } from '../actions';
 import { validateCellFailed } from './Validation';
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 
 const CustomRender = (params) => {
@@ -16,26 +16,11 @@ const CustomRender = (params) => {
 
 
 function EnumRender (props) {
-    console.log(props)
+    const apiRef = useGridApiContext();
     return (<Select
                 native
                 value={props.value}
-                onChange={async (event) => {
-                    const initialRowValue = props.row;
-                    const updatedRowValue = {...initialRowValue};
-                    updatedRowValue[props.field] = event.target.value;
-                    const res =  await props.handleSave(updatedRowValue, initialRowValue);
-                    const rowsClone = [...props.rows]
-                    const idx = rowsClone.findIndex(elt => elt[props.pk] === res[props.pk]);
-                    rowsClone[idx]= res;
-                    props.setRows(rowsClone);
-                    setTimeout(()=> props.showRows(), 1000)
-                }}
-                onKeyDown={(event) => {
-                    if (event.key === 'Enter') {
-                      props.api.stopCellEditMode({id : props.id, field : props.field})
-                    }
-                  }}
+                onChange={ event => apiRef.current.setEditCellValue({ id : props.id, field : props.field, value: event.target.value })}
             >
                 {props.colDef.valueOptions.map((option) => <option key={option.value}v alue={option.value}>{option.label}</option>)}
             </Select>)
@@ -49,11 +34,6 @@ export const Table = (props) => {
     const constrains = useSelector(state => state.constrains);
 
     const [editingColumnName, setEditingColumnName] = useState(null);
-    const [rows, setRows] = useState(props.rows)
-
-    const showRows = () => {
-        console.log('rows now', rows);
-    }
 
     const makeColumns = (columns) => columns.map(elt => Object({
         field : elt,
@@ -68,11 +48,9 @@ export const Table = (props) => {
             const hasError = validateCellFailed(params, constrains[editingColumnName], dispatch);
             return { ...params.props, error: hasError };
           },
-        renderEditCell : (params) => <CustomRender {...params} handleSave={props.handleSave} rows={rows} setRows={setRows} pk={primaryKey} showRows={showRows}/> ,
+        renderEditCell : (params) => <CustomRender {...params} /> ,
         
     }));
-
-    useEffect(()=> {setRows(props.rows)}, [props.rows])
 
     function isSerial (column) {
         // serial columns are not editable 
@@ -99,7 +77,7 @@ export const Table = (props) => {
         
                 <DataGrid 
                     columns={makeColumns(props.columns)}
-                    rows={rows}
+                    rows={props.rows}
                     getRowId={row => row[primaryKey]}
                     showCellVerticalBorder={props.showCellVerticalBorder}
                     showColumnVerticalBorder={props.showColumnVerticalBorder}

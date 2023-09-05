@@ -50,11 +50,11 @@ function App() {
               }
             })
           // turn off primary key
-          for (let elt of newSelected) {
-            if (elt[0] === data2[1]) {
-              elt[1] = false
-            }
-          }
+          // for (let elt of newSelected) {
+          //   if (elt[0] === data2[1]) {
+          //     elt[1] = false
+          //   }
+          // }
           dispatch(setSelected(newSelected));
           
           // now update lengths 
