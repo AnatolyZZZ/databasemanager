@@ -1,44 +1,38 @@
 import { useSelector, useDispatch } from 'react-redux';
-import { DataGrid, GridCellEditStopReasons, GridCellEditStartReasons, GridEditInputCell } from '@mui/x-data-grid';
+import { DataGrid, GridCellEditStopReasons, GridCellEditStartReasons, GridEditInputCell, useGridApiContext } from '@mui/x-data-grid';
+import { Select } from '@mui/material';
 import { setEditMode } from '../actions';
 import { validateCellFailed } from './Validation';
-import { makeStyles } from '@mui/styles';
 import { useState } from 'react'
 
 
-
-const useStyles = makeStyles((theme) => {
-return (
-    {
-    root: {
-      background: 'rgba(255, 0, 0, 0.6);',
-      color: 'white',
-      height: '100%'
-    },
-  })
-}
-);
-
-const StyledInput = (params) => {
-    const classes = useStyles();
-    const {error, ...other} = params;
-    return (<GridEditInputCell {...other} className={error ? `${classes.root} Mui-error`: null}/>
-    );
+const CustomRender = (params) => {
+    const { error, ...other } = params;
+    const { colDef } = params;
+    const { type } = colDef 
+    if (type === 'singleSelect') return (<EnumRender {...other}/>)
+    return (<GridEditInputCell {...other} className={error ? `cell-error`: null}/>);
   };
 
-function customRender (props) {
-    return (<StyledInput {...props}/>);
-  }
+
+function EnumRender (props) {
+    const apiRef = useGridApiContext();
+    return (<Select
+                native
+                sx={{width: '100%'}}
+                value={props.value}
+                onChange={ event => apiRef.current.setEditCellValue({ id : props.id, field : props.field, value: event.target.value })}
+            >
+                {props.colDef.valueOptions.map((option) => <option key={option.value}v alue={option.value}>{option.label}</option>)}
+            </Select>)
+}
 
 export const Table = (props) => {
-    // console.log(props)
     const dispatch = useDispatch()
     const primaryKey = useSelector(state => state.primaryKey);
     const editing = useSelector(state => state.editing);
     const lengths = useSelector(state => state.lengths);
     const constrains = useSelector(state => state.constrains);
-    // const loading = useSelector(state => state.loading);
-    // console.log(loading)
 
     const [editingColumnName, setEditingColumnName] = useState(null);
 
@@ -46,15 +40,16 @@ export const Table = (props) => {
         field : elt,
         headerName : elt.charAt(0).toUpperCase() + elt.slice(1), 
         width : lengths.get(elt)*11+15, 
-        editable : !isSerial(elt), 
+        editable : !isSerial(elt),
+        type : getCellType(elt),
+        valueGetter : (params) => params.value === null ? '' :  params.value,
+        valueOptions : constrains[elt].type === 'enum' ? constrains[elt].enumValues.map(elt => ({value : elt, label : elt})) : null,
         preProcessEditCellProps : (params) => {
-            // console.log(constrains)
-            // console.log('preproces', editingColumnName)
             /// should refactor this part
             const hasError = validateCellFailed(params, constrains[editingColumnName], dispatch);
             return { ...params.props, error: hasError };
           },
-        renderEditCell : customRender
+        renderEditCell : (params) => <CustomRender {...params} /> ,
         
     }));
 
@@ -65,6 +60,20 @@ export const Table = (props) => {
         return nextVal === 'nextval(' ? true : false
     }
 
+    function getCellType(column) {
+        const  typesConvert = 
+        {   
+            'boolean' : 'boolean',
+            'integer' : 'integer',
+            'character varying' : 'string',
+            'text' : 'string',
+            'character' : 'string',
+            'enum': 'singleSelect',
+        }
+        const result = typesConvert[constrains[column].type];
+        return  result ? result : 'string'
+    }
+
     return <>
         
                 <DataGrid 
@@ -73,10 +82,9 @@ export const Table = (props) => {
                     getRowId={row => row[primaryKey]}
                     showCellVerticalBorder={props.showCellVerticalBorder}
                     showColumnVerticalBorder={props.showColumnVerticalBorder}
-                    // loading={loading}
                     
                     onCellEditStop={(params, event) => {
-                        // console.log(params)
+                        console.log('edit stop', params)
                         if (params.reason === GridCellEditStopReasons.cellFocusOut) {
                         event.defaultMuiPrevented = true;
                         }

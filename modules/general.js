@@ -11,7 +11,24 @@ export const getTableNames = async () => {
     }
 }
 
+
 export const getColumnNames = async (tableName) => {
+    const getEnum = async (columnName) => {
+        const query = `
+        SELECT DISTINCT enumlabel FROM pg_enum
+        WHERE enumtypid = (SELECT oid FROM pg_type
+                          WHERE typname = (SELECT udt_name FROM information_schema.columns
+                                           WHERE table_name = '${tableName}'
+                                           AND column_name = '${columnName}'))
+        `
+        try {
+           return db.raw(query);
+        } catch {
+            return null;
+        }
+    }
+
+
     try {
         const columnQuery = `
             SELECT attname
@@ -36,9 +53,42 @@ export const getColumnNames = async (tableName) => {
 
         const columns = columnRes.rows.map(elt => elt.attname);
 
-        const constrains = await db(tableName).columnInfo()
+        let constrains = await db(tableName).columnInfo();
+
+        const editConstrains = async (constrains) => {
+            const promiseArr = [];
+            const new_constrains = {...constrains}
+            
+            Object.entries(constrains).forEach( ([columnName, constrain]) => {
+            if (constrain.type === 'USER-DEFINED') {
+                
+                const enumVal = getEnum(columnName);
+                promiseArr.push(enumVal);
+                enumVal.then(
+                    res => {
+                        if (res) {
+                            // console.log('in if', res)
+                            new_constrains[columnName].type = 'enum';
+                            new_constrains[columnName]['enumValues'] = res.rows.map(elt => elt.enumlabel);
+                        }
+                     })
+                }
+            })
+
+            const resp = Promise.all(promiseArr);
+            const result = new Promise ((resolve, reject) => {
+                resp.then( res => 
+                    resolve(new_constrains)
+                )
+            })
+            return result
+        }
+        if (Object.values(constrains).some(elt => elt.type === 'USER-DEFINED')) {
+            constrains = await editConstrains(constrains);
+        }
 
         const primaryKey = primaryKeyRes.rows[0].attname;
+
       
         return [columns, primaryKey, constrains]
     } catch (error) {
