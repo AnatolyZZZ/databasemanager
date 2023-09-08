@@ -25,7 +25,7 @@ export const Filter = (props) => {
         dispatch(modifyFilter(props.table, props.id, {...curFilter, value : e.target.value}))
     }
 
-return <Stack direction='row' alignItems="center" spacing={1}>
+return <Stack direction='row' alignItems="center" spacing={1} mb={1}>
 <FormControl size='large' sx={{m: 1, width : 192}}>
     <InputLabel id={`filter_${props.id}_column_select_label`}>Column</InputLabel>
         <Select

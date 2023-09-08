@@ -32,7 +32,7 @@ function App() {
         } else {
             const data1 = await res1.json();
             const data2 = await res2.json();
-            console.log(data2)
+            // console.log(data2)
             dispatch(setLoading(false));
             dispatch(setTable(data1));
             // console.log('data1', data1)

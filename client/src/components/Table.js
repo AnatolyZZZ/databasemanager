@@ -19,6 +19,7 @@ function EnumRender (props) {
     const apiRef = useGridApiContext();
     return (<Select
                 native
+                sx={{width: '100%'}}
                 value={props.value}
                 onChange={ event => apiRef.current.setEditCellValue({ id : props.id, field : props.field, value: event.target.value })}
             >
@@ -42,7 +43,7 @@ export const Table = (props) => {
         editable : !isSerial(elt),
         type : getCellType(elt),
         valueGetter : (params) => params.value === null ? '' :  params.value,
-        valueOptions : constrains[elt].type === 'Enum' ? constrains[elt].EnumValues.map(elt => ({value : elt, label : elt})) : null,
+        valueOptions : constrains[elt].type === 'enum' ? constrains[elt].enumValues.map(elt => ({value : elt, label : elt})) : null,
         preProcessEditCellProps : (params) => {
             /// should refactor this part
             const hasError = validateCellFailed(params, constrains[editingColumnName], dispatch);
@@ -67,7 +68,7 @@ export const Table = (props) => {
             'character varying' : 'string',
             'text' : 'string',
             'character' : 'string',
-            'Enum': 'singleSelect',
+            'enum': 'singleSelect',
         }
         const result = typesConvert[constrains[column].type];
         return  result ? result : 'string'

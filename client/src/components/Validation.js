@@ -7,13 +7,13 @@ export const validateCellFailed = (params, constrains, dispatch) => {
     // console.log('params', params);
     let errorMessages = new Set();
     let newMessege = '';
-    let intPass = true, notEmptyPass=true;
+    let notEmptyPass = true;
     let typePass = true;
     const typesToCheck = {
         'integer' : isInteger,
         'character varying' : varCharMaxLengh,
         'boolean' : isBoolean,
-        'Enum' : correctEnum
+        'enum' : correctEnum
     }
     if (typesToCheck[constrains.type]) {
         [typePass, newMessege] = typesToCheck[constrains.type](params.props.value, constrains);
@@ -72,7 +72,7 @@ function isBoolean (value) {
 }
 
 function correctEnum (value, constrains) { 
-    const possibleValues = constrains.EnumValues
+    const possibleValues = constrains.enumValues
     if (possibleValues.includes(value)) {
         return [true, '']
     } else {

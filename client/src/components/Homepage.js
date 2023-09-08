@@ -5,7 +5,7 @@ import { setTable, setNewTableRows, openNewRow, setAlertErrorMessage, setAlertEr
 import { Dialog , DialogActions, DialogContent, DialogTitle, Button, Alert, IconButton, Collapse } from '@mui/material';
 import { Close } from '@mui/icons-material'
 import { useSelector, useDispatch } from "react-redux";
-import { Link } from 'react-router-dom'
+// import { Link } from 'react-router-dom'
 
 
 
@@ -21,6 +21,7 @@ export const HomePage = (props) => {
     const constrains = useSelector(state => state.constrains);
     const alertOpen = useSelector(state => state.alerErrorOn);
     const alertMessage = useSelector(state => state.alertErrorMessage);
+    const editing = useSelector(state => state.editing);
 
     const setNewTableRowToDefault = ()=> {
         // console.log('runing', editable)
@@ -114,7 +115,7 @@ export const HomePage = (props) => {
                     </DialogContent>
                     
                     <DialogActions>
-                        <Button onClick={()=>saveToDatabase()} variant="contained" color='secondary'>
+                        <Button onClick={()=>saveToDatabase()} variant="contained" color='secondary' disabled={editing}>
                             Save to DB
                         </Button>
                         <Button onClick={()=> {
@@ -134,6 +135,6 @@ export const HomePage = (props) => {
                         </Button>
                     </DialogActions>
                 </Dialog>
-        <Link to="/service">Service page</Link>
+        {/* <Link to="/service">Service page</Link> */}
     </>
 }
