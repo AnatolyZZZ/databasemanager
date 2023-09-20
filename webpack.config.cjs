@@ -12,8 +12,26 @@ module.exports = {
     ],
   },
   resolve: {
-    fallback: {
-      "path": require.resolve("path-browserify")
-    }
+    // fallback: {
+    //   "path": require.resolve("path-browserify"),
+    //   "async_hooks" : require.resolve("async_hooks"),
+    //   "stream" : require.resolve("stream"),
+    //   "fs" : require.resolve("fs"),
+    //   "crypto" : require.resolve("crypto"),
+    //   "zlib" : require.resolve("zlib"),
+    //   "tty": false,
+    //   "timers": false,
+    //   "util": require.resolve("util/"),
+    //   "buffer": false,
+    //   "assert": false,
+    //   "crypto": false,
+    //   "querystring": false,
+    //   "zlib" : require.resolve('browserify-zlib'), // or 'zlib' if you prefer node's implementation
+    //   },
+    extensions: ['.js', '.jsx', '.json'],
+    modules: ['node_modules'],
   },
+  stats: {
+    errorDetails: true,
+  }
 };

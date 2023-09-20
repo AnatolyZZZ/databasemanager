@@ -8,6 +8,7 @@ import { fileURLToPath } from 'url';
 import { generalRouter } from './routes/general.js';
 import { tableRouter } from './routes/table.js';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+// const __dirname = path.dirname(new URL(import.meta.url).pathname);
 
 dotenv.config();
 
