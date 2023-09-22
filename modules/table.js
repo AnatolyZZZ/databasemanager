@@ -1,6 +1,6 @@
-import {db} from '../config/db.js'
+const {db} = require('../config/db.js')
 
-export const addRows = async (tableName, rows) => {
+const addRows = async (tableName, rows) => {
     try {
         // console.log('adding rows module');
         // console.log(`${tableName} table, and rows are ${rows}`)
@@ -15,7 +15,7 @@ export const addRows = async (tableName, rows) => {
     }
 }
 
-export const updateEntry = async (tableName, primaryKey, keyValue, entry) => {
+const updateEntry = async (tableName, primaryKey, keyValue, entry) => {
     // console.log('upd inputs',tableName, primaryKey, keyValue, entry);
     try {
         const result = await db(tableName)
@@ -30,7 +30,7 @@ export const updateEntry = async (tableName, primaryKey, keyValue, entry) => {
     }
 }
 
-export const getTable = async (tableName, model, version) => {
+const getTable = async (tableName, model, version) => {
     try {
         let typecast1;
         let typecast2; 
@@ -65,3 +65,5 @@ export const getTable = async (tableName, model, version) => {
         throw(error)
     }
 }
+
+module.exports = { getTable, updateEntry, addRows }

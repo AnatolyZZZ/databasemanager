@@ -1,7 +1,7 @@
-import { addRows, getTable, updateEntry } from "../modules/table.js";
+const { addRows, getTable, updateEntry } = require("../modules/table.js");
 
 
-export const _addRows = async (req, res) => {
+const _addRows = async (req, res) => {
     try {
         // console.log('adding rows controller');
         // console.log(`${JSON.stringify(req.body.table)} table, and rows are ${JSON.stringify(req.body.rows)}`)
@@ -14,7 +14,7 @@ export const _addRows = async (req, res) => {
     }
 }
 
-export const _getTable = async (req, res) => {
+const _getTable = async (req, res) => {
     try {
         const table = await getTable(req.params.name, req.query.model, req.query.version);
         res.status(200).json(table.rows)
@@ -24,7 +24,7 @@ export const _getTable = async (req, res) => {
     }
 }
 
-export const _updateEntry = async (req, res) => {
+const _updateEntry = async (req, res) => {
     // console.log('req.body', req.body)
     try {
         const result = await updateEntry(req.body.tableName, req.body.primaryKey, req.body.keyValue, req.body.entry);
@@ -35,3 +35,4 @@ export const _updateEntry = async (req, res) => {
         res.status(500).json({msg : `error updating table`, upd : req.body})
     }
 }
+module.exports = { _addRows, _getTable, _updateEntry}

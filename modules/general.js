@@ -1,6 +1,6 @@
-import {db} from '../config/db.js'
+const {db} = require('../config/db.js')
 
-export const getTableNames = async () => {
+const getTableNames = async () => {
     try {
         const res =  await db.raw("SELECT tablename FROM pg_catalog.pg_tables WHERE schemaname='public';");
         const names = res.rows.map(elt => elt.tablename)
@@ -12,7 +12,7 @@ export const getTableNames = async () => {
 }
 
 
-export const getColumnNames = async (tableName) => {
+const getColumnNames = async (tableName) => {
     const getEnum = async (columnName) => {
         const query = `
         SELECT DISTINCT enumlabel FROM pg_enum
@@ -97,7 +97,7 @@ export const getColumnNames = async (tableName) => {
     }
 }
 
-export const getModels = async (tableName) => {
+const getModels = async (tableName) => {
     try {
         const modelQuery = `SELECT DISTINCT model FROM ${tableName}`;
         return await db.raw(modelQuery)
@@ -108,7 +108,7 @@ export const getModels = async (tableName) => {
     }
 }
 
-export const getVersions = async (tableName, model) => {
+const getVersions = async (tableName, model) => {
     try {
         const constrains = await db(tableName).columnInfo();
         const type = constrains.model?.type;
@@ -132,5 +132,5 @@ export const getVersions = async (tableName, model) => {
     }
 }
 
-
+module.exports = { getVersions, getModels,  getTableNames, getColumnNames }
 

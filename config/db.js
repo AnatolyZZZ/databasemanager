@@ -1,5 +1,5 @@
-import knex  from 'knex';
-import dotenv from 'dotenv';
+const knex  = require('knex');
+const dotenv = require('dotenv');
 
 dotenv.config();
 
@@ -36,4 +36,6 @@ if (
     },
   };
 }
-export const db = knex(dbConfig);
+const db = knex(dbConfig);
+
+module.exports = { db };
