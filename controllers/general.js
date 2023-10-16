@@ -1,6 +1,6 @@
-import { getTableNames, getColumnNames, getModels, getVersions} from "../modules/general.js";
+const { getTableNames, getColumnNames, getModels, getVersions} = require("../modules/general.js");
 
-export const _getTableNames = async (req, res) => {
+const _getTableNames = async (req, res) => {
     try {
         const tableNames = await getTableNames();
         res.status(200).json(tableNames)
@@ -10,7 +10,7 @@ export const _getTableNames = async (req, res) => {
     }
 }
 
-export const _getColumnNames = async (req, res) => {
+const _getColumnNames = async (req, res) => {
     try {
         // console.log('req body',req.body)
         const columnNames = await getColumnNames(req.params.table);
@@ -21,7 +21,7 @@ export const _getColumnNames = async (req, res) => {
     }
 }
 
-export const _getModels = async (req, res) => {
+const _getModels = async (req, res) => {
     try {
         const models = await getModels(req.query.table);
         res.status(200).json(models.rows);
@@ -32,7 +32,7 @@ export const _getModels = async (req, res) => {
     }
 }
 
-export const _getVersions = async (req, res) => {
+const _getVersions = async (req, res) => {
     try {
         if (req.query.model !== 'All models') {
             const versions = await getVersions(req.query.table, req.query.model);
@@ -45,3 +45,5 @@ export const _getVersions = async (req, res) => {
         res.status(500).json({msg : `error versions from table ${req.query.table} and model ${req.query.model}`})
     }
 }
+
+module.exports = { _getTableNames, _getColumnNames, _getModels, _getVersions}

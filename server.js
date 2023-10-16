@@ -1,14 +1,13 @@
-import express  from 'express';
-import cors from 'cors';
-import dotenv from 'dotenv';
-import  bodyParser  from 'body-parser';
-// import cookieParser from 'cookie-parser';
-import path from 'path'
-import { fileURLToPath } from 'url';
-import { generalRouter } from './routes/general.js';
-import { tableRouter } from './routes/table.js';
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-// const __dirname = path.dirname(new URL(import.meta.url).pathname);
+const express  = require('express');
+const cors = require('cors');
+const dotenv = require('dotenv');
+const  bodyParser  = require('body-parser');
+// const cookieParser = require('cookie-parser';
+const path = require('path')
+const { fileURLToPath } = require('url');
+const { generalRouter } = require('./routes/general.js');
+const { tableRouter } = require('./routes/table.js');
+// const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 dotenv.config();
 
