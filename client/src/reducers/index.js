@@ -48,7 +48,11 @@ const initialState = {
     // filters { table_name : [{column_name, operand, value }]
     filters : {},
     // turn filters on/of
-    apply_filters : false
+    apply_filters : false,
+    // show or not welcome message
+    showWelcomeMessage : false,
+    // first time show welcome message
+    welcomeFirstTime : true
 }
 let curTableFiters;
 let newFilterState;
@@ -126,6 +130,10 @@ export const reducer = (state = initialState, action = {}) => {
             return {...state, apply_filters : action.payload}
         case (ACTIONS.RESTORE_FILTERS) : 
             return {...state, filters : action.payload}
+        case (ACTIONS.SWITCH_OFF_WELCOME) : 
+            return {...state, welcomeFirstTime : false}
+        case (ACTIONS.TOGGLE_WELCOME) :
+            return {...state, showWelcomeMessage : action.payload}
         default :
             return {...state}
     }

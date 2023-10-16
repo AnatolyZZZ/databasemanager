@@ -24,7 +24,9 @@ export const ACTIONS = {
     NEW_FILTER : 'NEW_FILTER',
     MODIFY_FILTER : 'MODIFY_FILTER',
     APPLY_FILTERS : 'APPLY_FILTERS',
-    RESTORE_FILTERS : 'RESTORE_FILTERS'
+    RESTORE_FILTERS : 'RESTORE_FILTERS',
+    TOGGLE_WELCOME : 'TOGGLE_WELCOME',
+    SWITCH_OFF_WELCOME : 'SWITCH_OFF_WELCOME'
 }
 
 export const setTable = (table) => {
@@ -196,6 +198,19 @@ export const applyFilters = (val) => {
 export const restoreFilters = (val) => {
     return {
         type : ACTIONS.RESTORE_FILTERS,
+        payload : val
+    }
+}
+
+export const switchOffWelcomeWord = () => {
+    return {
+        type : ACTIONS.SWITCH_OFF_WELCOME,
+    }
+}
+
+export const toggleWelcome = (val) => {
+    return {
+        type : ACTIONS.TOGGLE_WELCOME,
         payload : val
     }
 }
