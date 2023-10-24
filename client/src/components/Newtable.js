@@ -1,7 +1,7 @@
 import { Box } from '@mui/material'
 import { useDispatch, useSelector } from 'react-redux';
 import { setAlertError, setAlertErrorMessage, setNewTableRows } from '../actions';
-import { Table } from './Table';
+import { Table } from './universal/Table';
 
 export const NewTable = (props) => {
     const newTableRows = useSelector(state => state.newTableRows);

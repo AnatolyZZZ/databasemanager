@@ -1,8 +1,8 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { DataGrid, GridCellEditStopReasons, GridCellEditStartReasons, GridEditInputCell, useGridApiContext } from '@mui/x-data-grid';
 import { Select } from '@mui/material';
-import { setEditMode } from '../actions';
-import { validateCellFailed } from './Validation';
+import { setEditMode } from '../../actions';
+import { validateCellFailed } from '../Validation';
 import { useState } from 'react'
 
 

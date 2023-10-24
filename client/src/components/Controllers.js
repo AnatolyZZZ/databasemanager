@@ -95,8 +95,7 @@ export const Controllers = (props) => {
         <Grow
           {...TransitionProps}
             style={{
-            transformOrigin:
-                placement === 'bottom-start' ? 'left top' : 'left bottom',}}>
+            transformOrigin: 'right top' }}>
             <Paper id='settings-menu' elevation={1}>
                 <ClickAwayListener onClickAway={(e)=> setSettingsMenuOpen(false)}>
                   <MenuList

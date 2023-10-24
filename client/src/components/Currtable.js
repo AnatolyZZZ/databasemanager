@@ -1,7 +1,7 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { setEditMode, setAlertError, setAlertErrorMessage, setLoading } from '../actions';
 import { Box } from '@mui/material';
-import { Table } from './Table';
+import { Table } from './universal/Table';
 import { useState, useEffect } from 'react';
 
 
