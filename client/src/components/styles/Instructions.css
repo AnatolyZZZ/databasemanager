@@ -1,0 +1,6 @@
+.instructions p, .instructions ul, .instructions ol{
+    margin: 3px 0;
+}
+.instructions h3{
+    margin: 10px 0;
+}

@@ -18,13 +18,39 @@ export const benefits = {
                 <li>for INTEGER it checks weather input is correct int</li>
                 <li>and finally for ENUM it <b>downloads</b> from database all possible values and displays it as a select list while edditing</li>
             </ol>
-        `
-}
+        `,
+    'filters' : 
+        `<h3>You can filter data with a built-in MUI data grid filters or with custom filters</h3>
+        <p>Default data grid filters allow to filter <b>one</b> column by value <i>"starts with", "contains", "empty"</i> etc. </p>
+        <p>Custom filters allow to filter <b>multiple</b> columns with ">", "<" "=", "<=" and ">="</p>
+        <p>Killer feature of custom filters is that they are saved to local memory</p>`,
+    'standart' : 
+        `<h3>Data is presented in a convenient MUI data grid table</h3>
+        <p>So all basic features of MUI data grid are available from the box</p>
+        <ul>
+            <li>Pagination</li>
+            <li>Number of rows per page</li>
+            <li>Sorting</li>
+            <li>Hiding columns</li>
+        </ul>`,
+    'add' : 
+        `<p>Add a new row to a table</p>
+         <p>Any colymn with <b>SERIAL</b> is handled automaticaly`,
+    'errors' : 
+        `<p>When you are additing any cell and you break a constrain tow things happen:</p>
+        <ol>
+            <li>background of the cell becomes red</li>
+            <li>SHOW ERRORS button becomes active</li>
+        </ol>
+        <p>By clicking SHOW ERRORS, you can watch what exactly you violated</p>`,
+    'save' : 
+        `<p>When you edit cell you can escape edit mode by clicking ESC</p>
+        <p>or you can press Enter or Tab to save data (to save and to move down, or save and move right)</p>
+        <p>All changes are saved in connected database</p>
+        <p>If for some reason error occures while saving it is displayed at the top of the screen (in the way database responds)</p>`,
+    'pk' :  
+        `<p>By default Primary key is switched of and not displayed</p>
+        <p>You can tune displayed columns by clicking settings icon and then "Displayed columns"</p>`
 
-// filters
-// +1 row
-// show errors
-// displayed columns
-// standar datagrid features (pagination/ sorting / switching columns)
-// switching off PK
-// save to database and display errors
+
+}

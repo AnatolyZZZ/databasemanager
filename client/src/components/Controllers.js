@@ -9,7 +9,7 @@ import { Errors } from './Errors';
 
 import SettingsIcon from '@mui/icons-material/Settings';
 
-import './Controllers.css'
+import './styles/Controllers.css'
 
 
 export const Controllers = (props) => {

@@ -130,7 +130,8 @@ export const reducer = (state = initialState, action = {}) => {
             return {...state, apply_filters : action.payload}
         case (ACTIONS.RESTORE_FILTERS) : 
             return {...state, filters : action.payload}
-        case (ACTIONS.SWITCH_OFF_WELCOME) : 
+        case (ACTIONS.SWITCH_OFF_WELCOME) :
+            localStorage.setItem('dbm_wellcome_shown', JSON.stringify(true)); 
             return {...state, welcomeFirstTime : false}
         case (ACTIONS.TOGGLE_WELCOME) :
             return {...state, showWelcomeMessage : action.payload}
