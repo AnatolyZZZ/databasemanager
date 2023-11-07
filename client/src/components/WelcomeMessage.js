@@ -7,7 +7,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import { Popper, Paper,  ClickAwayListener , ListItemButton } from '@mui/material';
 import HTMLRenderer from './universal/HTMLRenderer'
-import { benefits } from './enteties/welcomeMessageBenefits';
+import { benefits, positions } from './enteties/welcomeMessageBenefits';
 import './styles/Instructions.css'
 
 export const WelcomeMessage = (props) => {
@@ -23,6 +23,7 @@ export const WelcomeMessage = (props) => {
     const firstTime = useSelector(state => state.welcomeFirstTime);
     const show = useSelector(state => state.showWelcomeMessage);
     const texts = benefits;
+    const pos = positions
 
     const copyModelRef = useRef(null);
     const copyVersionRef = useRef(null);
@@ -38,6 +39,7 @@ export const WelcomeMessage = (props) => {
 
     const [popperText, changePopperText] = useState('');
     const [popperOpen, openPopper] = useState(false);
+    const [position, setPosition] = useState('bottom');
 
     const close = () => {
         localStorage.setItem('welcome_message_shown', 'true');
@@ -49,6 +51,7 @@ export const WelcomeMessage = (props) => {
         e.stopPropagation()
         changePopperText(texts[id]);
         popperRef.current = ref.current;
+        pos[id] ? setPosition(pos[id]) : setPosition('bottom')
         openPopper(true)
     }
 
@@ -98,7 +101,7 @@ export const WelcomeMessage = (props) => {
                     open={popperOpen}
                     anchorEl={popperRef.current}
                     style={{ zIndex: 1300 }}
-                    placement='bottom-start'
+                    placement={position}
                 >
                     <ClickAwayListener onClickAway={(e)=> openPopper(false)}>
                         <Paper elevation={2} sx={{p:3}}>

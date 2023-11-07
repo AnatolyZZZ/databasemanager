@@ -51,6 +51,11 @@ export const benefits = {
     'pk' :  
         `<p>By default Primary key is switched of and not displayed</p>
         <p>You can tune displayed columns by clicking settings icon and then "Displayed columns"</p>`
+}
 
-
+export const positions = {
+    'standart' : 'right',
+    'edit_cell' : 'left',
+    'copy_version' : 'top',
+    'save' : 'top-end'
 }
