@@ -1,4 +1,5 @@
 import { CurrTable } from "./Currtable";
+import { WelcomeMessage } from './WelcomeMessage'
 import { Controllers } from './Controllers'
 import { NewTable } from "./Newtable";
 import { setTable, setNewTableRows, openNewRow, setAlertErrorMessage, setAlertError, setEditMode, openOnCellErrorMessage} from '../actions'
@@ -108,6 +109,7 @@ export const HomePage = (props) => {
             </Alert>
         </Collapse>
         <CurrTable/>
+        <WelcomeMessage/>
         <Dialog disableEscapeKeyDown open={editNewRowDialogOpen} maxWidth={false}>
                     <DialogTitle>Updating table with this values</DialogTitle>
                     <DialogContent >

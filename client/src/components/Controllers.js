@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { FormControl, InputLabel, MenuItem, Select, Button, Popper, MenuList, Paper, Grow,  ClickAwayListener} from '@mui/material';
-import { setTableName,  openNewRow } from '../actions';
+import { setTableName,  openNewRow, toggleWelcome } from '../actions';
 import { useState,  useRef} from 'react';
 import { Filters } from './Filters';
 import { ColumnsController } from './Columnscontroller';
@@ -9,7 +9,7 @@ import { Errors } from './Errors';
 
 import SettingsIcon from '@mui/icons-material/Settings';
 
-import './Controllers.css'
+import './styles/Controllers.css'
 
 
 export const Controllers = (props) => {
@@ -89,22 +89,24 @@ export const Controllers = (props) => {
         placement="bottom-start"
         transition
         disablePortal
+        style={{ zIndex: 2 }} 
         >
         {({ TransitionProps, placement }) => (
         <Grow
           {...TransitionProps}
             style={{
-            transformOrigin:
-                placement === 'bottom-start' ? 'left top' : 'left bottom',}}>
-            <Paper id='settings-menu'>
+            transformOrigin: 'right top' }}>
+            <Paper id='settings-menu' elevation={1}>
                 <ClickAwayListener onClickAway={(e)=> setSettingsMenuOpen(false)}>
                   <MenuList
                     autoFocusItem={settingsMenuOpen}
                     id="composition-menu"
                     aria-labelledby="composition-button"
                     onKeyDown={handleListKeyDown}
-                  >
+                  > 
                     <MenuItem onClick={handleOpenColumns} disabled={editing || table_name===''}>Displayed columns</MenuItem>
+                    <MenuItem onClick={() => dispatch(toggleWelcome(true))}>Show instructions</MenuItem>
+                    
                   </MenuList>
                 </ClickAwayListener>
             </Paper>
