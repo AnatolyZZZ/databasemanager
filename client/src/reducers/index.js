@@ -24,7 +24,7 @@ const initialState = {
     // errors on curently editing cell
     errorMessages : [],
     // show alert message on/of
-    alerErrorOn : false,
+    alertErrorOn : false,
     // cur message in alert
     alertErrorMessage : '',
     // show or not adding new row
@@ -86,7 +86,7 @@ export const reducer = (state = initialState, action = {}) => {
         case (ACTIONS.SET_EDIT_ERROR_MESSAGES) :
             return {...state, errorMessages : action.payload}
         case (ACTIONS.SET_ALERT_ERROR) :
-            return {...state, alerErrorOn : action.payload}
+            return {...state, alertErrorOn : action.payload}
         case (ACTIONS.SET_ALERT_ERROR_MESSAGE) :
             return {...state, alertErrorMessage : action.payload}
         case (ACTIONS.OPEN_NEW_ROW) : 
