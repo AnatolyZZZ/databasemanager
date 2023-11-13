@@ -7,6 +7,7 @@ const path = require('path')
 const { fileURLToPath } = require('url');
 const { generalRouter } = require('./routes/general.js');
 const { tableRouter } = require('./routes/table.js');
+const { userRouter } = require('./routes/user.js');
 // const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 dotenv.config();
@@ -22,6 +23,7 @@ server.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
 server.use('/api/general', generalRouter);
 server.use('/api/table', tableRouter);
+server.use('/api/user', userRouter);
 
 server.use(express.static(path.resolve(__dirname, "./client/build")));
 server.use(express.static(path.join(__dirname, "client/build")));
