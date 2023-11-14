@@ -1,4 +1,4 @@
-const { checkName } = require("../modules/user.js");
+const { checkName } = require("../modules/client.js");
 
 const _chekName = async (req, res) => {
     try {
