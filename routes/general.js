@@ -1,11 +1,13 @@
-const { _getTableNames, _getColumnNames, _getModels, _getVersions } = require("../controllers/general.js");
-const  express  = require("express");
+const express = require('express');
+const {
+  getTableNamesController, getColumnNamesController, getModelsController, getVersionsController,
+} = require('../controllers/general');
 
 const generalRouter = express.Router();
 
-generalRouter.get('/tablenames', _getTableNames);
-generalRouter.get('/columnnames/:table', _getColumnNames);
-generalRouter.get('/models', _getModels);
-generalRouter.get('/versions', _getVersions);
+generalRouter.get('/tablenames', getTableNamesController);
+generalRouter.get('/columnnames/:table', getColumnNamesController);
+generalRouter.get('/models', getModelsController);
+generalRouter.get('/versions', getVersionsController);
 
-module.exports = { generalRouter }
+module.exports = { generalRouter };

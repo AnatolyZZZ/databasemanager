@@ -1,5 +1,5 @@
-const configFunction  = require('./configFunction');
 const dotenv = require('dotenv');
+const configFunction = require('./configFunction');
 
 dotenv.config();
 
@@ -9,8 +9,7 @@ const connection = {
   user: process.env.CLIENTS_USER,
   password: process.env.CLIENTS_PASS,
   database: process.env.CLIENTS_NAME,
-}
-
+};
 
 const clientDB = configFunction(connection);
 

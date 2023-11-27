@@ -23,7 +23,7 @@ function EnumRender (props) {
                 value={props.value}
                 onChange={ event => apiRef.current.setEditCellValue({ id : props.id, field : props.field, value: event.target.value })}
             >
-                {props.colDef.valueOptions.map((option) => <option key={option.value}v alue={option.value}>{option.label}</option>)}
+                {props.colDef.valueOptions.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
             </Select>)
 }
 

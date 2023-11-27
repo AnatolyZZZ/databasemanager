@@ -1,8 +1,9 @@
-const  express  = require("express");
-const { _chekName, _register } = require("../controllers/client.js");
+const express = require('express');
+const { chekNameController, registerController } = require('../controllers/client');
+
 const clientRouter = express.Router();
 
-clientRouter.post('/check', _chekName);
-clientRouter.post('/register', _register);
+clientRouter.post('/check', chekNameController);
+clientRouter.post('/register', registerController);
 
-module.exports = { clientRouter }
+module.exports = { clientRouter };

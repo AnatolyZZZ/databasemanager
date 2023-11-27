@@ -1,12 +1,12 @@
-const knex  = require('knex');
+const knex = require('knex');
 
-function configFunction (connection) {
-    const config = {
-        client: 'pg',
-        connection: connection
-    }
-    
-    return knex(config); 
+function configFunction(connection) {
+  const config = {
+    client: 'pg',
+    connection,
+  };
+
+  return knex(config);
 }
 
-module.exports =  configFunction;
+module.exports = configFunction;
