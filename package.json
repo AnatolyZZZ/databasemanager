@@ -9,7 +9,14 @@
     "dev": "nodemon server.js",
     "build": "webpack --mode production",
     "eslint-nofix": "npx eslint ./",
-    "eslint": "npx eslint --fix ./"
+    "eslint": "npx eslint --fix ./",
+    "eslint-client": "npx eslint --fix ./client/"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
   },
   "author": "AnatolyZZZ",
   "license": "ISC",
