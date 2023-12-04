@@ -5,6 +5,8 @@ const checkName = async (name) => {
   return user !== undefined && user !== null;
 };
 
+const getUser = async (name) => await clientDB('krya_users').where({ username: name }).first();
+
 const register = async (username, password) => {
   const userExists = await checkName(username);
   if (userExists) return { status: 'fail', message: 'user already exists' };
@@ -13,4 +15,4 @@ const register = async (username, password) => {
   return { status: 'ok', client: newClient };
 };
 
-module.exports = { checkName, register };
+module.exports = { checkName, register, getUser };
