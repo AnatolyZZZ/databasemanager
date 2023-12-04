@@ -1,7 +1,7 @@
 import {useDispatch, useSelector} from 'react-redux'
 import { Dialog, DialogActions, DialogContent, InputLabel, Select, FormControl, MenuItem, Stack, Button, TextField, DialogTitle } from '@mui/material';
 import { chooseModel, chooseVersion, setAlertError, setAlertErrorMessage, setLoading, setNewTableRows, ACTIONS, openNewRow, setEditMode } from '../actions';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback} from 'react';
 
 import { validateCellFailed } from './Validation'
 
@@ -22,6 +22,7 @@ export const ModelCopy = (props) => {
     const [newVersion, setNewVersion] = useState('');
     const [errorInModel, setErrInModel] = useState(false);
     const [errorInVersion, setErrInVersion] = useState(false);
+    const [dataChanged, change ] = useState(false);
     
     const dispatch = useDispatch();
 
@@ -41,22 +42,22 @@ export const ModelCopy = (props) => {
         dispatch(setNewTableRows(editRow))
     }
 
-    const validate = (field, val) => {
-        if (Object.keys(constrains).length > 0) {
+    const validate = useCallback((field, val) => {
+        if (Object.keys(constrains).length > 0 && dataChanged) {
             const res = validateCellFailed({props : {value : val}}, constrains[field], dispatch);
             return res
         } else {
             return false
-        }
-    }
+        }}, [ constrains, dispatch, dataChanged])
+    
 
     useEffect(()=> {
         setErrInVersion(validate('version', newVersion))
-    }, [newVersion, cur_version])
+    }, [newVersion, cur_version, validate])
 
     useEffect(()=> {
         setErrInModel(validate('model', newModel))
-    }, [newModel, cur_model])
+    }, [newModel, cur_model, validate])
 
     const goToEdit = async () => {
         const prepareTable = async () => {
@@ -172,7 +173,12 @@ return <>
                     variant="standard" 
                     error={errorInModel}
                     required
-                    onChange={(e)=>setNewModel(e.target.value)}
+                    onChange={
+                        (e)=> {
+                            setNewModel(e.target.value) 
+                            change(true)
+                        }
+                    }
                     sx={{ width : 192}}/>
                 <TextField 
                     id="version-input" 
@@ -180,7 +186,11 @@ return <>
                     variant="standard"
                     required
                     error={errorInVersion}
-                    onChange={(e)=>setNewVersion(e.target.value)}
+                    onChange={(e)=> {
+                        setNewVersion(e.target.value)
+                        change(true)
+                        }
+                    }
                     sx={{ width : 192}} />
             </Stack>
             

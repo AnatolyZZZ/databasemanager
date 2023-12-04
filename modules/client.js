@@ -5,7 +5,7 @@ const checkName = async (name) => {
   return user !== undefined && user !== null;
 };
 
-const getUser = async (name) => await clientDB('krya_users').where({ username: name }).first();
+const getUser = async (name) => clientDB('krya_users').where({ username: name }).first();
 
 const register = async (username, password) => {
   const userExists = await checkName(username);

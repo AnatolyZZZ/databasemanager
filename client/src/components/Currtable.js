@@ -21,7 +21,7 @@ export const CurrTable = (props) => {
             const curFilter = filters[table_name][idx];
             switch (curFilter.operand) {
                 case ('=') :
-                    arr = arr.filter(elt => elt[curFilter.column_name] == curFilter.value);
+                    arr = arr.filter(elt => String(elt[curFilter.column_name]) === String(curFilter.value));
                     break;
                 case ('<') :
                     arr = arr.filter(elt => elt[curFilter.column_name] < curFilter.value);
