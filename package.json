@@ -1,5 +1,5 @@
 {
-  "name": "database-server",
+  "name": "krya",
   "version": "1.0.0",
   "description": "server to connect to database",
   "main": "server.js",
@@ -8,8 +8,8 @@
     "test": "\"echo \\\"Error: no test specified\\\" && exit 1\"",
     "dev": "nodemon server.js",
     "build": "webpack --mode production",
-    "eslint-nofix": "npx eslint ./",
-    "eslint": "npx eslint --fix ./",
+    "eslint-nofix": "npx eslint .",
+    "eslint": "npx eslint --fix .",
     "eslint-client": "npx eslint --fix ./client/"
   },
   "eslintConfig": {

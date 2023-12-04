@@ -1,4 +1,6 @@
-import { Dialog , DialogActions, DialogContent, DialogTitle, Button } from '@mui/material';
+import {
+  Dialog, DialogActions, DialogContent, DialogTitle, Button,
+} from '@mui/material';
 
 // ---------- props ------------- //
 
@@ -22,19 +24,20 @@ import { Dialog , DialogActions, DialogContent, DialogTitle, Button } from '@mui
 
 // disableEscapeKeyDown for disableEscapeKeyDown
 
-
-const CustomModal = (props) => {
-    return <Dialog open={props.show} maxWidth={props.maxWidth} disableEscapeKeyDown={props.disableEscapeKeyDown || false}>
-                {props.title && <DialogTitle>{props.title}</DialogTitle>}
-                <DialogContent>
-                    {props.children}
-                </DialogContent>
-                <DialogActions>
-                    {props.onSuccess && <Button onClick={props.onSuccess}>{props.success_text || 'Confirm'}</Button>}
-                    <Button onClick={() => props.onClose()}>{props.close_text || 'Close'}</Button>
-                    {props.onSecondary && <Button onClick={props.onSecondary}>{props.secondary_text}</Button>}
-                </DialogActions>
-            </Dialog>
+function CustomModal(props) {
+  return (
+    <Dialog open={props.show} maxWidth={props.maxWidth} disableEscapeKeyDown={props.disableEscapeKeyDown || false}>
+      {props.title && <DialogTitle>{props.title}</DialogTitle>}
+      <DialogContent>
+        {props.children}
+      </DialogContent>
+      <DialogActions>
+        {props.onSuccess && <Button onClick={props.onSuccess}>{props.success_text || 'Confirm'}</Button>}
+        <Button onClick={() => props.onClose()}>{props.close_text || 'Close'}</Button>
+        {props.onSecondary && <Button onClick={props.onSecondary}>{props.secondary_text}</Button>}
+      </DialogActions>
+    </Dialog>
+  );
 }
 
 export default CustomModal;

@@ -4,7 +4,13 @@ module.exports = {
     // commonjs: true,
     es2021: true,
   },
-  extends: 'airbnb',
+  extends: 'plugin:react/recommended',
+  settings: {
+    react: {
+      version: '18.2.0',
+    },
+  },
+  plugins: ['import', 'jsx-a11y', 'react', 'react-hooks'],
   overrides: [
     {
       env: {
@@ -21,7 +27,14 @@ module.exports = {
   parserOptions: {
     ecmaVersion: 'latest',
     sourceType: 'module',
+    ecmaFeatures: {
+      jsx: true,
+    },
   },
   rules: {
+    'no-plusplus': 'off',
+    camelcase: 'off',
+    'react/react-in-jsx-scope': 'off',
+    'react/prop-types': 'off'
   },
 };
