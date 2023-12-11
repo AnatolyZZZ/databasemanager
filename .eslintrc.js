@@ -33,7 +33,7 @@ module.exports = {
   },
   rules: {
     'no-plusplus': 'off',
-    camelcase: 'off',
+    'camelcase': 'off',
     'react/react-in-jsx-scope': 'off',
     'react/prop-types': 'off'
   },

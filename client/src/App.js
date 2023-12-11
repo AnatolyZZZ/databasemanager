@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { HomePage } from './components/Homepage';
 import { Service } from './components/Service';
 import { Loading } from './components/misc/Loading';
+import { LoginRegister } from './components/LoginRegister'
 import {
   ACTIONS, setLoading, setTable, setColumns, setTableNames, setSelected, setPrimaryKey, setAlertError, setAlertErrorMessage, setLengths, setEditableColumns, setNewTableRows, setModels, setVersions, restoreFilters,
 } from './actions';
@@ -206,6 +207,7 @@ function App() {
       <Routes>
         <Route path="/" Component={HomePage} />
         <Route path="/service" Component={Service} />
+        <Route path="loginregister" Component={LoginRegister} />
       </Routes>
     </div>
   );
