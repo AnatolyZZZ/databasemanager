@@ -4,10 +4,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { HomePage } from './components/Homepage';
 import { Service } from './components/Service';
 import { Loading } from './components/misc/Loading';
-import { LoginRegister } from './components/LoginRegister'
-import {
-  ACTIONS, setLoading, setTable, setColumns, setTableNames, setSelected, setPrimaryKey, setAlertError, setAlertErrorMessage, setLengths, setEditableColumns, setNewTableRows, setModels, setVersions, restoreFilters,
-} from './actions';
+import { LoginRegister } from './components/LoginRegister';
+import { api } from './api'
+import { ACTIONS, setLoading, setTable, setColumns, setTableNames, setSelected, setPrimaryKey, setAlertError, setAlertErrorMessage, setLengths, setEditableColumns, setNewTableRows, setModels, setVersions, restoreFilters } from './actions';
 import './App.css';
 
 function App() {
@@ -16,18 +15,20 @@ function App() {
   const root_url = useSelector((state) => state.root_url);
   const column_names = useSelector((state) => state.columns);
   const cur_model = useSelector((state) => state.model);
+  const { getData } = api();
 
   useEffect(() => {
     const abortController1 = new AbortController();
     const abortController2 = new AbortController();
+    const abortController3 = new AbortController();
     async function fetchData() {
       dispatch({ type: ACTIONS.SET_LOADING, payload: true });
+      const test = await getData(`/api/table/${table_name}`, {model : "All models", version : 'All versions'}, abortController3.signal)
       try {
         const res1 = await fetch(`${root_url}/api/table/${table_name}?model=All models&version=All versions`, { signal: abortController1.signal });
         const res2 = await fetch(`${root_url}/api/general/columnnames/${table_name}`, { signal: abortController2.signal });
         if (res1.status !== 200 || res2.status !== 200) {
           dispatch(setAlertErrorMessage('Failed to fetch data, please reload page'));
-          console.log(res1.status, res2.status);
           dispatch(setAlertError(true));
           dispatch(setLoading(false));
         } else {
