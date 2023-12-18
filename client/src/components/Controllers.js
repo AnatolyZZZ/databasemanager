@@ -9,6 +9,7 @@ import { Filters } from './Filters';
 import { ColumnsController } from './Columnscontroller';
 import { ModelCopy } from './Modelcopy';
 import { Errors } from './Errors';
+import { useNavigate } from 'react-router-dom';
 
 import './styles/Controllers.css';
 
@@ -17,6 +18,8 @@ export function Controllers(props) {
   const tables = useSelector((state) => state.tables);
   const editing = useSelector((state) => state.editing);
   const primaryKey = useSelector((state) => state.primaryKey);
+
+  const navigate = useNavigate();
 
   // for menu button
   const menuRef = useRef(null);
@@ -109,7 +112,7 @@ export function Controllers(props) {
                 >
                   <MenuItem onClick={handleOpenColumns} disabled={editing || table_name === ''}>Displayed columns</MenuItem>
                   <MenuItem onClick={() => dispatch(toggleWelcome(true))}>Show instructions</MenuItem>
-
+                  <MenuItem onClick={() => navigate('loginregister')}>Login/Register</MenuItem>
                 </MenuList>
               </ClickAwayListener>
             </Paper>

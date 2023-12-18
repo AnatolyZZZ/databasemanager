@@ -1,11 +1,12 @@
 import { useDispatch, useSelector } from 'react-redux';
-import {  setAlertError, setAlertErrorMessage } from '../actions';
+import {  setAlertError, setAlertErrorMessage, setLoading } from '../actions';
 
-export function api() {
+function api() {
     const dispatch = useDispatch();
     const root_url = useSelector((state) => state.root_url);
 
     const Alert = (message) => {
+        console.log('Alert called with message', message);
         dispatch(setAlertErrorMessage(message));
         dispatch(setAlertError(true))
     }
@@ -53,5 +54,10 @@ export function api() {
             Alert(errorMessage)
         } 
     }
-    return { Alert, getData, postData }
+    const Loading = async (val) => {
+        dispatch(setLoading(val))
+    } 
+    return { Alert, getData, postData, Loading }
 }
+
+export default api

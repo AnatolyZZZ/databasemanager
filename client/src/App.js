@@ -5,7 +5,7 @@ import { HomePage } from './components/Homepage';
 import { Service } from './components/Service';
 import { Loading } from './components/misc/Loading';
 import { LoginRegister } from './components/LoginRegister';
-import { api } from './api'
+import  api  from './api'
 import { ACTIONS, setLoading, setTable, setColumns, setTableNames, setSelected, setPrimaryKey, setAlertError, setAlertErrorMessage, setLengths, setEditableColumns, setNewTableRows, setModels, setVersions, restoreFilters } from './actions';
 import './App.css';
 
