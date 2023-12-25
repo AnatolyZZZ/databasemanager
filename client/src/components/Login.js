@@ -16,6 +16,8 @@ export const Login = (props) => {
 
     return <>
     <Stack spacing={1}>
+    {/* this box is in order to even login and register form height */}
+    <Box sx={{width: '100%', height : '1px'}}></Box>
         <TextField 
             id="username" 
             label="Username" 

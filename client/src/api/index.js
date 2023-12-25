@@ -41,7 +41,6 @@ function api() {
             signal: abort
         }
         try {
-            console.log('`${root_url}${route}${optionsString}` ->',`${root_url}${route}${optionsString}`);
             const response = await fetch(`${root_url}${route}${optionsString}`, requestParams);
             const data = await response.json()
             if (response.status === 200) {
