@@ -34,14 +34,15 @@ function api() {
         let optionsString = ''
         Object.entries(para).forEach(([key, value]) => optionsString+=`${key}=${value}&`);
         if (optionsString) optionsString = '?' + optionsString.slice(0, -1);
-        const requestParametrs = {
+        const requestParams = {
             method: 'POST',
             headers: { 'Content-type': 'application/json' },
             body: JSON.stringify(payload),
             signal: abort
         }
         try {
-            const response = await fetch(`${root_url}${route}${optionsString}`, requestParametrs);
+            console.log('`${root_url}${route}${optionsString}` ->',`${root_url}${route}${optionsString}`);
+            const response = await fetch(`${root_url}${route}${optionsString}`, requestParams);
             const data = await response.json()
             if (response.status === 200) {
                 return data

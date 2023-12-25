@@ -1,6 +1,6 @@
 import { Stack, TextField, Box, Button } from '@mui/material';
 import { useState } from 'react';
-import { MyAlert } from './MyAlert';
+
 import api from '../api'
 
 export const Login = (props) => {
@@ -11,20 +11,16 @@ export const Login = (props) => {
     const login = async () => {
         Loading(true);
         const data = await postData('/api/client/login',{ username, password})
-        console.log('data ->',data);
         Loading(false);  
     }
 
     return <>
-    <MyAlert/>
     <Stack spacing={1}>
         <TextField 
             id="username" 
             label="Username" 
             variant="outlined" 
-            onChange={
-                (event) => { setUsername(event.target.value) }
-            }
+            onChange={ (event) => { setUsername(event.target.value) } }
         />
       
         <TextField 
@@ -32,9 +28,7 @@ export const Login = (props) => {
             label="Password" 
             variant="outlined" 
             type="password"
-            onChange={
-                (event) => { setPassword(event.target.value) }
-            }
+            onChange={ (event) => { setPassword(event.target.value) } }
         />
     
         {/* this box is in order to even login and register form height */}

@@ -10,7 +10,7 @@ import { NewTable } from './Newtable';
 import {
   setTable, setNewTableRows, openNewRow, setAlertErrorMessage, setAlertError, setEditMode, openOnCellErrorMessage,
 } from '../actions';
-// import { Link } from 'react-router-dom'
+import { MyAlert } from './MyAlert';
 
 export function HomePage(props) {
   const dispatch = useDispatch();
@@ -88,30 +88,11 @@ export function HomePage(props) {
 
   return (
     <>
+      <MyAlert />
       <Controllers />
-      <Collapse in={alertOpen}>
-        <Alert
-          severity="error"
-          id="main-alert"
-          action={(
-            <IconButton
-              aria-label="close"
-              color="inherit"
-              size="small"
-              onClick={() => {
-                dispatch(setAlertError(false));
-              }}
-            >
-              <Close fontSize="inherit" />
-            </IconButton>
-              )}
-          sx={{ mb: 2 }}
-        >
-          {alertMessage}
-        </Alert>
-      </Collapse>
       <CurrTable />
       <WelcomeMessage />
+      {/* TODO Refactor dialog with CustomModal component */}
       <Dialog disableEscapeKeyDown open={editNewRowDialogOpen} maxWidth={false}>
         <DialogTitle>Updating table with this values</DialogTitle>
         <DialogContent>

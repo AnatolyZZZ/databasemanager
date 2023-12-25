@@ -3,6 +3,7 @@ import { Login } from './Login'
 import { Register } from './Register'
 import { ArrowBack } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
+import { MyAlert } from './MyAlert';
 
 import { useState } from 'react';
 
@@ -19,6 +20,7 @@ export const LoginRegister = (props) => {
             <ArrowBack color='secondary'/>
             <Box style={{color: '#9c27b0'}}>Back</Box>
         </Stack>
+        <MyAlert customMarginBottom="0"/>
         <Tabs 
             value={selected} 
             onChange={handleChange} 
