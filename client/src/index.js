@@ -14,7 +14,7 @@ import '@fontsource/roboto/700.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
-const store = createStore(reducer);
+export const store = createStore(reducer);
 
 root.render(
   <React.StrictMode>

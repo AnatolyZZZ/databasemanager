@@ -1,6 +1,7 @@
 import { Stack, TextField, Button, Box, Collapse} from '@mui/material';
 import MUIAlert from '@mui/material/Alert'
-import api from '../api';
+import { postData } from '../utils/api';
+import { $alert } from '../utils/ux';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { setAlertError } from '../actions'
@@ -12,11 +13,10 @@ export const Register = (props) => {
     const [passwordConfirm, setPasswordConfirm] = useState('');
     const [successAlert, openSuccess] = useState(false);
     const dispatch = useDispatch();
-    const { Alert, postData } = api();
 
     const validate = () => {
         if (password !== passwordConfirm) {
-            Alert('Passwords do not match ');
+            $alert('Passwords do not match ');
             return  false
         }
         return true
@@ -25,7 +25,7 @@ export const Register = (props) => {
     const checkName = async () => {
         const data = await postData('/api/client/check', { username });
         if (data?.exist) {
-            Alert(`User ${username} already exists`);
+            $alert(`User ${username} already exists`);
             return  false
         }
         return true
@@ -74,10 +74,13 @@ export const Register = (props) => {
             }  
             onBlur={ validate }
             />
-        <Box><Box 
-                sx={{width: '33%', marginLeft: 'auto', marginRight: 'auto'}}>
-                    <Button variant='contained' color='warning' fullWidth onClick={validateAndRegister}>Register</Button>
-        </Box></Box>
+        <Box>
+            <Box 
+                sx={{width: '33%', marginLeft: 'auto', marginRight: 'auto'}}
+            >
+                <Button variant='contained' color='warning' fullWidth onClick={validateAndRegister}>Register</Button>
+            </Box>
+        </Box>
         
     </Stack>
 }

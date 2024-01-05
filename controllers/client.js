@@ -21,8 +21,6 @@ const registerController = async (req, res) => {
     const hashPassword = await bcrypt.hash(password, salt);
     const { status, message, client } = await register(username, hashPassword);
     if (status === 'fail') {
-      // eslint-disable-next-line
-      console.log('fail', JSON.stringify({ msg: message }), message);
       res.status(500).json({ msg: message });
     } else {
       const accessToken = jwt.sign({ username }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '10m' });

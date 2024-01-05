@@ -1,17 +1,8 @@
-import { useDispatch, useSelector } from 'react-redux';
-import {  setAlertError, setAlertErrorMessage, setLoading } from '../actions';
+import { store } from '../index';
+import { $alert } from './ux';
 
-function api() {
-    const dispatch = useDispatch();
-    const root_url = useSelector((state) => state.root_url);
-
-    const Alert = (message) => {
-        console.log('Alert called with message', message);
-        dispatch(setAlertErrorMessage(message));
-        dispatch(setAlertError(true))
-    }
-
-    const getData = async (route, para = {}, abort=null, errorMessage='Failed to fetch data', unsuccedMessage=null) => {
+export const getData =  async (route, para = {}, abort=null, errorMessage='Failed to fetch data', unsuccedMessage=null) => {
+        const root_url = store.getState().root_url;
         let optionsString = ''
         Object.entries(para).forEach(([key, value]) => optionsString+=`${key}=${value}&`);
         if (optionsString) optionsString = '?' + optionsString.slice(0, -1);
@@ -22,15 +13,16 @@ function api() {
                 return data
             } else {
                 const message = unsuccedMessage ? unsuccedMessage : data.msg;
-                Alert(message)
+                $alert(message)
             }
             
         } catch (error) {
-            Alert(errorMessage)
+            $alert(errorMessage)
         }   
     }
 
-    const postData = async (route, payload, para = {}, abort = null, errorMessage='Failed to post data', unsuccedMessage=null) => {
+ export const postData = async (route, payload, para = {}, abort = null, errorMessage='Failed to post data', unsuccedMessage=null) => {
+        const root_url = store.getState().root_url;
         let optionsString = ''
         Object.entries(para).forEach(([key, value]) => optionsString+=`${key}=${value}&`);
         if (optionsString) optionsString = '?' + optionsString.slice(0, -1);
@@ -47,17 +39,10 @@ function api() {
                 return data
             } else {
                 const message = unsuccedMessage ? unsuccedMessage : data.msg;
-                Alert(message)
+                $alert(message)
             }
             
         } catch (error) {
-            Alert(errorMessage)
+            $alert(errorMessage)
         } 
     }
-    const Loading = async (val) => {
-        dispatch(setLoading(val))
-    } 
-    return { Alert, getData, postData, Loading }
-}
-
-export default api
