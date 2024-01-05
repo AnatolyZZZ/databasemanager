@@ -1,10 +1,9 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { Box } from '@mui/material';
 import { useState, useEffect } from 'react';
-import {
-  setEditMode, setAlertError, setAlertErrorMessage, setLoading,
-} from '../actions';
+import { setEditMode } from '../actions';
 import { Table } from './universal/Table';
+import { $alert, $loading } from '../utils/ux';
 
 export function CurrTable(props) {
   const dispatch = useDispatch();
@@ -89,15 +88,13 @@ export function CurrTable(props) {
           return row;
         }
         // console.log('error', result.msg, 'result.upd', result.upd);
-        dispatch(setAlertErrorMessage(`Failed to save in database\n ${result.msg}`));
-        dispatch(setAlertError(true));
-        dispatch(setLoading(false));
+        $alert(`Failed to save in database\n ${result.msg}`);
+        $loading(false);
         return originalRow;
       } catch (error) {
         console.log('error => ', error);
-        dispatch(setAlertErrorMessage('Failed to save in database, unknown error '));
-        dispatch(setAlertError(true));
-        dispatch(setLoading(false));
+        $alert('Failed to save in database, unknown error ');
+        $loading(false);
         return originalRow;
       }
     }

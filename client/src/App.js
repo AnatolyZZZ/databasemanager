@@ -5,8 +5,9 @@ import { HomePage } from './components/Homepage';
 import { Service } from './components/Service';
 import { Loading } from './components/misc/Loading';
 import { LoginRegister } from './components/LoginRegister';
-import { ACTIONS, setLoading, setTable, setColumns, setTableNames, setSelected, setPrimaryKey, setAlertError, setAlertErrorMessage, setLengths, setEditableColumns, setNewTableRows, setModels, setVersions, restoreFilters } from './actions';
+import { ACTIONS, setTable, setColumns, setTableNames, setSelected, setPrimaryKey, setAlertError, setLengths, setEditableColumns, setNewTableRows, setModels, setVersions, restoreFilters } from './actions';
 import './App.css';
+import { $loading, $alert } from './utils/ux';
 
 function App() {
   const dispatch = useDispatch();
@@ -24,14 +25,13 @@ function App() {
         const res1 = await fetch(`${root_url}/api/table/${table_name}?model=All models&version=All versions`, { signal: abortController1.signal });
         const res2 = await fetch(`${root_url}/api/general/columnnames/${table_name}`, { signal: abortController2.signal });
         if (res1.status !== 200 || res2.status !== 200) {
-          dispatch(setAlertErrorMessage('Failed to fetch data, please reload page'));
-          dispatch(setAlertError(true));
-          dispatch(setLoading(false));
+          $alert('Failed to fetch data, please reload page');
+          $loading(false);
         } else {
           const data1 = await res1.json();
           const data2 = await res2.json();
           // console.log(data2)
-          dispatch(setLoading(false));
+          $loading(false);
           dispatch(setTable(data1));
           // console.log('data1', data1)
           // [0] is columns [1] is constrains
@@ -88,10 +88,9 @@ function App() {
           }
         }
       } catch (error) {
-        dispatch(setAlertErrorMessage('Failed to fetch data, please reload page'));
+        $alert('Failed to fetch data, please reload page');
         console.log(error);
-        dispatch(setAlertError(true));
-        dispatch(setLoading(false));
+        $loading(false);
       }
     }
 
@@ -116,18 +115,16 @@ function App() {
         if (res.status === 200) {
           const data = await res.json();
           dispatch(setTableNames(data));
-          dispatch(setLoading(false));
+          $loading(false);
 
           dispatch(setAlertError(false));
         } else {
-          dispatch(setAlertErrorMessage('Failed to fetch tablenames, wait or reload page'));
-          dispatch(setAlertError(true));
+          $alert('Failed to fetch tablenames, wait or reload page');
         }
       } catch (error) {
         console.log(error);
-        dispatch(setLoading(false));
-        dispatch(setAlertErrorMessage('Failed to fetch tablenames, wait or reload page'));
-        dispatch(setAlertError(true));
+        $loading(false);
+        $alert('Failed to fetch tablenames, wait or reload page');
       }
     }
     fetchTablenames();
@@ -159,8 +156,7 @@ function App() {
         } catch (error) {
           console.log(error);
           if (column_names.includes('model')) {
-            dispatch(setAlertErrorMessage('error occured while getting models'));
-            dispatch(setAlertError(true));
+            $alert('error occured while getting models');
           }
         }
       } else {
@@ -187,8 +183,7 @@ function App() {
           }
         } catch (error) {
           console.log(error);
-          dispatch(setAlertErrorMessage('error occured while getting versions'));
-          dispatch(setAlertError(true));
+          $alert('error occured while getting versions');
         }
       } else {
         dispatch(setVersions([]));

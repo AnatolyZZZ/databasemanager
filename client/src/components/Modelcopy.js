@@ -3,9 +3,8 @@ import {
   Dialog, DialogActions, DialogContent, InputLabel, Select, FormControl, MenuItem, Stack, Button, TextField, DialogTitle,
 } from '@mui/material';
 import { useState, useEffect, useCallback } from 'react';
-import {
-  chooseModel, chooseVersion, setAlertError, setAlertErrorMessage, setLoading, setNewTableRows, ACTIONS, openNewRow, setEditMode,
-} from '../actions';
+import { chooseModel, chooseVersion, setNewTableRows, ACTIONS, openNewRow, setEditMode } from '../actions';
+import { $alert, $loading} from '../utils/ux';
 
 import { validateCellFailed } from './Validation';
 
@@ -71,7 +70,7 @@ export function ModelCopy(props) {
         // console.log(data)
         if (res.status === 200) {
           const ed_table = data.map((elt) => ({ ...elt, model: newModel, version: newVersion }));
-          dispatch(setLoading(false));
+          $loading(false);
           dispatch(setNewTableRows(ed_table));
           openModelsDialog(false);
           dispatch(openNewRow(true));
@@ -81,15 +80,13 @@ export function ModelCopy(props) {
         }
       } catch (error) {
         // console.log('catch in prepare table')
-        dispatch(setAlertErrorMessage(JSON.stringify(error)));
-        dispatch(setAlertError(true));
-        dispatch(setLoading(false));
+        $alert(JSON.stringify(error));
+        $loading(false);
       }
     };
 
     if (newModel === '' || newVersion === '') {
-      dispatch(setAlertErrorMessage('Should not be empty'));
-      dispatch(setAlertError(true));
+      $alert('Should not be empty');
     } else
       if (models.includes(newModel)) {
         dispatch({ type: ACTIONS.SET_LOADING, payload: true });
@@ -100,16 +97,14 @@ export function ModelCopy(props) {
             throw new Error('Something went wrong, please try again');
           } else if (thisModelVersions.map((elt) => String(elt.version)).includes(String(newVersion))) {
             // console.log('includes', thisModelVersions)
-            dispatch(setAlertErrorMessage(`Sorry, model "${newModel}" already has version "${newVersion}"`));
-            dispatch(setAlertError(true));
-            dispatch(setLoading(false));
+            $alert(`Sorry, model "${newModel}" already has version "${newVersion}"`);
+            $loading(false);
           } else {
             prepareTable();
           }
         } catch (error) {
-          dispatch(setAlertErrorMessage(JSON.stringify(error)));
-          dispatch(setAlertError(true));
-          dispatch(setLoading(false));
+          $alert(JSON.stringify(error));
+          $loading(false);
         }
       } else {
         prepareTable();

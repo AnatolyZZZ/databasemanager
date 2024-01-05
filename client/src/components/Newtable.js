@@ -1,7 +1,8 @@
 import { Box } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import { setAlertError, setAlertErrorMessage, setNewTableRows } from '../actions';
+import { setNewTableRows } from '../actions';
 import { Table } from './universal/Table';
+import { $alert} from '../utils/ux';
 
 export function NewTable(props) {
   const newTableRows = useSelector((state) => state.newTableRows);
@@ -25,8 +26,7 @@ export function NewTable(props) {
     }
     console.log('i', i);
     if (i > 1) {
-      dispatch(setAlertErrorMessage(`PK ${updRow[primaryKey]} already exists`));
-      dispatch(setAlertError(true));
+      $alert(`PK ${updRow[primaryKey]} already exists`)
     } else {
       dispatch(setNewTableRows(newRowsState));
     }
