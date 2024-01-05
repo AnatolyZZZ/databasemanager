@@ -1,5 +1,5 @@
 {
-  "name": "database-server",
+  "name": "krya",
   "version": "1.0.0",
   "description": "server to connect to database",
   "main": "server.js",
@@ -7,15 +7,26 @@
   "scripts": {
     "test": "\"echo \\\"Error: no test specified\\\" && exit 1\"",
     "dev": "nodemon server.js",
-    "build": "webpack --mode production"
+    "build": "webpack --mode production",
+    "eslint-nofix": "npx eslint .",
+    "eslint": "npx eslint --fix .",
+    "eslint-client": "npx eslint --fix ./client/"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
   },
   "author": "AnatolyZZZ",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2",
     "knex": "^2.5.0",
     "path-browserify": "^1.0.1",
     "pg": "^8.11.1",
@@ -23,6 +34,12 @@
     "url": "^0.11.1"
   },
   "devDependencies": {
+    "eslint": "^8.54.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-plugin-import": "^2.29.0",
+    "eslint-plugin-jsx-a11y": "^6.8.0",
+    "eslint-plugin-react": "^7.33.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
     "nodemon": "^3.0.1",
     "webpack": "^5.88.2",
     "webpack-cli": "^5.1.4"
