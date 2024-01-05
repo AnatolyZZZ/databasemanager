@@ -24,16 +24,27 @@ import {
 
 // disableEscapeKeyDown for disableEscapeKeyDown
 
+// mainButtonStyles - object  {variant, color}
+
+// keyDown - fucction to be execuded on keydown 
+
 function CustomModal(props) {
   return (
-    <Dialog open={props.show} maxWidth={props.maxWidth} disableEscapeKeyDown={props.disableEscapeKeyDown || false}>
+    <Dialog open={props.show} maxWidth={props.maxWidth || false} disableEscapeKeyDown={props.disableEscapeKeyDown || false} onKeyDown={props.keyDown}>
       {props.title && <DialogTitle>{props.title}</DialogTitle>}
       <DialogContent>
         {props.children}
       </DialogContent>
       <DialogActions>
-        {props.onSuccess && <Button onClick={props.onSuccess}>{props.success_text || 'Confirm'}</Button>}
-        <Button onClick={() => props.onClose()}>{props.close_text || 'Close'}</Button>
+        {props.onSuccess && <Button 
+                            onClick={props.onSuccess} 
+                            disabled={props.mainDisabled}
+                            variant={props.mainButtonStyles?.variant || 'text'}
+                            color={props.mainButtonStyles?.color || 'primary'}
+                            >
+                              {props.success_text || 'Confirm'}
+                            </Button>}
+        {props.onClose && <Button onClick={() => props.onClose()}>{props.close_text || 'Close'}</Button>}
         {props.onSecondary && <Button onClick={props.onSecondary}>{props.secondary_text}</Button>}
       </DialogActions>
     </Dialog>

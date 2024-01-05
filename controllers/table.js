@@ -7,7 +7,8 @@ const addRowsController = async (req, res) => {
   } catch (error) {
     // eslint-disable-next-line
     console.log('error in controller', error);
-    res.status(500).json({ msg: `error inserting rows ${JSON.stringify(req.body.rows)} into table ${req.body.table} ${JSON.stringify(error.detail)}` });
+    const err = error.detail ? JSON.stringify(error.detail) : `code : "${error.code}"`
+    res.status(500).json({ msg: `error inserting rows ${JSON.stringify(req.body.rows)} into table ${req.body.table} ${err}` });
   }
 };
 

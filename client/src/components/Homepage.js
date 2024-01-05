@@ -1,16 +1,13 @@
-import {
-  Dialog, DialogActions, DialogContent, DialogTitle, Button, Alert, IconButton, Collapse,
-} from '@mui/material';
-import { Close } from '@mui/icons-material';
 import { useSelector, useDispatch } from 'react-redux';
 import { CurrTable } from './Currtable';
 import { WelcomeMessage } from './WelcomeMessage';
 import { Controllers } from './Controllers';
 import { NewTable } from './Newtable';
-import {
-  setTable, setNewTableRows, openNewRow, setAlertErrorMessage, setAlertError, setEditMode, openOnCellErrorMessage,
-} from '../actions';
+import { setTable, setNewTableRows, openNewRow, setEditMode, openOnCellErrorMessage } from '../actions';
 import { MyAlert } from './MyAlert';
+import  CustomModal from './universal/CustomModal';
+import { postData } from '../utils/api';
+import { $loading } from '../utils/ux';
 
 export function HomePage(props) {
   const dispatch = useDispatch();
@@ -22,8 +19,6 @@ export function HomePage(props) {
   const primaryKey = useSelector((state) => state.primaryKey);
   const editNewRowDialogOpen = useSelector((state) => state.newRow);
   const constrains = useSelector((state) => state.constrains);
-  const alertOpen = useSelector((state) => state.alerErrorOn);
-  const alertMessage = useSelector((state) => state.alertErrorMessage);
   const editing = useSelector((state) => state.editing);
 
   const setNewTableRowToDefault = () => {
@@ -36,7 +31,7 @@ export function HomePage(props) {
   const saveToDatabase = async () => {
     /// we dont send to DB rows with id as it is probably PK
     const readyToUpd = [...newTableRows];
-    for (const key in readyToUpd) {
+    for (let key in readyToUpd) {
       const newRowWithNoKey = { ...readyToUpd[key] };
       // del PK only if it is nextVal
       if (String(constrains[primaryKey].defaultValue).slice(0, 8) === 'nextval(') {
@@ -46,45 +41,27 @@ export function HomePage(props) {
       readyToUpd[key] = newRowWithNoKey;
     }
     // console.log('ready to upd', readyToUpd)
-    const para = {
-      method: 'POST',
-      headers: { 'Content-type': 'application/json' },
-      body: JSON.stringify(
-        {
-          table: table_name,
-          rows: readyToUpd,
-        },
-      ),
-    };
-
-    try {
-      dispatch({ type: 'SET_LOADING', payload: true });
-      const res = await fetch(`${root_url}/api/table`, para);
-      if (res.status === 200) {
-        // should clear everything in newTable
-        setNewTableRowToDefault();
-
-        const body = await res.json();
-        const newTable = [...cur_table];
-        for (const row of body) {
-          newTable.push(row);
-        }
-        dispatch(setTable(newTable));
-        dispatch({ type: 'SET_LOADING', payload: false });
-        // and finaly closing creating new table
-        dispatch(openNewRow(false));
-      } else {
-        const body = await res.json();
-        // console.log('res body.msg',body.msg);
-        throw new Error(body.msg);
-      }
-    } catch (error) {
-      console.log('err message', error.message);
-      dispatch({ type: 'SET_LOADING', payload: false });
-      dispatch(setAlertErrorMessage(error.message));
-      dispatch(setAlertError(true));
+    dispatch({ type: 'SET_LOADING', payload: true });
+    const addedRows = await postData('/api/table', { table : table_name, rows: readyToUpd});
+    if (addedRows) {
+      const newTable = [...cur_table, ...addedRows]
+      dispatch(setTable(newTable));
+      // should clear everything in newTable
+      setNewTableRowToDefault();
+      dispatch(openNewRow(false));
     }
+   
+    $loading(false)
   };
+
+  const closeEditModal = () => {
+    dispatch(openNewRow(false));
+    dispatch(setEditMode(false));
+     // if more than 1 row => we are edditing new model, so when close set to default
+     if (newTableRows.length > 1) {
+      setNewTableRowToDefault();
+    }
+  }
 
   return (
     <>
@@ -92,37 +69,19 @@ export function HomePage(props) {
       <Controllers />
       <CurrTable />
       <WelcomeMessage />
-      {/* TODO Refactor dialog with CustomModal component */}
-      <Dialog disableEscapeKeyDown open={editNewRowDialogOpen} maxWidth={false}>
-        <DialogTitle>Updating table with this values</DialogTitle>
-        <DialogContent>
-          <NewTable />
-        </DialogContent>
-
-        <DialogActions>
-          <Button onClick={() => saveToDatabase()} variant="contained" color="secondary" disabled={editing}>
-            Save to DB
-          </Button>
-          <Button onClick={() => {
-            dispatch(openNewRow(false));
-            dispatch(setEditMode(false));
-            // if more than 1 row => we are edditing new model, so when close set to default
-            if (newTableRows.length > 1) {
-              setNewTableRowToDefault();
-            }
-          }}
-          >
-            Close
-          </Button>
-          <Button onClick={() => {
-            dispatch(openOnCellErrorMessage(true));
-          }}
-          >
-            Show errors
-          </Button>
-        </DialogActions>
-      </Dialog>
-      {/* <Link to="/service">Service page</Link> */}
+      <CustomModal
+        title = 'Updating table with this values'
+        show = {editNewRowDialogOpen}
+        onSuccess = {saveToDatabase}
+        mainDisabled = {editing}
+        success_text = 'Save to DB'
+        onClose = {closeEditModal}
+        onSecondary = {() => dispatch(openOnCellErrorMessage(true))}
+        secondary_text = 'Show errors'
+        mainButtonStyles = {{ variant: 'outlined', color: 'secondary'}}
+      >
+        <NewTable />
+      </CustomModal>
     </>
   );
 }

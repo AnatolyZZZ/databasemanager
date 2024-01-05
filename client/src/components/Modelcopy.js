@@ -1,10 +1,9 @@
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  Dialog, DialogActions, DialogContent, InputLabel, Select, FormControl, MenuItem, Stack, Button, TextField, DialogTitle,
-} from '@mui/material';
+import { InputLabel, Select, FormControl, MenuItem, Stack, Button, TextField, DialogTitle } from '@mui/material';
 import { useState, useEffect, useCallback } from 'react';
 import { chooseModel, chooseVersion, setNewTableRows, ACTIONS, openNewRow, setEditMode } from '../actions';
 import { $alert, $loading} from '../utils/ux';
+import CustomModal from './universal/CustomModal';
 
 import { validateCellFailed } from './Validation';
 
@@ -111,6 +110,13 @@ export function ModelCopy(props) {
       }
   };
 
+  const onModelDialogClose = () => {
+    openModelsDialog(false);
+    dispatch(setEditMode(false));
+    setNewTableRowToDefault();
+    change(false)
+  }
+
   return (
     <>
       <Button
@@ -123,10 +129,14 @@ export function ModelCopy(props) {
         New version
       </Button>
 
-      <Dialog open={modelsDialog}>
-        <DialogContent>
-          <DialogTitle>Please choose wich version to copy</DialogTitle>
-          <Stack direction="row" alignItems="center" spacing={2} px={3}>
+      <CustomModal
+        title='Please choose wich version to copy'
+        show={modelsDialog}
+        onClose={onModelDialogClose}
+        success_text='Continue'
+        onSuccess={goToEdit}
+      >
+        <Stack direction="row" alignItems="center" spacing={2} px={3} py={1}>
             <FormControl size="large" sx={{ width: 192 }}>
               <InputLabel id="models_select_label">Model</InputLabel>
               <Select
@@ -165,6 +175,7 @@ export function ModelCopy(props) {
           </Stack>
 
           <DialogTitle>Please choose destination model and version</DialogTitle>
+
           <Stack direction="row" alignItems="center" spacing={2} px={3}>
             <TextField
               id="model-input"
@@ -194,25 +205,7 @@ export function ModelCopy(props) {
             />
           </Stack>
 
-        </DialogContent>
-
-        <DialogActions>
-          <Button onClick={() => {
-            openModelsDialog(false);
-            dispatch(setEditMode(false));
-            setNewTableRowToDefault();
-          }}
-          >
-            Cancel
-          </Button>
-          {/* <Button onClick={()=> {
-                dispatch(openOnCellErrorMessage(true))
-                dispatch(setEditMode(true))
-                }}>Errors</Button> */}
-          <Button onClick={() => { goToEdit(); }}>Continue</Button>
-
-        </DialogActions>
-      </Dialog>
+      </CustomModal>
 
     </>
   );

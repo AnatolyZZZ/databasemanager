@@ -84,7 +84,7 @@ export function Table(props) {
       showColumnVerticalBorder={props.showColumnVerticalBorder}
 
       onCellEditStop={(params, event) => {
-        console.log('edit stop', params);
+        // console.log('edit stop', params);
         if (params.reason === GridCellEditStopReasons.cellFocusOut) {
           event.defaultMuiPrevented = true;
         } else {

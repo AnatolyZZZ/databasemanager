@@ -4,9 +4,10 @@ import {
 import { useSelector, useDispatch } from 'react-redux';
 
 import { toggleSelected } from '../actions';
+import CustomModal from './universal/CustomModal'
 
 export function ColumnsController(props) {
-  const handleListKeyDown = (e) => {
+  const handleKeyDown = (e) => {
     if (e.key === 'Escape' || e.key === 'Tab' || e.key === 'Enter') {
       props.opener(false);
     }
@@ -20,11 +21,14 @@ export function ColumnsController(props) {
   };
 
   return (
-    <Dialog open={props.open} onKeyDown={handleListKeyDown}>
-      <DialogTitle>Which columns to display?</DialogTitle>
-
-      <DialogContent>
-        <FormControl sx={{ m: 1 }} component="fieldset" variant="standard">
+    <CustomModal
+      title='Which columns to display?'
+      success_text='Ok'
+      onSuccess={()=> props.opener(false)}
+      show={props.open}
+      keyDown={handleKeyDown}
+    >
+       <FormControl sx={{ m: 1 }} component="fieldset" variant="standard">
           <FormGroup>
             {selected_columns.map((elt, idx) => (
               <FormControlLabel
@@ -37,11 +41,6 @@ export function ColumnsController(props) {
             ))}
           </FormGroup>
         </FormControl>
-      </DialogContent>
-
-      <DialogActions>
-        <Button onClick={() => props.opener(false)}>Ok</Button>
-      </DialogActions>
-    </Dialog>
+    </CustomModal>
   );
 }
