@@ -23,7 +23,7 @@ export const benefits = {
         `<h3>You can filter data with a built-in MUI data grid filters or with custom filters</h3>
         <p>Default data grid filters allow to filter <b>one</b> column by value <i>"starts with", "contains", "empty"</i> etc. </p>
         <p>Custom filters allow to filter <b>multiple</b> columns with ">", "<" "=", "<=" and ">="</p>
-        <p>Killer feature of custom filters is that they are saved to local memory</p>`,
+        <p>Custom filters are saved to local memory</p>`,
   standart:
         `<h3>Data is presented in a convenient MUI data grid table</h3>
         <p>So all basic features of MUI data grid are available from the box</p>

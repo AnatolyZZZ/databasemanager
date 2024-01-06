@@ -1,9 +1,9 @@
 import { Tabs, Tab, Box, Stack} from '@mui/material';
-import { Login } from './Login'
-import { Register } from './Register'
+import { Login } from '../components/Login'
+import { Register } from '../components/Register'
 import { ArrowBack } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
-import { MyAlert } from './MyAlert';
+import { MyAlert } from '../components/MyAlert';
 
 import { useState } from 'react';
 

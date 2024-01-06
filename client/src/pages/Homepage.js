@@ -1,11 +1,11 @@
 import { useSelector, useDispatch } from 'react-redux';
-import { CurrTable } from './Currtable';
-import { WelcomeMessage } from './WelcomeMessage';
-import { Controllers } from './Controllers';
-import { NewTable } from './Newtable';
+import { CurrTable } from '../components/Currtable';
+import { WelcomeMessage } from '../components/WelcomeMessage';
+import { Controllers } from '../components/Controllers';
+import { NewTable } from '../components/Newtable';
 import { setTable, setNewTableRows, openNewRow, setEditMode, openOnCellErrorMessage } from '../actions';
-import { MyAlert } from './MyAlert';
-import  CustomModal from './universal/CustomModal';
+import { MyAlert } from '../components/MyAlert';
+import  CustomModal from '../components/universal/CustomModal';
 import { postData } from '../utils/api';
 import { $loading } from '../utils/ux';
 
@@ -14,7 +14,6 @@ export function HomePage(props) {
   const newTableRows = useSelector((state) => state.newTableRows);
   const cur_table = useSelector((state) => state.table);
   const table_name = useSelector((state) => state.table_name);
-  const root_url = useSelector((state) => state.root_url);
   const editable = useSelector((state) => state.editable_columns);
   const primaryKey = useSelector((state) => state.primaryKey);
   const editNewRowDialogOpen = useSelector((state) => state.newRow);

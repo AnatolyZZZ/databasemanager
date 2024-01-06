@@ -1,10 +1,10 @@
 import { Route, Routes } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { HomePage } from './components/Homepage';
-import { Service } from './components/Service';
+import { HomePage } from './pages/Homepage';
+import { Service } from './pages/Service';
 import { Loading } from './components/misc/Loading';
-import { LoginRegister } from './components/LoginRegister';
+import { LoginRegister } from './pages/LoginRegister';
 import { setTable, setColumns, setTableNames, setSelected, setPrimaryKey, setLengths, setEditableColumns, setNewTableRows, setModels, setVersions, restoreFilters } from './actions';
 import './App.css';
 import { $loading } from './utils/ux';
