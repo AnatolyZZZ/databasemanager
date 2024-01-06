@@ -44,11 +44,6 @@ export const setColumns = (columnNames) => ({
   payload: columnNames,
 });
 
-export const setLoading = (val) => ({
-  type: ACTIONS.SET_LOADING,
-  payload: val,
-});
-
 export const setTableNames = (tableNames) => ({
   type: ACTIONS.GET_TABLES,
   payload: tableNames,

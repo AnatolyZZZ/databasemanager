@@ -1,5 +1,5 @@
 import { store } from '../index'
-import { setAlertError, setAlertErrorMessage, setLoading } from '../actions';
+import { setAlertError, setAlertErrorMessage, ACTIONS } from '../actions';
 
 export const $alert = (message) => {
     store.dispatch(setAlertErrorMessage(message));
@@ -7,5 +7,5 @@ export const $alert = (message) => {
 }
 
 export const $loading = (val) => {
-    store.dispatch(setLoading(val))
+    store.dispatch({type : ACTIONS.SET_LOADING, payload: val})
 }
