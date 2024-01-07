@@ -1,6 +1,4 @@
-import {
-  Dialog, DialogActions, DialogContent, FormControl, FormGroup, Checkbox, FormControlLabel, Button, DialogTitle,
-} from '@mui/material';
+import { FormControl, FormGroup, Checkbox, FormControlLabel } from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { toggleSelected } from '../actions';

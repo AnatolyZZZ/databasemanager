@@ -91,9 +91,8 @@ function App() {
       }
       const checkEditable = () => {
         const editableColumns = columns.filter( (column) => !isSerial(column) )
-        // create table with 1 empty row for adding rows to the table 
-        const editRow = [{ id: 1 }];
-        editableColumns.forEach((elt) => editRow[0][elt] = '');
+        // create 1 empty row for newTable
+        const editRow = [ editableColumns.reduce((acc, val) => {acc[val] = ''; return acc }, { id : 1} ) ]
         dispatch(setEditableColumns(editableColumns));
         dispatch(setNewTableRows(editRow));
       }

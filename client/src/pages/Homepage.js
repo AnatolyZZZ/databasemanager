@@ -68,6 +68,7 @@ export function HomePage(props) {
       <Controllers />
       <CurrTable />
       <WelcomeMessage />
+      
       <CustomModal
         title = 'Updating table with this values'
         show = {editNewRowDialogOpen}
