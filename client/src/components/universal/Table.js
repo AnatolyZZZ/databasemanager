@@ -1,13 +1,13 @@
 import { useSelector, useDispatch } from 'react-redux';
 import {
-  DataGrid, GridCellEditStopReasons, GridCellEditStartReasons, GridEditInputCell, useGridApiContext,
+  DataGrid, GridCellEditStopReasons, GridCellEditStartReasons, GridEditInputCell, useGridApiContext, GridCell
 } from '@mui/x-data-grid';
-import { Select, Switch } from '@mui/material';
+import { Select, Switch, Stack } from '@mui/material';
 import { useState } from 'react';
 import { setEditMode } from '../../actions';
 import { validateCellFailed } from '../Validation';
 
-function CustomRender(params) {
+function CustomRenderEditCell(params) {
   const { error, ...other } = params;
   const { colDef } = params;
   const { type } = colDef;
@@ -23,23 +23,36 @@ function EnumRender(props) {
       native
       sx={{ width: '100%' }}
       value={props.value}
-      onChange={(event) => apiRef.current.setEditCellValue({ id: props.id, field: props.field, value: event.target.value })}
-    >
-      {props.colDef.valueOptions.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
+      onChange={(event) => {
+        apiRef.current.setEditCellValue({ id: props.id, field: props.field, value: event.target.value })
+      }}
+    > 
+      <option disabled key='some_unique_key_used_for_default' value=''>Choose ↓</option>
+      {props.colDef.valueOptions.map((option, id) => <option key={option.value + id} value={option.value}>{option.label}</option>)}
     </Select>
   );
 }
 
 function BoolRender(props) {
   const apiRef = useGridApiContext();
-  let checked = props.value
+  let checked = props.value;
+  if (checked === '') {
+    apiRef.current.setEditCellValue({ id: props.id, field: props.field, value: false});
+    checked = false;
+  }
   return (
+    <Stack direction="row" spacing={0} alignItems="center">
+    <span style={{fontSize : 10, transform: 'translateX(2px)'}}>False</span>
     <Switch
-    checked={checked}
-    onChange={(event) => {
-      checked = event.target.checked;
-      apiRef.current.setEditCellValue({ id: props.id, field: props.field, value: event.target.checked})}}
+      checked={checked}
+      color={'success'}
+      size='small'
+      onChange={(event) => {
+        checked = event.target.checked;
+        apiRef.current.setEditCellValue({ id: props.id, field: props.field, value: event.target.checked})}}
     />
+    <span style={{fontSize : 10, transform: 'translateX(-2px)'}}>True</span>
+    </Stack>
   )
 }
 
@@ -70,8 +83,8 @@ export function Table(props) {
       const hasError = validateCellFailed(params, constrains[editingColumnName], dispatch);
       return { ...params.props, error: hasError };
     },
-    renderEditCell: (params) => <CustomRender {...params} />,
-
+    renderEditCell: (params) => <CustomRenderEditCell {...params} />,
+    // renderCell: (params) => <CustomRender {...params} />
   }));
 
   function isSerial(column) {
@@ -107,8 +120,8 @@ export function Table(props) {
         if (params.reason === GridCellEditStopReasons.cellFocusOut) {
           event.defaultMuiPrevented = true;
         } else {
-          console.log('params ->',params);
-          console.log('event ->',event);
+          // console.log('params ->',params);
+          // console.log('event ->',event);
           dispatch(setEditMode(false));
         }
       }}

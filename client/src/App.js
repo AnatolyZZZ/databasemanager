@@ -93,14 +93,6 @@ function App() {
         const editableColumns = columns.filter( (column) => !isSerial(column) )
         // create 1 empty row for newTable
         const editRow = [ editableColumns.reduce((acc, val) => {
-          if (constrains[val]?.type === 'boolean') {
-            acc[val] = false;
-            return acc
-          }
-          if (constrains[val]?.type === 'enum' ) {
-            acc[val] = constrains[val]?.enumValues[0] 
-            return acc
-          }
           acc[val] = ''; 
           return acc 
         }, 
