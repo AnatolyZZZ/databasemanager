@@ -9,7 +9,7 @@ const addRows = async (tableName, rows) => {
   } catch (error) {
     // eslint-disable-next-line
     console.log(`error in module, error adding rows ${JSON.stringify(rows)} to table ${tableName}`, error);
-    throw (error);
+    throw error;
   }
 };
 
@@ -23,7 +23,7 @@ const updateEntry = async (tableName, primaryKey, keyValue, entry) => {
   } catch (error) {
     // eslint-disable-next-line
     console.log(`error updating table ${tableName} by entry ${entry}, were ${primaryKey} is ${keyValue}`, error);
-    throw (error);
+    throw error;
   }
 };
 
@@ -58,7 +58,7 @@ const getTable = async (tableName, model, version) => {
   } catch (error) {
     // eslint-disable-next-line
     console.log(`error geting table ${tableName} from database`, error);
-    throw (error);
+    throw error;
   }
 };
 

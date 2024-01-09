@@ -89,7 +89,7 @@ const getColumnNames = async (tableName) => {
   } catch (error) {
     // eslint-disable-next-line
     console.log(`error geting column names from table  ${tableName}`, error);
-    throw (error);
+    throw error;
   }
 };
 
@@ -100,7 +100,7 @@ const getModels = async (tableName) => {
   } catch (error) {
     // eslint-disable-next-line
     console.log(`error geting models from table  ${tableName}`, error);
-    throw (error);
+    throw error;
   }
 };
 
@@ -123,7 +123,7 @@ const getVersions = async (tableName, model) => {
   } catch (error) {
     // eslint-disable-next-line
     console.log(`error geting models from table  ${tableName} for model ${model}`, error);
-    throw (error);
+    throw error;
   }
 };
 

@@ -16,7 +16,6 @@ export function NewTable(props) {
 
     const idx = newRowsState.findIndex((row) => row[primaryKey] === originalRow[primaryKey]);
     newRowsState[idx] = updRow;
-    console.log(newRowsState);
     /// check that PK is still unique
     let i = 0;
     for (const row of newRowsState) {
@@ -24,7 +23,6 @@ export function NewTable(props) {
         i++;
       }
     }
-    console.log('i', i);
     if (i > 1) {
       $alert(`PK ${updRow[primaryKey]} already exists`)
     } else {
@@ -50,6 +48,7 @@ export function NewTable(props) {
         showColumnVerticalBorder
         showCellVerticalBorder
         handleSave={updateRows}
+        checkUnedited
       />
 
     </Box>

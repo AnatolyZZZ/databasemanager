@@ -2,7 +2,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { CurrTable } from '../components/Currtable';
 import { WelcomeMessage } from '../components/WelcomeMessage';
 import { Controllers } from '../components/Controllers';
-import { NewTable } from '../components/Newtable';
+import { NewTable } from '../components/NewTable';
 import { setTable, setNewTableRows, openNewRow, setEditMode, openOnCellErrorMessage } from '../actions';
 import { MyAlert } from '../components/MyAlert';
 import  CustomModal from '../components/universal/CustomModal';

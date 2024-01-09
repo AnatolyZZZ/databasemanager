@@ -2,7 +2,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import {
   DataGrid, GridCellEditStopReasons, GridCellEditStartReasons, GridEditInputCell, useGridApiContext,
 } from '@mui/x-data-grid';
-import { Select } from '@mui/material';
+import { Select, Switch } from '@mui/material';
 import { useState } from 'react';
 import { setEditMode } from '../../actions';
 import { validateCellFailed } from '../Validation';
@@ -12,6 +12,7 @@ function CustomRender(params) {
   const { colDef } = params;
   const { type } = colDef;
   if (type === 'singleSelect') return (<EnumRender {...other} />);
+  if (type === 'boolean') return (<BoolRender {...other}/>);
   return (<GridEditInputCell {...other} className={error ? 'cell-error' : null} />);
 }
 
@@ -29,6 +30,19 @@ function EnumRender(props) {
   );
 }
 
+function BoolRender(props) {
+  const apiRef = useGridApiContext();
+  let checked = props.value
+  return (
+    <Switch
+    checked={checked}
+    onChange={(event) => {
+      checked = event.target.checked;
+      apiRef.current.setEditCellValue({ id: props.id, field: props.field, value: event.target.checked})}}
+    />
+  )
+}
+
 export function Table(props) {
   const dispatch = useDispatch();
   const primaryKey = useSelector((state) => state.primaryKey);
@@ -37,6 +51,11 @@ export function Table(props) {
   const constrains = useSelector((state) => state.constrains);
 
   const [editingColumnName, setEditingColumnName] = useState(null);
+
+  const checkUneditedCells = props.checkUnedited ? (params) => {
+    const failed =  validateCellFailed(params, constrains[params.field], dispatch) 
+    return failed ? 'cell_with-error' : null
+  } : null
 
   const makeColumns = (columns) => columns.map((elt) => Object({
     field: elt,
@@ -82,12 +101,14 @@ export function Table(props) {
       getRowId={(row) => row[primaryKey]}
       showCellVerticalBorder={props.showCellVerticalBorder}
       showColumnVerticalBorder={props.showColumnVerticalBorder}
+      getCellClassName={checkUneditedCells}
 
       onCellEditStop={(params, event) => {
-        // console.log('edit stop', params);
         if (params.reason === GridCellEditStopReasons.cellFocusOut) {
           event.defaultMuiPrevented = true;
         } else {
+          console.log('params ->',params);
+          console.log('event ->',event);
           dispatch(setEditMode(false));
         }
       }}
@@ -96,7 +117,6 @@ export function Table(props) {
         if ((params.reason !== GridCellEditStartReasons.cellDoubleClick & params.reason !== editing & params.reason !== GridCellEditStartReasons.enterKeyDown) || (editing === true)) {
           event.defaultMuiPrevented = true;
         } else {
-          // console.log(params)
           dispatch(setEditMode(true));
           setEditingColumnName(params.field);
         }

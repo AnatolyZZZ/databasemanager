@@ -1,7 +1,7 @@
 import { Route, Routes } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { HomePage } from './pages/Homepage';
+import { HomePage } from './pages/HomePage';
 import { Service } from './pages/Service';
 import { Loading } from './components/misc/Loading';
 import { LoginRegister } from './pages/LoginRegister';
@@ -92,7 +92,19 @@ function App() {
       const checkEditable = () => {
         const editableColumns = columns.filter( (column) => !isSerial(column) )
         // create 1 empty row for newTable
-        const editRow = [ editableColumns.reduce((acc, val) => {acc[val] = ''; return acc }, { id : 1} ) ]
+        const editRow = [ editableColumns.reduce((acc, val) => {
+          if (constrains[val]?.type === 'boolean') {
+            acc[val] = false;
+            return acc
+          }
+          if (constrains[val]?.type === 'enum' ) {
+            acc[val] = constrains[val]?.enumValues[0] 
+            return acc
+          }
+          acc[val] = ''; 
+          return acc 
+        }, 
+          { id : 1} ) ]
         dispatch(setEditableColumns(editableColumns));
         dispatch(setNewTableRows(editRow));
       }

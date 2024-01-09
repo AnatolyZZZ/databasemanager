@@ -12,3 +12,7 @@
 .MuiInputBase-root {
     height: 100%;
 }
+
+.cell_with-error {
+    box-shadow: inset 0 0 5px rgba(255, 0, 0, 0.5);
+}

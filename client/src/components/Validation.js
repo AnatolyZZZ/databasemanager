@@ -4,6 +4,8 @@ import { ACTIONS } from '../actions';
 export const validateCellFailed = (params, constrains, dispatch) => {
   // console.log('validate cell constrains =>', constrains);
   // console.log('params', params);
+  if(!constrains) return
+  const value = params?.props ? params.props?.value : params?.value
   const errorMessages = new Set();
   let newMessege = '';
   let notEmptyPass = true;
@@ -15,14 +17,14 @@ export const validateCellFailed = (params, constrains, dispatch) => {
     enum: correctEnum,
   };
   if (typesToCheck[constrains.type]) {
-    [typePass, newMessege] = typesToCheck[constrains.type](params.props.value, constrains);
+    [typePass, newMessege] = typesToCheck[constrains.type](value, constrains);
   }
   if (newMessege) {
     errorMessages.add(newMessege);
   }
 
   if (!constrains.nullable) {
-    [notEmptyPass, newMessege] = notEmpty(params.props.value);
+    [notEmptyPass, newMessege] = notEmpty(value);
     if (newMessege) {
       errorMessages.add(newMessege);
     }
