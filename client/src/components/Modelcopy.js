@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { InputLabel, Select, FormControl, MenuItem, Stack, Button, TextField, DialogTitle } from '@mui/material';
 import { useState, useEffect, useCallback } from 'react';
-import { chooseModel, chooseVersion, setNewTableRows, ACTIONS, openNewRow, setEditMode, setNewTableToDefault } from '../actions';
+import { chooseModel, chooseVersion, setNewTableRows, ACTIONS, openNewRow, setEditMode, setNewTableToDefault, validationErrors } from '../actions';
 import { $alert, $loading} from '../utils/ux';
 import CustomModal from './universal/CustomModal';
 
@@ -66,6 +66,7 @@ export function ModelCopy(props) {
           $loading(false);
           dispatch(setNewTableRows(ed_table));
           openModelsDialog(false);
+          dispatch(validationErrors(0));
           dispatch(openNewRow(true));
         } else {
           console.log('throw');

@@ -4,7 +4,7 @@ import {
 } from '@mui/material';
 import { useState, useRef } from 'react';
 import SettingsIcon from '@mui/icons-material/Settings';
-import { setTableName, openNewRow, toggleWelcome } from '../actions';
+import { setTableName, openNewRow, toggleWelcome, validationErrors } from '../actions';
 import { Filters } from './Filters';
 import { ColumnsController } from './Columnscontroller';
 import { ModelCopy } from './Modelcopy';
@@ -69,7 +69,10 @@ export function Controllers(props) {
         variant="contained"
         color="primary"
         disabled={editing || primaryKey === ''}
-        onClick={(e) => { dispatch(openNewRow(true)); }}
+        onClick={(e) => {
+          dispatch(validationErrors(0));
+          dispatch(openNewRow(true));
+        }}
         sx={{ whiteSpace: 'nowrap' }}
       >
         New row

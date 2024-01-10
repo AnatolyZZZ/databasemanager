@@ -54,7 +54,9 @@ const initialState = {
   // first time show welcome message
   welcomeFirstTime: true,
   // default EditRaw 
-  editRaw : {}
+  editRaw : {},
+  // validation errors in newTable
+  validationErrors : 0
 };
 let curTableFiters;
 let newFilterState;
@@ -142,7 +144,9 @@ const reducer = (state = initialState, action = {}) => {
     case (ACTIONS.SET_EDIT_ROW): 
       return {...state, editRaw: action.payload};
     case (ACTIONS.SET_NEW_TABLE_TO_DEFAULT): 
-      return {...state, newTableRows : [...state.editRaw]}
+      return {...state, newTableRows : [...state.editRaw]};
+    case (ACTIONS.VALIDATION_ERRORS):
+      return {...state, validationErrors: typeof(action.payload) === 'number' ? action.payload : state.validationErrors + 1}
     default:
       return { ...state };
   }

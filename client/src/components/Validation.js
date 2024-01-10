@@ -1,9 +1,11 @@
 /// --------CHECKING CONSTRAINS --------------------
 import { ACTIONS } from '../actions';
+import { store } from '../index';
 
-export const validateCellFailed = (params, constrains, dispatch, updateState = true) => {
+export const validateCellFailed = (params, constrains, dispatch, updateState = true, checkingRow = false) => {
   // console.log('validate cell constrains =>', constrains);
-  // console.log('params', params);
+  // console.log('validate cell params', params);
+  // if(checkingRow) console.log('validation called ->',constrains, params, store.getState().validationErrors);
   if(!constrains) return
   const value = params?.props ? params.props?.value : params?.value
   const errorMessages = new Set();
@@ -30,7 +32,8 @@ export const validateCellFailed = (params, constrains, dispatch, updateState = t
     }
   }
 
-  if (updateState) dispatch({ type: ACTIONS.SET_EDIT_ERROR_MESSAGES, payload: Array.from(errorMessages) });
+  if(updateState) dispatch({ type: ACTIONS.SET_EDIT_ERROR_MESSAGES, payload: Array.from(errorMessages) })
+  if(checkingRow && errorMessages.size) store.dispatch({ type: ACTIONS.VALIDATION_ERRORS, payload: false});
   return !typePass || !notEmptyPass;
 };
 

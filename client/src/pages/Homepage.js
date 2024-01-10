@@ -3,7 +3,7 @@ import { CurrTable } from '../components/Currtable';
 import { WelcomeMessage } from '../components/WelcomeMessage';
 import { Controllers } from '../components/Controllers';
 import { NewTable } from '../components/NewTable';
-import { setTable, setNewTableRows, openNewRow, setEditMode, openOnCellErrorMessage, setNewTableToDefault } from '../actions';
+import { setTable, openNewRow, setEditMode, openOnCellErrorMessage, setNewTableToDefault } from '../actions';
 import { MyAlert } from '../components/MyAlert';
 import  CustomModal from '../components/universal/CustomModal';
 import { postData } from '../utils/api';
@@ -14,11 +14,11 @@ export function HomePage(props) {
   const newTableRows = useSelector((state) => state.newTableRows);
   const cur_table = useSelector((state) => state.table);
   const table_name = useSelector((state) => state.table_name);
-  const editable = useSelector((state) => state.editable_columns);
   const primaryKey = useSelector((state) => state.primaryKey);
   const editNewRowDialogOpen = useSelector((state) => state.newRow);
   const constrains = useSelector((state) => state.constrains);
   const editing = useSelector((state) => state.editing);
+  const errorsInNewTable = useSelector((state) => state.validationErrors);
 
 
   const saveToDatabase = async () => {
@@ -68,7 +68,7 @@ export function HomePage(props) {
         title = 'Updating table with this values'
         show = {editNewRowDialogOpen}
         onSuccess = {saveToDatabase}
-        mainDisabled = {editing}
+        mainDisabled = {editing || errorsInNewTable !== 0}
         success_text = 'Save to DB'
         onClose = {closeEditModal}
         onSecondary = {() => dispatch(openOnCellErrorMessage(true))}

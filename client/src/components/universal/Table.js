@@ -1,10 +1,10 @@
 import { useSelector, useDispatch } from 'react-redux';
 import {
-  DataGrid, GridCellEditStopReasons, GridCellEditStartReasons, GridEditInputCell, useGridApiContext, GridCell
+  DataGrid, GridCellEditStopReasons, GridCellEditStartReasons, GridEditInputCell, useGridApiContext
 } from '@mui/x-data-grid';
 import { Select, Switch, Stack } from '@mui/material';
 import { useState, useEffect } from 'react';
-import { setEditMode } from '../../actions';
+import { setEditMode, validationErrors } from '../../actions';
 import { validateCellFailed } from '../Validation';
 
 function CustomRenderEditCell(params) {
@@ -108,11 +108,20 @@ export function Table(props) {
     return result || 'string';
   }
 
+  const validateAllCells = () => {
+    if (!props.checkUnedited) return
+    dispatch(validationErrors(0));
+    // console.log('props.rows ->',props.rows);
+    props.rows.forEach((row) => Object.entries(row).forEach(([key, value]) => validateCellFailed({ value }, constrains[key], dispatch, false, true )));
+  }
+
+  useEffect(()=> { validateAllCells() }, [props.rows])
+
   return (
     <DataGrid
       columns={makeColumns(props.columns)}
       rows={props.rows}
-      getRowId={(row) => row[primaryKey]}
+      getRowId={ (row) => { return row[primaryKey] } }
       showCellVerticalBorder={props.showCellVerticalBorder}
       showColumnVerticalBorder={props.showColumnVerticalBorder}
       getCellClassName={checkUneditedCells}

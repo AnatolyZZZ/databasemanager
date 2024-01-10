@@ -28,7 +28,8 @@ export const ACTIONS = {
   TOGGLE_WELCOME: 'TOGGLE_WELCOME',
   SWITCH_OFF_WELCOME: 'SWITCH_OFF_WELCOME',
   SET_EDIT_ROW: 'SET_EDIT_ROW',
-  SET_NEW_TABLE_TO_DEFAULT: 'SET_NEW_TABLE_TO_DEFAULT'
+  SET_NEW_TABLE_TO_DEFAULT: 'SET_NEW_TABLE_TO_DEFAULT',
+  VALIDATION_ERRORS: 'VALIDATION_ERRORS'
 };
 
 export const setTable = (table) => ({
@@ -160,6 +161,11 @@ export const toggleWelcome = (val) => ({
 
 export const setEditRow = (val) => ({
   type: ACTIONS.SET_EDIT_ROW,
+  payload: val
+})
+
+export const validationErrors = (val) => ({
+  type: ACTIONS.VALIDATION_ERRORS,
   payload: val
 })
 
