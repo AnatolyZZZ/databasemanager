@@ -3,7 +3,7 @@ import {
   DataGrid, GridCellEditStopReasons, GridCellEditStartReasons, GridEditInputCell, useGridApiContext, GridCell
 } from '@mui/x-data-grid';
 import { Select, Switch, Stack } from '@mui/material';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { setEditMode } from '../../actions';
 import { validateCellFailed } from '../Validation';
 
@@ -35,11 +35,12 @@ function EnumRender(props) {
 
 function BoolRender(props) {
   const apiRef = useGridApiContext();
-  let checked = props.value;
-  if (checked === '') {
-    apiRef.current.setEditCellValue({ id: props.id, field: props.field, value: false});
-    checked = false;
-  }
+  const [checked, setChecked] =  useState(props.value === '' ? false : props.value)
+  useEffect(() => {
+    if (props.value === '') {
+      apiRef.current.setEditCellValue({ id: props.id, field: props.field, value: checked });
+    }
+  }, [apiRef, props.value, props.id, props.field]);
   return (
     <Stack direction="row" spacing={0} alignItems="center">
     <span style={{fontSize : 10, transform: 'translateX(2px)'}}>False</span>
@@ -48,7 +49,7 @@ function BoolRender(props) {
       color={'success'}
       size='small'
       onChange={(event) => {
-        checked = event.target.checked;
+        setChecked(event.target.checked);
         apiRef.current.setEditCellValue({ id: props.id, field: props.field, value: event.target.checked})}}
     />
     <span style={{fontSize : 10, transform: 'translateX(-2px)'}}>True</span>
@@ -66,7 +67,7 @@ export function Table(props) {
   const [editingColumnName, setEditingColumnName] = useState(null);
 
   const checkUneditedCells = props.checkUnedited ? (params) => {
-    const failed =  validateCellFailed(params, constrains[params.field], dispatch) 
+    const failed =  validateCellFailed(params, constrains[params.field], dispatch, false) 
     return failed ? 'cell_with-error' : null
   } : null
 

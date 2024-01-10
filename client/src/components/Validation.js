@@ -1,7 +1,7 @@
 /// --------CHECKING CONSTRAINS --------------------
 import { ACTIONS } from '../actions';
 
-export const validateCellFailed = (params, constrains, dispatch) => {
+export const validateCellFailed = (params, constrains, dispatch, updateState = true) => {
   // console.log('validate cell constrains =>', constrains);
   // console.log('params', params);
   if(!constrains) return
@@ -30,7 +30,7 @@ export const validateCellFailed = (params, constrains, dispatch) => {
     }
   }
 
-  dispatch({ type: ACTIONS.SET_EDIT_ERROR_MESSAGES, payload: Array.from(errorMessages) });
+  if (updateState) dispatch({ type: ACTIONS.SET_EDIT_ERROR_MESSAGES, payload: Array.from(errorMessages) });
   return !typePass || !notEmptyPass;
 };
 
