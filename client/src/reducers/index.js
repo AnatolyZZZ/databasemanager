@@ -53,6 +53,8 @@ const initialState = {
   showWelcomeMessage: false,
   // first time show welcome message
   welcomeFirstTime: true,
+  // default EditRaw 
+  editRaw : {}
 };
 let curTableFiters;
 let newFilterState;
@@ -137,6 +139,10 @@ const reducer = (state = initialState, action = {}) => {
       return { ...state, welcomeFirstTime: false };
     case (ACTIONS.TOGGLE_WELCOME):
       return { ...state, showWelcomeMessage: action.payload };
+    case (ACTIONS.SET_EDIT_ROW): 
+      return {...state, editRaw: action.payload};
+    case (ACTIONS.SET_NEW_TABLE_TO_DEFAULT): 
+      return {...state, newTableRows : [...state.editRaw]}
     default:
       return { ...state };
   }

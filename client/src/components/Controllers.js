@@ -47,9 +47,9 @@ export function Controllers(props) {
   return (
     <div className="container controllers">
       <FormControl size="large" sx={{ m: 1, width: 192 }}>
-        <InputLabel id="table_name_select_label">Table name</InputLabel>
+        <InputLabel id="select-table-name">Table name</InputLabel>
         <Select
-          labelId="table_name_select_label"
+          labelId="select-table-name"
           id="table_name_select"
           value={table_name}
           label="Table name"

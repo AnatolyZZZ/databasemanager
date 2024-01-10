@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { InputLabel, Select, FormControl, MenuItem, Stack, Button, TextField, DialogTitle } from '@mui/material';
 import { useState, useEffect, useCallback } from 'react';
-import { chooseModel, chooseVersion, setNewTableRows, ACTIONS, openNewRow, setEditMode } from '../actions';
+import { chooseModel, chooseVersion, setNewTableRows, ACTIONS, openNewRow, setEditMode, setNewTableToDefault } from '../actions';
 import { $alert, $loading} from '../utils/ux';
 import CustomModal from './universal/CustomModal';
 
@@ -35,12 +35,6 @@ export function ModelCopy(props) {
 
   const handleChangeVersion = (e) => {
     dispatch(chooseVersion(e.target.value));
-  };
-
-  const setNewTableRowToDefault = () => {
-    const editRow = [{ [primaryKey]: 1 }];
-    editable_columns.forEach((elt) => editRow[0][elt] = '');
-    dispatch(setNewTableRows(editRow));
   };
 
   const validate = useCallback((field, val) => {
@@ -113,7 +107,7 @@ export function ModelCopy(props) {
   const onModelDialogClose = () => {
     openModelsDialog(false);
     dispatch(setEditMode(false));
-    setNewTableRowToDefault();
+    dispatch(setNewTableToDefault());
     change(false)
   }
 

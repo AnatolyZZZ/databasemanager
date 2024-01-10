@@ -5,7 +5,7 @@ import { HomePage } from './pages/HomePage';
 import { Service } from './pages/Service';
 import { Loading } from './components/misc/Loading';
 import { LoginRegister } from './pages/LoginRegister';
-import { setTable, setColumns, setTableNames, setSelected, setPrimaryKey, setLengths, setEditableColumns, setNewTableRows, setModels, setVersions, restoreFilters } from './actions';
+import { setTable, setColumns, setTableNames, setSelected, setPrimaryKey, setLengths, setEditableColumns, setNewTableRows, setModels, setVersions, restoreFilters, setEditRow } from './actions';
 import './App.css';
 import { $loading } from './utils/ux';
 import { getData } from './utils/api';
@@ -96,11 +96,12 @@ function App() {
           acc[val] = ''; 
           return acc 
         }, 
-          { id : 1} ) ]
+          { [primaryKey] : 1} ) ]
         dispatch(setEditableColumns(editableColumns));
         dispatch(setNewTableRows(editRow));
+        dispatch(setEditRow(editRow));
       }
-      if (columns && constrains) checkEditable()
+      if (columns && constrains && primaryKey) checkEditable()
       $loading(false)
     }
   if (table_name !== '') getTableData();

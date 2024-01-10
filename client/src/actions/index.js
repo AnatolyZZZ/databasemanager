@@ -27,6 +27,8 @@ export const ACTIONS = {
   RESTORE_FILTERS: 'RESTORE_FILTERS',
   TOGGLE_WELCOME: 'TOGGLE_WELCOME',
   SWITCH_OFF_WELCOME: 'SWITCH_OFF_WELCOME',
+  SET_EDIT_ROW: 'SET_EDIT_ROW',
+  SET_NEW_TABLE_TO_DEFAULT: 'SET_NEW_TABLE_TO_DEFAULT'
 };
 
 export const setTable = (table) => ({
@@ -155,3 +157,10 @@ export const toggleWelcome = (val) => ({
   type: ACTIONS.TOGGLE_WELCOME,
   payload: val,
 });
+
+export const setEditRow = (val) => ({
+  type: ACTIONS.SET_EDIT_ROW,
+  payload: val
+})
+
+export const setNewTableToDefault = () => ({ type: ACTIONS.SET_NEW_TABLE_TO_DEFAULT })
