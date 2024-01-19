@@ -3,6 +3,7 @@ import { InputLabel, Select, FormControl, MenuItem, Stack, Button, TextField, Di
 import { useState, useEffect, useCallback } from 'react';
 import { chooseModel, chooseVersion, setNewTableRows, ACTIONS, openNewRow, setEditMode, setNewTableToDefault, validationErrors } from '../actions';
 import { $alert, $loading} from '../utils/ux';
+import { getData } from '../utils/api';
 import CustomModal from './universal/CustomModal';
 
 import { validateCellFailed } from './Validation';
@@ -16,8 +17,6 @@ export function ModelCopy(props) {
   const root_url = useSelector((state) => state.root_url);
   const table_name = useSelector((state) => state.table_name);
   const constrains = useSelector((state) => state.constrains);
-  const primaryKey = useSelector((state) => state.primaryKey);
-  const editable_columns = useSelector((state) => state.editable_columns);
 
   const [modelsDialog, openModelsDialog] = useState(false);
   const [newModel, setNewModel] = useState('');
@@ -56,53 +55,30 @@ export function ModelCopy(props) {
   const goToEdit = async () => {
     const prepareTable = async () => {
       dispatch({ type: ACTIONS.SET_LOADING, payload: true });
-      try {
-        const res = await fetch(`${root_url}/api/table/${table_name}?model=${cur_model}&version=${cur_version}`);
-        // console.log(res)
-        const data = await res.json();
-        // console.log(data)
-        if (res.status === 200) {
+      $loading(true);
+      const data = await getData(`/api/table/${table_name}`,{ model : cur_model, version: cur_version });
+      $loading(false)
+      if (data) {
           const ed_table = data.map((elt) => ({ ...elt, model: newModel, version: newVersion }));
-          $loading(false);
           dispatch(setNewTableRows(ed_table));
           openModelsDialog(false);
           dispatch(validationErrors(0));
           dispatch(openNewRow(true));
-        } else {
-          console.log('throw');
-          throw new Error('Failed to load data, please try again');
-        }
-      } catch (error) {
-        // console.log('catch in prepare table')
-        $alert(JSON.stringify(error));
-        $loading(false);
-      }
+      } 
     };
 
-    if (newModel === '' || newVersion === '') {
-      $alert('Should not be empty');
-    } else
-      if (models.includes(newModel)) {
-        dispatch({ type: ACTIONS.SET_LOADING, payload: true });
-        try {
-          const res = await fetch(`${root_url}/api/general/versions?table=${table_name}&model=${newModel}`);
-          const thisModelVersions = await res.json();
-          if (res.status !== 200) {
-            throw new Error('Something went wrong, please try again');
-          } else if (thisModelVersions.map((elt) => String(elt.version)).includes(String(newVersion))) {
-            // console.log('includes', thisModelVersions)
-            $alert(`Sorry, model "${newModel}" already has version "${newVersion}"`);
-            $loading(false);
-          } else {
-            prepareTable();
-          }
-        } catch (error) {
-          $alert(JSON.stringify(error));
-          $loading(false);
-        }
-      } else {
-        prepareTable();
-      }
+    if (newModel === '' || newVersion === '')  return $alert('Should not be empty');
+
+    if (!models.includes(newModel)) return prepareTable();
+
+    $loading(true)
+    const thisModelVersions = await getData(`/api/general/versions`, {table : table_name, model : newModel});
+    $loading(false)
+    if (!thisModelVersions) return 
+    const thisModelVersionsStings = thisModelVersions.map((elt) => String(elt.version));
+    if (thisModelVersionsStings.includes(String(newVersion))) return $alert(`Sorry, model "${newModel}" already has version "${newVersion}"`);
+    prepareTable();
+      
   };
 
   const onModelDialogClose = () => {
