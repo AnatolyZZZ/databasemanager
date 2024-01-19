@@ -63,11 +63,12 @@ export function Table(props) {
   const editing = useSelector((state) => state.editing);
   const lengths = useSelector((state) => state.lengths);
   const constrains = useSelector((state) => state.constrains);
+  const errorsOnCell = useSelector((state) => state.errorMessages);
 
   const [editingColumnName, setEditingColumnName] = useState(null);
 
   const checkUneditedCells = props.checkUnedited ? (params) => {
-    const failed =  validateCellFailed(params, constrains[params.field], dispatch, false) 
+    const failed =  validateCellFailed(params, constrains[params.field], false) 
     return failed ? 'cell_with-error' : null
   } : null
 
@@ -80,8 +81,7 @@ export function Table(props) {
     valueGetter: (params) => (params.value === null ? '' : params.value),
     valueOptions: constrains[elt].type === 'enum' ? constrains[elt].enumValues.map((elt) => ({ value: elt, label: elt })) : null,
     preProcessEditCellProps: (params) => {
-      /// should refactor this part
-      const hasError = validateCellFailed(params, constrains[editingColumnName], dispatch);
+      const hasError = validateCellFailed(params, constrains[editingColumnName]);
       return { ...params.props, error: hasError };
     },
     renderEditCell: (params) => <CustomRenderEditCell {...params} />,
@@ -112,7 +112,7 @@ export function Table(props) {
     if (!props.checkUnedited) return
     dispatch(validationErrors(0));
     // console.log('props.rows ->',props.rows);
-    props.rows.forEach((row) => Object.entries(row).forEach(([key, value]) => validateCellFailed({ value }, constrains[key], dispatch, false, true )));
+    props.rows.forEach((row) => Object.entries(row).forEach(([key, value]) => validateCellFailed({ value }, constrains[key], false, true )));
   }
 
   useEffect(()=> { validateAllCells() }, [props.rows])
@@ -127,13 +127,8 @@ export function Table(props) {
       getCellClassName={checkUneditedCells}
 
       onCellEditStop={(params, event) => {
-        if (params.reason === GridCellEditStopReasons.cellFocusOut) {
-          event.defaultMuiPrevented = true;
-        } else {
-          // console.log('params ->',params);
-          // console.log('event ->',event);
-          dispatch(setEditMode(false));
-        }
+        if (params.reason === GridCellEditStopReasons.cellFocusOut) return event.defaultMuiPrevented = true;
+        if (!errorsOnCell.length) dispatch(setEditMode(false)); 
       }}
 
       onCellEditStart={(params, event) => {

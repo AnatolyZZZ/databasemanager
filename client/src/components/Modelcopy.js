@@ -38,7 +38,7 @@ export function ModelCopy(props) {
 
   const validate = useCallback((field, val) => {
     if (Object.keys(constrains).length > 0 && dataChanged) {
-      const res = validateCellFailed({ props: { value: val } }, constrains[field], dispatch);
+      const res = validateCellFailed({ props: { value: val } }, constrains[field]);
       return res;
     }
     return false;

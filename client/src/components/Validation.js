@@ -2,7 +2,7 @@
 import { ACTIONS } from '../actions';
 import { store } from '../index';
 
-export const validateCellFailed = (params, constrains, dispatch, updateState = true, checkingRow = false) => {
+export const validateCellFailed = (params, constrains, updateState = true, checkingRow = false) => {
   // console.log('validate cell constrains =>', constrains);
   // console.log('validate cell params', params);
   // if(checkingRow) console.log('validation called ->',constrains, params, store.getState().validationErrors);
@@ -32,7 +32,7 @@ export const validateCellFailed = (params, constrains, dispatch, updateState = t
     }
   }
 
-  if(updateState) dispatch({ type: ACTIONS.SET_EDIT_ERROR_MESSAGES, payload: Array.from(errorMessages) })
+  if(updateState) store.dispatch({ type: ACTIONS.SET_EDIT_ERROR_MESSAGES, payload: Array.from(errorMessages) })
   if(checkingRow && errorMessages.size) store.dispatch({ type: ACTIONS.VALIDATION_ERRORS, payload: false});
   return !typePass || !notEmptyPass;
 };
