@@ -2,18 +2,20 @@ const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const bodyParser = require('body-parser');
-// const cookieParser = require('cookie-parser';
+const cookieParser = require('cookie-parser');
 const path = require('path');
 const { generalRouter } = require('./routes/general');
 const { tableRouter } = require('./routes/table');
 const { clientRouter } = require('./routes/client');
 
+// const { reqLogger } = require('./middleware/reqLogger')
+
 dotenv.config();
 
 const server = express();
-server.use(cors());
-// server.use(express.urlencoded({extended:true}));
-// server.use(express.json())
+server.use(cors({ origin: true, credentials: true, exposedHeaders: ['isAuth'] }));
+server.use(cookieParser());
+// server.use(reqLogger);
 server.use(bodyParser.json({ limit: '50mb' }));
 server.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 

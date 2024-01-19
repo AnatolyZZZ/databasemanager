@@ -1,20 +1,25 @@
 import { Stack, TextField, Box, Button } from '@mui/material';
 import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux'
 
+import { setAuth } from '../actions';
 import { postData } from '../utils/api';
 import { $loading } from '../utils/ux';
 
 export const Login = (props) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const isAuth = useSelector((state) => state.isAuth)
+    const dispatch = useDispatch();
 
     const login = async () => {
         $loading(true);
-        const data = await postData('/api/client/login',{ username, password})
+        const { isAuth } = await postData('/api/client/login',{ username, password});
+        if (isAuth) dispatch(setAuth(true));
         $loading(false);  
     }
 
-    return <>
+    return !isAuth ? <>
     <Stack spacing={1}>
         
         {/* this box is in order to even login and register forms height */}
@@ -45,6 +50,8 @@ export const Login = (props) => {
         </Box>
 
     </Stack>
+    </> : <>
+        <Button variant='contained' color='warning' fullWidth onClick={() => dispatch(setAuth(false))}> Exit</Button>
     </>
     
 }

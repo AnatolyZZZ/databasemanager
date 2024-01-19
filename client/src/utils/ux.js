@@ -9,3 +9,11 @@ export const $alert = (message) => {
 export const $loading = (val) => {
     store.dispatch({type : ACTIONS.SET_LOADING, payload: val})
 }
+
+export const $navigate = (route) => {
+    store.dispatch({type : ACTIONS.NAVIGATE, payload: val })
+}
+
+export const $delay = (ms) => new Promise((resolve) => {
+    setTimeout(resolve, ms)
+})

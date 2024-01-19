@@ -23,8 +23,8 @@ const registerController = async (req, res) => {
     if (status === 'fail') {
       res.status(500).json({ msg: message });
     } else {
-      const accessToken = jwt.sign({ username }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '10m' });
-      res.cookie('accessToken', accessToken, {
+      const accessTokenKrya = jwt.sign({ username }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '10m' });
+      res.cookie('accessTokenKrya', accessTokenKrya, {
         httpOnly: true,
         maxAge: 600 * 1000,
       });
@@ -44,12 +44,13 @@ const loginController = async (req, res) => {
     if (!user || (Array.isArray(user) && user.length === 0)) return res.status(403).json({ msg: 'no such user' });
     const match = await bcrypt.compare(password, user.password);
     if (!match) res.status(400).json({ msg: 'Invalid password' });
-    const accessToken = jwt.sign({ username }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '10m' });
-    res.cookie('accessToken', accessToken, {
+    const accessTokenKrya = jwt.sign({ username }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '10m' });
+    res.cookie('accessTokenKrya', accessTokenKrya, {
       httpOnly: true,
       maxAge: 600 * 1000,
     });
-    res.json({ accessToken });
+    res.json({isAuth: true})
+    // res.json({ accessTokenKrya });
   } catch (error) {
     // eslint-disable-next-line
     console.log('error ->',error);

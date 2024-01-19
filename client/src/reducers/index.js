@@ -56,7 +56,11 @@ const initialState = {
   // default EditRaw 
   editRaw : {},
   // validation errors in newTable
-  validationErrors : 0
+  validationErrors : 0,
+  // for navigating out of components
+  navigate : '/',
+  // is user authorized
+  isAuth : false
 };
 let curTableFiters;
 let newFilterState;
@@ -147,6 +151,10 @@ const reducer = (state = initialState, action = {}) => {
       return {...state, newTableRows : [...state.editRaw]};
     case (ACTIONS.VALIDATION_ERRORS):
       return {...state, validationErrors: typeof(action.payload) === 'number' ? action.payload : state.validationErrors + 1}
+    case (ACTIONS.NAVIGATE) : 
+      return {...state, navigate : action.payload}
+    case (ACTIONS.AUTH) : 
+      return {...state, isAuth : action.payload}
     default:
       return { ...state };
   }

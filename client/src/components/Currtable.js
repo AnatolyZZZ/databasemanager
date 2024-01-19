@@ -3,7 +3,8 @@ import { Box } from '@mui/material';
 import { useState, useEffect } from 'react';
 import { setEditMode } from '../actions';
 import { Table } from './universal/Table';
-import { $alert, $loading } from '../utils/ux';
+import { $loading } from '../utils/ux';
+import { postData } from '../utils/api';
 
 export function CurrTable(props) {
   const dispatch = useDispatch();
@@ -11,7 +12,6 @@ export function CurrTable(props) {
   const table_name = useSelector((state) => state.table_name);
   const primaryKey = useSelector((state) => state.primaryKey);
   const selected_columns = useSelector((state) => state.selected_columns);
-  const root_url = useSelector((state) => state.root_url);
   const filters = useSelector((state) => state.filters);
   const apply_filters = useSelector((state) => state.apply_filters);
   const [filteredRows, filterRows] = useState([...table]);
@@ -38,7 +38,6 @@ export function CurrTable(props) {
         default:
       }
       if (idx === 0) {
-        // console.log(arr)
         return arr;
       } return applyFilter(idx - 1, arr);
     };
@@ -62,11 +61,6 @@ export function CurrTable(props) {
       entry: updRow,
     };
 
-    const para = {
-      method: 'PUT',
-      headers: { 'Content-type': 'application/json' },
-      body: JSON.stringify(upd),
-    };
     let shalowEqual = true;
     for (const key in updRow) {
       if (updRow[key] !== originalRow[key]) {
@@ -76,30 +70,14 @@ export function CurrTable(props) {
     }
     // dont fetch database if nothing have changed
     if (!shalowEqual) {
-      try {
-        dispatch({ type: 'SET_LOADING', payload: true });
-        const res = await fetch(`${root_url}/api/table`, para);
-        const result = await res.json();
-        // console.log('result', result)
-        if (res.status === 200) {
-          const row = result[0];
-          dispatch({ type: 'SET_LOADING', payload: false });
-          dispatch(setEditMode(false));
-          return row;
-        }
-        // console.log('error', result.msg, 'result.upd', result.upd);
-        $alert(`Failed to save in database\n ${result.msg}`);
-        $loading(false);
-        return originalRow;
-      } catch (error) {
-        console.log('error => ', error);
-        $alert('Failed to save in database, unknown error ');
-        $loading(false);
-        return originalRow;
-      }
+      $loading(true)
+      const result = await postData('/api/table',upd, {}, {signal : null}, 'Failed to save in database, unknown error', null, true)
+      $loading(false)
+      if(!result) return originalRow
+      const row = result[0];
+      dispatch(setEditMode(false));
+      return row;   
     }
-    // probably will never come here as we return erlier
-    dispatch(setEditMode(false));
     return updRow;
   };
 

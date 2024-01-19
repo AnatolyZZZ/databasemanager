@@ -29,7 +29,9 @@ export const ACTIONS = {
   SWITCH_OFF_WELCOME: 'SWITCH_OFF_WELCOME',
   SET_EDIT_ROW: 'SET_EDIT_ROW',
   SET_NEW_TABLE_TO_DEFAULT: 'SET_NEW_TABLE_TO_DEFAULT',
-  VALIDATION_ERRORS: 'VALIDATION_ERRORS'
+  VALIDATION_ERRORS: 'VALIDATION_ERRORS',
+  NAVIGATE: 'NAVIGATE',
+  AUTH: 'AUTH'
 };
 
 export const setTable = (table) => ({
@@ -170,3 +172,13 @@ export const validationErrors = (val) => ({
 })
 
 export const setNewTableToDefault = () => ({ type: ACTIONS.SET_NEW_TABLE_TO_DEFAULT })
+
+export const myNavigate = (route) => ({
+  type: ACTIONS.NAVIGATE,
+  payload: route
+})
+
+export const setAuth = (val) => ({
+  type: ACTIONS.AUTH,
+  payload: val
+})

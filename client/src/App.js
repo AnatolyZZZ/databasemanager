@@ -1,20 +1,35 @@
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useNavigate, useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { HomePage } from './pages/HomePage';
 import { Service } from './pages/Service';
 import { Loading } from './components/misc/Loading';
 import { LoginRegister } from './pages/LoginRegister';
-import { setTable, setColumns, setTableNames, setSelected, setPrimaryKey, setLengths, setEditableColumns, setNewTableRows, setModels, setVersions, restoreFilters, setEditRow } from './actions';
+import { setTable, setColumns, setTableNames, setSelected, setPrimaryKey, setLengths, setEditableColumns, setNewTableRows, setModels, setVersions, restoreFilters, setEditRow, myNavigate } from './actions';
 import './App.css';
 import { $loading } from './utils/ux';
 import { getData } from './utils/api';
 
 function App() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { pathname } = location;
   const table_name = useSelector((state) => state.table_name);
   const column_names = useSelector((state) => state.columns);
   const cur_model = useSelector((state) => state.model);
+  const routeToNavigate = useSelector((state) => state.navigate);
+  
+  // navigate if requested 
+  useEffect(() => {
+    navigate(routeToNavigate)
+  }, [routeToNavigate])
+
+  // update curent routeToNavigate state if navigated not with my custom function
+  useEffect(()=> {
+    dispatch(myNavigate(pathname))
+  }, [pathname] )
+  
 
   //first when App is loaded get tablenames
   useEffect(() => {
