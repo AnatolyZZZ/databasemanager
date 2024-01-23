@@ -7,10 +7,10 @@ const checkName = async (name) => {
 
 const getUser = async (name) => clientDB('krya_users').where({ username: name }).first();
 
-const register = async (username, password) => {
+const register = async (username, password, position, companyName, experience, additionalInfo) => {
   const userExists = await checkName(username);
   if (userExists) return { status: 'fail', message: 'user already exists' };
-  const [newClient] = await clientDB('krya_users').insert({ username, password }).returning('*');
+  const [newClient] = await clientDB('krya_users').insert({ username, password, position, companyname: companyName, experience, additionalinfo:additionalInfo }).returning('*');
   delete newClient.password;
   return { status: 'ok', client: newClient };
 };

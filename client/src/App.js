@@ -36,7 +36,7 @@ function App() {
     const abortController = new AbortController();
     const getTableNames = async () => {
       $loading(true);
-      const data = await getData('/api/general/tablenames',{}, abortController, 'Failed to fetch tablenames, wait or reload page');
+      const data = await getData('/api/general/tablenames',{}, abortController, 'Failed to fetch tablenames, wait and reload page');
       $loading(false);
       if (data) dispatch(setTableNames(data))
     }

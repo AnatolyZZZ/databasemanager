@@ -11,7 +11,7 @@ export const $loading = (val) => {
 }
 
 export const $navigate = (route) => {
-    store.dispatch({type : ACTIONS.NAVIGATE, payload: val })
+    store.dispatch({type : ACTIONS.NAVIGATE, payload: route})
 }
 
 export const $delay = (ms) => new Promise((resolve) => {

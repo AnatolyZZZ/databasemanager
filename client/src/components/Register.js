@@ -1,43 +1,77 @@
-import { Stack, TextField, Button, Box, Collapse} from '@mui/material';
+import { Stack, TextField, Button, Box, Collapse, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import MUIAlert from '@mui/material/Alert'
 import { postData } from '../utils/api';
-import { $alert } from '../utils/ux';
+import { $alert, $delay, $navigate } from '../utils/ux';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { setAlertError } from '../actions'
+import { positionSelectOptions, levelSelectorOptions} from './enteties/registerInfo'
 
 
 export const Register = (props) => {
+    const dispatch = useDispatch();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [emailError, setEmailError] = useState(false);
+    const [passwordError, setPasswordError] = useState(false);
     const [passwordConfirm, setPasswordConfirm] = useState('');
     const [successAlert, openSuccess] = useState(false);
-    const dispatch = useDispatch();
+    const [position, selectPosition] = useState('');
+    const [experience, selectExp] = useState('');
+    const [companyName, setCompanyName] = useState('');
+    const [additionalInfo, setAdditionalInfo] = useState('');
 
     const validate = () => {
+        if (emailError) {
+            $alert('Enter valid email');
+            return false
+        }
         if (password !== passwordConfirm) {
             $alert('Passwords do not match ');
+            setPasswordError(true)
             return  false
         }
         return true
     }
 
     const checkName = async () => {
+        if (emailError) return false
         const data = await postData('/api/client/check', { username });
         if (data?.exist) {
-            $alert(`User ${username} already exists`);
+            $alert(`User with email ${username} already exists`);
             return  false
         }
         return true
     }
 
+    const isEmailValid = (val) => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const valid = emailRegex.test(val)
+        setEmailError(!valid);
+        return valid
+    }
+
+    const handleEmailChange = (event) => {
+        const newEmail = event.target.value;
+        setUsername(newEmail);
+        dispatch(setAlertError(false));
+        isEmailValid(newEmail)
+    }
+
     const validateAndRegister = async () => {
-        let valid = validate()
+        let valid = isEmailValid(username)
+        if (!valid) return
+        valid = validate()
         if (!valid) return
         valid = await checkName()
         if (!valid) return
-        const data = await postData('/api/client/register', { password, username })
-        if (data?.status === 'ok') openSuccess(true);
+        const data = await postData('/api/client/register', { password, username, companyName, experience, additionalInfo, position });
+        console.log('data ->',data);
+        if (data && data?.status === 'ok') {
+            openSuccess(true);
+            await $delay(2000);
+            $navigate('/');
+        }
         
     }
 
@@ -47,21 +81,20 @@ export const Register = (props) => {
         </Collapse>
         
         <TextField 
-            id="username" 
-            label="Username" 
+            id="email" 
+            label="Email" 
             variant="outlined"
-            onChange={ (event) => {
-                setUsername(event.target.value)
-                dispatch(setAlertError(false))
-                }  
-            }
+            onChange={ handleEmailChange }
             onBlur={ checkName }
+            error = { emailError }
+            required
             />
         <TextField 
             id="password" 
             label="Password" 
             variant="outlined" 
-            onChange={ (event) => setPassword(event.target.value)} 
+            onChange={ (event) => setPassword(event.target.value)}
+            required
             />
         <TextField 
             id="confirm_password" 
@@ -73,7 +106,62 @@ export const Register = (props) => {
                 }
             }  
             onBlur={ validate }
+            error={ passwordError }
+            required
             />
+        <Stack spacing={1} >
+            <Stack spacing={1} direction='row' >
+                <TextField 
+                    id="company_name" 
+                    label="Company name" 
+                    variant="outlined"
+                    onChange={ (event) => setCompanyName(event.target.value)}  
+                />
+                
+                <FormControl size="large" sx={{ m: 1, width: 192 }}>
+                    <InputLabel id="select-position">Opened position</InputLabel>
+                    <Select
+                        labelId="select-position"
+                        id="position-selector"
+                        value={position}
+                        label="Opened position"
+                        onChange={(e) => selectPosition(e.target.value)}
+                    >
+                        <MenuItem disabled value="">
+                        <em>Opened position</em>
+                        </MenuItem>
+                        {positionSelectOptions.map((elt) => <MenuItem value={elt.value} key={elt.id}>{elt.lablel}</MenuItem>)}
+                    </Select>
+                </FormControl>
+
+                <FormControl size="large" sx={{ m: 1, width: 192 }}>
+                    <InputLabel id="select-experience">Required experience</InputLabel>
+                    <Select
+                        labelId="select-position"
+                        id="experience-selector"
+                        value={experience}
+                        label="Required experience"
+                        onChange={(event) => selectExp(event.target.value)}
+                    >
+                        <MenuItem disabled value="">
+                        <em>Required experience</em>
+                        </MenuItem>
+                        {levelSelectorOptions.map((elt) => <MenuItem value={elt.value} key={elt.id}>{elt.lablel}</MenuItem>)}
+                    </Select>
+                </FormControl>
+            </Stack>
+            
+            { 
+            (position === 'other' || experience === 'other') &&
+            <TextField
+                id="additional-info"
+                label='Please specify other'
+                variant="outlined"
+                fullWidth
+                onChange={(event) => setAdditionalInfo(event.target.value)}
+            />
+            }
+        </Stack>
         <Box>
             <Box 
                 sx={{width: '33%', marginLeft: 'auto', marginRight: 'auto'}}

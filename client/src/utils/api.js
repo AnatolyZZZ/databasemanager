@@ -34,7 +34,6 @@ export const getData =  async (route, para = {}, abortController={signal : null}
         try {
             const response = await makeFetch(route, para, requestParams);
             const isAuth = response.headers.get('isAuth');
-            console.log('isAuth ->',isAuth);
             if (isAuth === false || isAuth === 'false') store.dispatch(setAuth(false));
             const data = await response.json()
             if (response.status === 200)  return data

@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import { setAuth } from '../actions';
 import { postData } from '../utils/api';
-import { $loading } from '../utils/ux';
+import { $loading, $navigate, $delay } from '../utils/ux';
 
 export const Login = (props) => {
     const [username, setUsername] = useState('');
@@ -15,8 +15,13 @@ export const Login = (props) => {
     const login = async () => {
         $loading(true);
         const { isAuth } = await postData('/api/client/login',{ username, password});
-        if (isAuth) dispatch(setAuth(true));
-        $loading(false);  
+        $loading(false); 
+        if (isAuth) {
+            dispatch(setAuth(true))
+            await $delay(2000);
+            $navigate('/')
+        };
+        
     }
 
     return !isAuth ? <>
@@ -27,7 +32,7 @@ export const Login = (props) => {
 
         <TextField 
             id="username" 
-            label="Username" 
+            label="Email" 
             variant="outlined" 
             onChange={ (event) => { setUsername(event.target.value) } }
         />
@@ -40,8 +45,6 @@ export const Login = (props) => {
             onChange={ (event) => { setPassword(event.target.value) } }
         />
         
-        {/* this box is in order to even login and register forms height */}
-        <Box sx={{width: '100%', height : '55px'}}></Box>
 
         <Box>
             <Box sx={{width: '33%', marginLeft: 'auto', marginRight: 'auto'}}>

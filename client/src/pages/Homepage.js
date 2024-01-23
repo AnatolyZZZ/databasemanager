@@ -29,12 +29,11 @@ export function HomePage(props) {
       // del PK only if it is nextVal
       if (String(constrains[primaryKey].defaultValue).slice(0, 8) === 'nextval(') {
         delete newRowWithNoKey[primaryKey];
-        console.log('deleting');
       }
       readyToUpd[key] = newRowWithNoKey;
     }
     // console.log('ready to upd', readyToUpd)
-    dispatch({ type: 'SET_LOADING', payload: true });
+    $loading(true)
     const addedRows = await postData('/api/table', { table : table_name, rows: readyToUpd});
     if (addedRows) {
       const newTable = [...cur_table, ...addedRows]
@@ -50,7 +49,6 @@ export function HomePage(props) {
 
   const closeEditModal = () => {
     dispatch(openNewRow(false));
-    console.log('closeModal');
     dispatch(setEditMode(false));
      // if more than 1 row => we are edditing new model, so when close set to default
      if (newTableRows.length > 1) {
