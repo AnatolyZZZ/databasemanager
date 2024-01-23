@@ -1,0 +1,27 @@
+.hot-keys-page {
+    padding: 0 40px;
+}
+
+.hot-keys-page-line {
+    margin: 0 0 10px 0;
+}
+.hot-keys-page__key {
+    background-color: antiquewhite;
+    padding: 2px;
+    border-radius: 3px;
+    margin-right: 5px;
+}
+
+.hot-keys-page__text_bold {
+    font-weight: 600;
+}
+
+.hot-keys-page__text::before {
+    content: '— ';
+}
+.hot-keys-page__home {
+    color: black;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+}

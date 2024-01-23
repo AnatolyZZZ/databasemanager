@@ -10,6 +10,7 @@ import { ColumnsController } from './Columnscontroller';
 import { ModelCopy } from './Modelcopy';
 import { Errors } from './Errors';
 import { useNavigate } from 'react-router-dom';
+import { $navigate } from '../utils/ux';
 
 import './styles/Controllers.css';
 
@@ -119,6 +120,7 @@ export function Controllers(props) {
                   <MenuItem onClick={handleOpenColumns} disabled={editing || table_name === ''}>Displayed columns</MenuItem>
                   <MenuItem onClick={() => dispatch(toggleWelcome(true))}>Show instructions</MenuItem>
                   <MenuItem onClick={() => navigate('loginregister')}>Login/Register</MenuItem>
+                  <MenuItem onClick={() => $navigate('hotkeys')}>HotKeys</MenuItem>
                 </MenuList>
               </ClickAwayListener>
             </Paper>

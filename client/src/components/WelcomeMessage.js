@@ -53,7 +53,7 @@ export function WelcomeMessage(props) {
     e.stopPropagation();
     changePopperText(texts[id]);
     popperRef.current = ref.current;
-    pos[id] ? setPosition(pos[id]) : setPosition('bottom');
+    setPosition(pos[id] ? pos[id] : 'bottom' )
     openPopper(true);
   };
 

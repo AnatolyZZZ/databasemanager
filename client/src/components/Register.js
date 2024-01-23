@@ -163,7 +163,7 @@ export const Register = (props) => {
             (position === 'other' || experience === 'other') &&
             <TextField
                 id="additional-info"
-                label='Please specify other'
+                label='Please, specify other'
                 variant="outlined"
                 fullWidth
                 onChange={(event) => setAdditionalInfo(event.target.value)}

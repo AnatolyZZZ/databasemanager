@@ -9,6 +9,7 @@ import { setTable, setColumns, setTableNames, setSelected, setPrimaryKey, setLen
 import './App.css';
 import { $loading } from './utils/ux';
 import { getData } from './utils/api';
+import { HotKeys } from './pages/HotKeys';
 
 function App() {
   const dispatch = useDispatch();
@@ -90,7 +91,7 @@ function App() {
       const updateLengths = () => {
         const lengths = new Map();
          // first lengths is map from names to names length in symbols
-        columns.forEach(name => lengths.set(name, String(name).length))
+        columns.forEach(name => lengths.set(name, String(name).length + 3))
         
         // now upgrade with max length of data in each row 
         data.forEach(row => Object.entries(row).forEach(([key, value]) => lengths.set(key, Math.max(lengths.get(key), String(value).length))));
@@ -156,6 +157,7 @@ function App() {
         <Route path="/" Component={HomePage} />
         {/* <Route path="/service" Component={Service} /> */}
         <Route path="loginregister" Component={LoginRegister} />
+        <Route path="hotkeys" Component={HotKeys} />
       </Routes>
     </div>
   );

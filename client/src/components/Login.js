@@ -30,7 +30,7 @@ export const Login = (props) => {
     }
 
     return !isAuth ? <>
-    <Stack spacing={1} >
+    <Stack spacing={1}>
         
         {/* this box is in order to even login and register forms height */}
         <Box sx={{width: '100%', height : '1px'}}></Box>

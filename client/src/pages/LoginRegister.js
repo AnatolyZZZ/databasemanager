@@ -16,7 +16,7 @@ export const LoginRegister = (props) => {
     const navigate = useNavigate();
 
     return <>
-    {/* <Box sx={{ borderBottom: 1, borderColor: 'divider', width: 600}} mx={5}> */}
+
     <Box sx={{  borderColor: 'divider'}}  className='login-register-container'>
         <Stack direction="row" spacing={1} useFlexGap alignItems="center" style={{cursor: 'pointer'}} onClick={()=>navigate('/')}>
             <ArrowBack color='secondary'/>

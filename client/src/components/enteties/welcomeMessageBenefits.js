@@ -8,7 +8,7 @@ export const benefits = {
         `<p>If a given Model has different versions,</p>
         <p> you can copy just a desired version to a new version in the same or in another model</p>
         <p> On the final step you can eddit part of table you copy (otherwise what's the reason to create new version :-) )?</p>`,
-  edit_cell: '<p>After opening a table you can start editing any cell,</p><p> by just doubleclicking on it or by selecting and clicking enter</p>',
+  edit_cell: '<p>After opening a table<br/>you can start editing any cell,<br/> by just doubleclicking on it or</p><p> by selecting and clicking enter</p>',
   constrains_check:
         `<h3>When you edit cell, Krya validates folowing constrains:</h3>
             <ol>
@@ -25,8 +25,8 @@ export const benefits = {
         <p>Custom filters allow to filter <b>multiple</b> columns with ">", "<" "=", "<=" and ">="</p>
         <p>Custom filters are saved to local memory</p>`,
   standart:
-        `<h3>Data is presented in a convenient MUI data grid table</h3>
-        <p>So all basic features of MUI data grid are available from the box</p>
+        `<h3>Data is presented<br/> in a convenient MUI data grid table</h3>
+        <p>So all basic features of MUI data grid<br/> are available from the box</p>
         <ul>
             <li>Pagination</li>
             <li>Number of rows per page</li>
