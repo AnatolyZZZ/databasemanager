@@ -2,6 +2,10 @@ import { store } from '../index'
 import { setAlertError, setAlertErrorMessage, ACTIONS } from '../actions';
 
 export const $alert = (message) => {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth' 
+      });
     store.dispatch(setAlertErrorMessage(message));
     store.dispatch(setAlertError(true));
 }

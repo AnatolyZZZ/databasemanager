@@ -24,7 +24,6 @@ export function Errors(props) {
         disabled={!editing || errorMessages.length === 0}
         color="error"
         onClick={() => dispatch(openOnCellErrorMessage(!onCellErrorsMessage))}
-        id="open-error-dialog-button"
         sx={{ whiteSpace: 'nowrap' }}
       >
         Show errors

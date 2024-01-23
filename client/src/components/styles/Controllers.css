@@ -2,7 +2,8 @@
     display : flex;
     align-items: center;
     position: relative;
-    gap: 1rem
+    gap: 1rem;
+    flex-wrap: wrap;
 }
 
 .columns-edit {
@@ -13,7 +14,7 @@
     transform: translateY(300px);
 }
 
-#open-error-dialog-button {
+.menu-right {
     margin-left: auto;
 }
 

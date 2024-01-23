@@ -30,6 +30,8 @@ export const Register = (props) => {
             $alert('Passwords do not match ');
             setPasswordError(true)
             return  false
+        } else {
+            setPasswordError(false)
         }
         return true
     }
@@ -93,18 +95,24 @@ export const Register = (props) => {
             id="password" 
             label="Password" 
             variant="outlined" 
-            onChange={ (event) => setPassword(event.target.value)}
+            onChange={ (event) => {
+                setPassword(event.target.value)
+                dispatch(setAlertError(false))
+                }
+            }
             required
             />
         <TextField 
             id="confirm_password" 
             label="Confirm password" 
             variant="outlined"
+
             onChange={ (event) => {
                     setPasswordConfirm(event.target.value)
                     dispatch(setAlertError(false))
                 }
-            }  
+            }
+
             onBlur={ validate }
             error={ passwordError }
             required

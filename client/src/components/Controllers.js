@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux';
 import {
-  FormControl, InputLabel, MenuItem, Select, Button, Popper, MenuList, Paper, Grow, ClickAwayListener,
+  FormControl, InputLabel, MenuItem, Select, Button, Popper, MenuList, Paper, Grow, ClickAwayListener, Stack
 } from '@mui/material';
 import { useState, useRef } from 'react';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -79,17 +79,20 @@ export function Controllers(props) {
       </Button>
 
       <ModelCopy />
+      
+      <Stack direction='row' alignItems='center' spacing={1} className='menu-right'>
+        <Errors />
 
-      <Errors />
-
-      <SettingsIcon
-        id="settings"
-        ref={menuRef}
-        onClick={() => setSettingsMenuOpen(!settingsMenuOpen)}
-        aria-controls={settingsMenuOpen ? 'composition-menu' : undefined}
-        aria-expanded={settingsMenuOpen ? 'true' : undefined}
-        aria-haspopup="true"
-      />
+        <SettingsIcon
+          id="settings"
+          ref={menuRef}
+          onClick={() => setSettingsMenuOpen(!settingsMenuOpen)}
+          aria-controls={settingsMenuOpen ? 'composition-menu' : undefined}
+          aria-expanded={settingsMenuOpen ? 'true' : undefined}
+          aria-haspopup="true"
+        />
+      </Stack>
+      
 
       <Popper
         open={settingsMenuOpen}
