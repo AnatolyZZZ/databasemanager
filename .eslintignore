@@ -1,1 +1,3 @@
 client/build
+client/src/pages/Service.js
+client/src/App.test.js

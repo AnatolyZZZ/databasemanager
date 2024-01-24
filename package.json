@@ -13,10 +13,22 @@
     "eslint-client": "npx eslint --fix ./client/"
   },
   "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
+    "extends": [ "airbnb"],
+    "rules": {
+      "no-plusplus": "off",
+      "camelcase": "off",
+      "react/react-in-jsx-scope": "off",
+      "react/prop-types": "off",
+      "no-non-null-assertion": "off"
+    },
+    "parserOptions": {
+      "ecmaVersion": "latest",
+      "sourceType": "module",
+      "ecmaFeatures": {
+        "jsx": true
+      }
+    }
+
   },
   "author": "AnatolyZZZ",
   "license": "ISC",

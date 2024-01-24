@@ -1,9 +1,9 @@
 import React from 'react';
 
 function HTMLRenderer(props) {
-  const htmlContent = props.html;
-  // Use the dangerouslySetInnerHTML prop to render HTML
-  return <div dangerouslySetInnerHTML={{ __html: htmlContent }} />;
+  const { html } = props;
+  // eslint-disable-next-line
+  return <div dangerouslySetInnerHTML={{ __html: html }} />;
 }
 
 export default HTMLRenderer;

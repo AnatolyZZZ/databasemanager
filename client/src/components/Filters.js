@@ -7,7 +7,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { Filter } from './Filter';
 import { applyFilters, newFilter } from '../actions';
 
-export function Filters(props) {
+export function Filters() {
   const table_name = useSelector((state) => state.table_name);
   const filters = useSelector((state) => state.filters);
   const [filtersDialog, openFiltersDialog] = useState(false);
@@ -34,10 +34,11 @@ export function Filters(props) {
       </Button>
       <Dialog open={filtersDialog} maxWidth={false} onKeyDown={handleListKeyDown}>
         <DialogContent>
-          {filters[table_name]?.map((elt, idx) => <Filter key={idx} table={table_name} id={idx} />)}
+          { // eslint-disable-next-line
+          filters[table_name]?.map((elt, idx) => <Filter key={idx} table={table_name} id={idx} />)}
 
           <Stack direction="row" justifyContent="center">
-            <Button color="success" onClick={(e) => dispatch(newFilter(table_name))}>
+            <Button color="success" onClick={() => dispatch(newFilter(table_name))}>
               {' '}
               New
               <AddIcon />

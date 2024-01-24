@@ -23,7 +23,7 @@ const getColumnNames = async (tableName) => {
         `;
     try {
       return db.raw(query);
-    } catch {
+    } catch (err) {
       return null;
     }
   };
@@ -85,7 +85,7 @@ const getColumnNames = async (tableName) => {
 
     const primaryKey = primaryKeyRes.rows[0].attname;
 
-    return {columns, primaryKey, constrains};
+    return { columns, primaryKey, constrains };
   } catch (error) {
     // eslint-disable-next-line
     console.log(`error geting column names from table  ${tableName}`, error);

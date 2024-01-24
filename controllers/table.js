@@ -5,7 +5,7 @@ const addRowsController = async (req, res) => {
     const row = await addRows(req.body.table, req.body.rows);
     res.status(200).json(row);
   } catch (error) {
-    res.status(500).json({msg: error?.message});
+    res.status(500).json({ msg: error?.message });
   }
 };
 

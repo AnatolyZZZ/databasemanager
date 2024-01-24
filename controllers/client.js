@@ -1,60 +1,62 @@
 const jwt = require('jsonwebtoken');
-const fetch = require('node-fetch')
+const fetch = require('node-fetch');
 const bcrypt = require('bcrypt');
 const { checkName, register, getUser } = require('../modules/client');
 // const dotenv = require('dotenv');
 
 const sendTelegramTelemetry = async (message) => {
-    const msgObj = {
-      chat_id : Number(process.env.TELEGRAM_CHAT),
-      text : message
-    }
+  const msgObj = {
+    chat_id: Number(process.env.TELEGRAM_CHAT),
+    text: message,
+  };
 
-    const para = {
-      method: 'POST',
-      headers : {"Content-Type" : "application/json"},
-      body: JSON.stringify(msgObj)
-    }
-    try {
-      const res = await fetch(`https://api.telegram.org/${process.env.TELEGRAM_BOT}:${process.env.TELEGRAM_PASS}`,para);
-      if (!res.status === 200) throw new Error(`${res.status} ${res.statusText}`)
-    } catch (error) {
-      console.log('error sending telegram->',error);
-      return false
-    }
-    return true
-
-}
+  const para = {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(msgObj),
+  };
+  try {
+    const res = await fetch(`https://api.telegram.org/${process.env.TELEGRAM_BOT}:${process.env.TELEGRAM_PASS}`, para);
+    if (!res.status === 200) throw new Error(`${res.status} ${res.statusText}`);
+  } catch (error) {
+    // eslint-disable-next-line
+    console.log('error sending telegram->', error);
+    return false;
+  }
+  return true;
+};
 
 const constructMessage = (client) => {
-  expVocabulary = {
-    jun : 'Junior',
-    mid : 'Middle',
+  const expVocabulary = {
+    jun: 'Junior',
+    mid: 'Middle',
     senior: 'Senior',
-    other: "Unknown"
-  }
-  positionVocabulary = {
-    front : 'Front-end',
-    back : 'Back-end',
-    full : 'Fullstack',
-    other: 'gneral IT specialist'
-  }
-  const { username, companyname, position, experience, additionalinfo } = client
+    other: 'Unknown',
+  };
+  const positionVocabulary = {
+    front: 'Front-end',
+    back: 'Back-end',
+    full: 'Fullstack',
+    other: 'gneral IT specialist',
+  };
+  const {
+    username, companyname, position, experience, additionalinfo,
+  } = client;
   return `REGISTRATION ALERT
   ${username} from ${companyname} is looking for 
-  ${ expVocabulary[experience]} level ${positionVocabulary[position]}
-  ${additionalinfo}`
-}
+  ${expVocabulary[experience]} level ${positionVocabulary[position]}
+  ${additionalinfo}`;
+};
 
 const postToTelegram = async (req, res) => {
-  const referer = req.get('Referer')
-  if (!(referer === 'https://anatolyzzz.github.io/portfolio/' || referer === 'http://localhost:3001/'  || referer === 'http://localhost:3000/')) res.status(401).json({msg : 'failed to post to telegram'})
+  const referer = req.get('Referer');
+  if (!(referer === 'https://anatolyzzz.github.io/portfolio/' || referer === 'http://localhost:3001/' || referer === 'http://localhost:3000/')) res.status(401).json({ msg: 'failed to post to telegram' });
   else {
-  const { text } = req.body
-  result = await sendTelegramTelemetry(text)
-  if (result) res.status(200).json({ msg : 'ok'})
+    const { text } = req.body;
+    const result = await sendTelegramTelemetry(text);
+    if (result) res.status(200).json({ msg: 'ok' });
   }
-}
+};
 
 const chekNameController = async (req, res) => {
   try {
@@ -69,7 +71,9 @@ const chekNameController = async (req, res) => {
 
 const registerController = async (req, res) => {
   try {
-    const { username, password, position, companyName, experience, additionalInfo } = req.body;
+    const {
+      username, password, position, companyName, experience, additionalInfo,
+    } = req.body;
     const salt = await bcrypt.genSalt(10);
     const hashPassword = await bcrypt.hash(password, salt);
     const { status, message, client } = await register(username, hashPassword, position, companyName, experience, additionalInfo);
@@ -103,7 +107,7 @@ const loginController = async (req, res) => {
       httpOnly: true,
       maxAge: 600 * 1000,
     });
-    res.json({isAuth: true})
+    res.json({ isAuth: true });
     // res.json({ accessTokenKrya });
   } catch (error) {
     // eslint-disable-next-line
@@ -111,4 +115,6 @@ const loginController = async (req, res) => {
   }
 };
 
-module.exports = { chekNameController, registerController, loginController, postToTelegram };
+module.exports = {
+  chekNameController, registerController, loginController, postToTelegram,
+};

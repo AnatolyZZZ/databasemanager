@@ -1,5 +1,7 @@
 const express = require('express');
-const { chekNameController, registerController, loginController, postToTelegram } = require('../controllers/client');
+const {
+  chekNameController, registerController, loginController, postToTelegram,
+} = require('../controllers/client');
 
 const clientRouter = express.Router();
 

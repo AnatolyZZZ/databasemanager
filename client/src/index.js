@@ -6,7 +6,7 @@ import { createStore } from 'redux';
 import { BrowserRouter } from 'react-router-dom';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import  reducer  from './reducers/index';
+import reducer from './reducers/index';
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';

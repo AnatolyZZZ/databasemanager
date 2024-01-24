@@ -1,45 +1,45 @@
 export const positionSelectOptions = [
-    {
-        value : 'front',
-        lablel : 'Frontend',
-        id : 0
-    },
-    {
-        value : 'back',
-        lablel : 'Backend',
-        id : 1
-    },
-    {
-        value : 'full',
-        lablel : 'Fullstack',
-        id : 2
-    },
-    {
-        value : 'other',
-        lablel : 'Other',
-        id : 3
-    }
-]
+  {
+    value: 'front',
+    label: 'Frontend',
+    id: 0,
+  },
+  {
+    value: 'back',
+    label: 'Backend',
+    id: 1,
+  },
+  {
+    value: 'full',
+    label: 'Fullstack',
+    id: 2,
+  },
+  {
+    value: 'other',
+    label: 'Other',
+    id: 3,
+  },
+];
 
 export const levelSelectorOptions = [
-    {
-        value : 'jun',
-        lablel : 'Junior',
-        id : 0
-    },
-    {
-        value : 'mid',
-        lablel : 'Middle',
-        id : 1
-    },
-    {
-        value : 'senior',
-        lablel : 'Senior',
-        id : 2
-    },
-    {
-        value : 'other',
-        lablel : 'Other',
-        id : 3
-    }
-]
+  {
+    value: 'jun',
+    label: 'Junior',
+    id: 0,
+  },
+  {
+    value: 'mid',
+    label: 'Middle',
+    id: 1,
+  },
+  {
+    value: 'senior',
+    label: 'Senior',
+    id: 2,
+  },
+  {
+    value: 'other',
+    label: 'Other',
+    id: 3,
+  },
+];

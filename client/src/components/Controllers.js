@@ -1,26 +1,27 @@
 import { useSelector, useDispatch } from 'react-redux';
 import {
-  FormControl, InputLabel, MenuItem, Select, Button, Popper, MenuList, Paper, Grow, ClickAwayListener, Stack
+  FormControl, InputLabel, MenuItem, Select, Button,
+  Popper, MenuList, Paper, Grow, ClickAwayListener, Stack,
 } from '@mui/material';
 import { useState, useRef } from 'react';
 import SettingsIcon from '@mui/icons-material/Settings';
-import { setTableName, openNewRow, toggleWelcome, validationErrors } from '../actions';
+
+import {
+  setTableName, openNewRow, toggleWelcome, validationErrors,
+} from '../actions';
 import { Filters } from './Filters';
 import { ColumnsController } from './Columnscontroller';
 import { ModelCopy } from './Modelcopy';
 import { Errors } from './Errors';
-import { useNavigate } from 'react-router-dom';
 import { $navigate } from '../utils/ux';
 
 import './styles/Controllers.css';
 
-export function Controllers(props) {
+export function Controllers() {
   const table_name = useSelector((state) => state.table_name);
   const tables = useSelector((state) => state.tables);
   const editing = useSelector((state) => state.editing);
   const primaryKey = useSelector((state) => state.primaryKey);
-
-  const navigate = useNavigate();
 
   // for menu button
   const menuRef = useRef(null);
@@ -34,7 +35,7 @@ export function Controllers(props) {
     dispatch(setTableName(e.target.value));
   };
 
-  const handleOpenColumns = (e) => {
+  const handleOpenColumns = () => {
     openEditColumns(true);
     setSettingsMenuOpen(false);
   };
@@ -70,7 +71,7 @@ export function Controllers(props) {
         variant="contained"
         color="primary"
         disabled={editing || primaryKey === ''}
-        onClick={(e) => {
+        onClick={() => {
           dispatch(validationErrors(0));
           dispatch(openNewRow(true));
         }}
@@ -80,8 +81,8 @@ export function Controllers(props) {
       </Button>
 
       <ModelCopy />
-      
-      <Stack direction='row' alignItems='center' spacing={1} className='menu-right'>
+
+      <Stack direction="row" alignItems="center" spacing={1} className="menu-right">
         <Errors />
 
         <SettingsIcon
@@ -93,7 +94,6 @@ export function Controllers(props) {
           aria-haspopup="true"
         />
       </Stack>
-      
 
       <Popper
         open={settingsMenuOpen}
@@ -104,13 +104,13 @@ export function Controllers(props) {
         disablePortal
         style={{ zIndex: 2 }}
       >
-        {({ TransitionProps, placement }) => (
+        {({ TransitionProps }) => (
           <Grow
             {...TransitionProps}
             style={{ transformOrigin: 'right top' }}
           >
             <Paper id="settings-menu" elevation={1}>
-              <ClickAwayListener onClickAway={(e) => setSettingsMenuOpen(false)}>
+              <ClickAwayListener onClickAway={() => setSettingsMenuOpen(false)}>
                 <MenuList
                   autoFocusItem={settingsMenuOpen}
                   id="composition-menu"
@@ -119,7 +119,7 @@ export function Controllers(props) {
                 >
                   <MenuItem onClick={handleOpenColumns} disabled={editing || table_name === ''}>Displayed columns</MenuItem>
                   <MenuItem onClick={() => dispatch(toggleWelcome(true))}>Show instructions</MenuItem>
-                  <MenuItem onClick={() => navigate('loginregister')}>Login/Register</MenuItem>
+                  <MenuItem onClick={() => $navigate('loginregister')}>Login/Register</MenuItem>
                   <MenuItem onClick={() => $navigate('hotkeys')}>HotKeys</MenuItem>
                 </MenuList>
               </ClickAwayListener>

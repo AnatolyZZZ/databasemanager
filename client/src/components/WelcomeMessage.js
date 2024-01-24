@@ -12,7 +12,7 @@ import HTMLRenderer from './universal/HTMLRenderer';
 import { benefits, positions } from './enteties/welcomeMessageBenefits';
 import './styles/Instructions.css';
 
-export function WelcomeMessage(props) {
+export function WelcomeMessage() {
   const dispatch = useDispatch();
   useEffect(() => {
     const shown = localStorage.getItem('dbm_wellcome_shown');
@@ -53,7 +53,7 @@ export function WelcomeMessage(props) {
     e.stopPropagation();
     changePopperText(texts[id]);
     popperRef.current = ref.current;
-    setPosition(pos[id] ? pos[id] : 'bottom' )
+    setPosition(pos[id] ? pos[id] : 'bottom');
     openPopper(true);
   };
 
@@ -106,7 +106,7 @@ export function WelcomeMessage(props) {
         style={{ zIndex: 1300 }}
         placement={position}
       >
-        <ClickAwayListener onClickAway={(e) => openPopper(false)}>
+        <ClickAwayListener onClickAway={() => openPopper(false)}>
           <Paper elevation={2} sx={{ p: 3 }}>
             <div className="instructions">
               <HTMLRenderer html={popperText} />

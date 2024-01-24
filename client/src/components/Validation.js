@@ -3,11 +3,8 @@ import { ACTIONS } from '../actions';
 import { store } from '../index';
 
 export const validateCellFailed = (params, constrains, updateState = true, checkingRow = false) => {
-  // console.log('validate cell constrains =>', constrains);
-  // console.log('validate cell params', params);
-  // if(checkingRow) console.log('validation called ->',constrains, params, store.getState().validationErrors);
-  if(!constrains) return
-  const value = params?.props ? params.props?.value : params?.value
+  if (!constrains) return;
+  const value = params?.props ? params.props?.value : params?.value;
   const errorMessages = new Set();
   let newMessege = '';
   let notEmptyPass = true;
@@ -32,8 +29,8 @@ export const validateCellFailed = (params, constrains, updateState = true, check
     }
   }
 
-  if(updateState) store.dispatch({ type: ACTIONS.SET_EDIT_ERROR_MESSAGES, payload: Array.from(errorMessages) })
-  if(checkingRow && errorMessages.size) store.dispatch({ type: ACTIONS.VALIDATION_ERRORS, payload: false});
+  if (updateState) store.dispatch({ type: ACTIONS.SET_EDIT_ERROR_MESSAGES, payload: Array.from(errorMessages) });
+  if (checkingRow && errorMessages.size) store.dispatch({ type: ACTIONS.VALIDATION_ERRORS, payload: false });
   return !typePass || !notEmptyPass;
 };
 
@@ -49,7 +46,7 @@ function isInteger(value) {
     return [false, 'should be integer'];
   }
   const int = Number(value);
-  if (isNaN(int)) {
+  if (Number.isNaN(int)) {
     return [false, 'should be integer'];
   }
   return [true, ''];

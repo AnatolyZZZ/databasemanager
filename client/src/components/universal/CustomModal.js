@@ -26,26 +26,37 @@ import {
 
 // mainButtonStyles - object  {variant, color}
 
-// keyDown - fucction to be execuded on keydown 
+// keyDown - fucction to be execuded on keydown
 
 function CustomModal(props) {
+  const {
+    show, maxWidth, disableEscapeKeyDown, keyDown, title, onSuccess, mainDisabled, mainButtonStyles,
+    children, success_text, onClose, close_text, onSecondary, secondary_text,
+  } = props;
   return (
-    <Dialog open={props.show} maxWidth={props.maxWidth || false} disableEscapeKeyDown={props.disableEscapeKeyDown || false} onKeyDown={props.keyDown}>
-      {props.title && <DialogTitle>{props.title}</DialogTitle>}
+    <Dialog
+      open={show}
+      maxWidth={maxWidth || false}
+      disableEscapeKeyDown={disableEscapeKeyDown || false}
+      onKeyDown={keyDown}
+    >
+      {title && <DialogTitle>{title}</DialogTitle>}
       <DialogContent>
-        {props.children}
+        {children}
       </DialogContent>
       <DialogActions>
-        {props.onSuccess && <Button 
-                            onClick={props.onSuccess} 
-                            disabled={props.mainDisabled}
-                            variant={props.mainButtonStyles?.variant || 'text'}
-                            color={props.mainButtonStyles?.color || 'primary'}
-                            >
-                              {props.success_text || 'Confirm'}
-                            </Button>}
-        {props.onClose && <Button onClick={() => props.onClose()}>{props.close_text || 'Close'}</Button>}
-        {props.onSecondary && <Button onClick={props.onSecondary}>{props.secondary_text}</Button>}
+        {onSuccess && (
+        <Button
+          onClick={onSuccess}
+          disabled={mainDisabled}
+          variant={mainButtonStyles?.variant || 'text'}
+          color={mainButtonStyles?.color || 'primary'}
+        >
+          {success_text || 'Confirm'}
+        </Button>
+        )}
+        {onClose && <Button onClick={() => onClose()}>{close_text || 'Close'}</Button>}
+        {onSecondary && <Button onClick={onSecondary}>{secondary_text}</Button>}
       </DialogActions>
     </Dialog>
   );

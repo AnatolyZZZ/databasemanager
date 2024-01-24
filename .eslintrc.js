@@ -4,7 +4,8 @@ module.exports = {
     // commonjs: true,
     es2021: true,
   },
-  extends: 'plugin:react/recommended',
+  // extends: 'plugin:react/recommended',
+  extends: 'airbnb',
   settings: {
     react: {
       version: '18.2.0',
@@ -33,8 +34,13 @@ module.exports = {
   },
   rules: {
     'no-plusplus': 'off',
-    'camelcase': 'off',
+    camelcase: 'off',
     'react/react-in-jsx-scope': 'off',
-    'react/prop-types': 'off'
+    'react/prop-types': 'off',
+    'react/jsx-filename-extension': 'off',
+    'import/prefer-default-export': 'off',
+    'import/no-cycle': 'off',
+    'no-use-before-define': 'off',
+    'react/jsx-props-no-spreading': 'off',
   },
 };

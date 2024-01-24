@@ -53,14 +53,14 @@ const initialState = {
   showWelcomeMessage: false,
   // first time show welcome message
   welcomeFirstTime: true,
-  // default EditRaw 
-  editRaw : {},
+  // default EditRaw
+  editRaw: {},
   // validation errors in newTable
-  validationErrors : 0,
+  validationErrors: 0,
   // for navigating out of components
-  navigate : '/',
+  navigate: '/',
   // is user authorized
-  isAuth : false
+  isAuth: false,
 };
 let curTableFiters;
 let newFilterState;
@@ -80,6 +80,7 @@ const reducer = (state = initialState, action = {}) => {
     case (ACTIONS.GET_TABLES):
       return { ...state, tables: action.payload };
     case (ACTIONS.SET_SELECTED):
+      // eslint-disable-next-line
       localStorage.setItem(`${state.table_name}_selected`, JSON.stringify(action.payload));
       return { ...state, selected_columns: action.payload };
     case (ACTIONS.TOGGLE_SELECTED):
@@ -87,6 +88,7 @@ const reducer = (state = initialState, action = {}) => {
       const new_selected = [...state.selected_columns];
       new_selected[action.payload][1] = !state.selected_columns[action.payload][1];
       const returnValue = { ...state, selected_columns: new_selected };
+      // eslint-disable-next-line
       localStorage.setItem(`${state.table_name}_selected`, JSON.stringify(new_selected));
       return returnValue;
     case (ACTIONS.SET_PK):
@@ -121,19 +123,21 @@ const reducer = (state = initialState, action = {}) => {
       curTableFiters = [...state.filters[action.payload.table]];
       curTableFiters.splice(action.payload.id, 1);
       newFilterState = { ...state.filters, [action.payload.table]: curTableFiters };
+      // eslint-disable-next-line
       localStorage.setItem('dbm_filters', JSON.stringify(newFilterState));
       return { ...state, filters: newFilterState };
     case (ACTIONS.NEW_FILTER):
       curTableFiters = state.filters[action.payload] ? [...state.filters[action.payload]] : [];
       curTableFiters.push({ column_name: '', operand: '', value: '' });
       newFilterState = { ...state.filters, [action.payload]: curTableFiters };
-
+      // eslint-disable-next-line
       localStorage.setItem('dbm_filters', JSON.stringify(newFilterState));
       return { ...state, filters: newFilterState };
     case (ACTIONS.MODIFY_FILTER):
       curTableFiters = [...state.filters[action.payload.table]];
       curTableFiters[action.payload.id] = action.payload.filter;
       newFilterState = { ...state.filters, [action.payload.table]: curTableFiters };
+      // eslint-disable-next-line
       localStorage.setItem('dbm_filters', JSON.stringify(newFilterState));
       return { ...state, filters: newFilterState };
     case (ACTIONS.APPLY_FILTERS):
@@ -141,20 +145,21 @@ const reducer = (state = initialState, action = {}) => {
     case (ACTIONS.RESTORE_FILTERS):
       return { ...state, filters: action.payload };
     case (ACTIONS.SWITCH_OFF_WELCOME):
+      // eslint-disable-next-line
       localStorage.setItem('dbm_wellcome_shown', JSON.stringify(true));
       return { ...state, welcomeFirstTime: false };
     case (ACTIONS.TOGGLE_WELCOME):
       return { ...state, showWelcomeMessage: action.payload };
-    case (ACTIONS.SET_EDIT_ROW): 
-      return {...state, editRaw: action.payload};
-    case (ACTIONS.SET_NEW_TABLE_TO_DEFAULT): 
-      return {...state, newTableRows : [...state.editRaw]};
+    case (ACTIONS.SET_EDIT_ROW):
+      return { ...state, editRaw: action.payload };
+    case (ACTIONS.SET_NEW_TABLE_TO_DEFAULT):
+      return { ...state, newTableRows: [...state.editRaw] };
     case (ACTIONS.VALIDATION_ERRORS):
-      return {...state, validationErrors: typeof(action.payload) === 'number' ? action.payload : state.validationErrors + 1}
-    case (ACTIONS.NAVIGATE) : 
-      return {...state, navigate : action.payload}
-    case (ACTIONS.AUTH) : 
-      return {...state, isAuth : action.payload}
+      return { ...state, validationErrors: typeof (action.payload) === 'number' ? action.payload : state.validationErrors + 1 };
+    case (ACTIONS.NAVIGATE):
+      return { ...state, navigate: action.payload };
+    case (ACTIONS.AUTH):
+      return { ...state, isAuth: action.payload };
     default:
       return { ...state };
   }

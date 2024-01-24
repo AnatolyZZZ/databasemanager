@@ -6,7 +6,7 @@ import { Table } from './universal/Table';
 import { $loading } from '../utils/ux';
 import { postData } from '../utils/api';
 
-export function CurrTable(props) {
+export function CurrTable() {
   const dispatch = useDispatch();
   const table = useSelector((state) => state.table);
   const table_name = useSelector((state) => state.table_name);
@@ -19,27 +19,30 @@ export function CurrTable(props) {
   useEffect(() => {
     const applyFilter = (idx, arr) => {
       const curFilter = filters[table_name][idx];
+      let newArr;
       switch (curFilter.operand) {
         case ('='):
-          arr = arr.filter((elt) => String(elt[curFilter.column_name]) === String(curFilter.value));
+          newArr = arr.filter((elt) => String(elt[curFilter.column_name]) === String(curFilter.value));
           break;
         case ('<'):
-          arr = arr.filter((elt) => elt[curFilter.column_name] < curFilter.value);
+          newArr = arr.filter((elt) => elt[curFilter.column_name] < curFilter.value);
           break;
         case ('>'):
-          arr = arr.filter((elt) => elt[curFilter.column_name] > curFilter.value);
+          newArr = arr.filter((elt) => elt[curFilter.column_name] > curFilter.value);
           break;
         case ('<='):
-          arr = arr.filter((elt) => elt[curFilter.column_name] <= curFilter.value);
+          newArr = arr.filter((elt) => elt[curFilter.column_name] <= curFilter.value);
           break;
         case ('>='):
-          arr = arr.filter((elt) => elt[curFilter.column_name] >= curFilter.value);
+          newArr = arr.filter((elt) => elt[curFilter.column_name] >= curFilter.value);
           break;
         default:
+          newArr = arr;
       }
       if (idx === 0) {
         return arr;
-      } return applyFilter(idx - 1, arr);
+      }
+      return applyFilter(idx - 1, newArr);
     };
     /// if filters are not applid or there is no setup filters for this table
     if (!apply_filters || !filters[table_name]) {
@@ -62,21 +65,18 @@ export function CurrTable(props) {
     };
 
     let shalowEqual = true;
-    for (const key in updRow) {
-      if (updRow[key] !== originalRow[key]) {
-        shalowEqual = false;
-        break;
-      }
-    }
+    // numbers can be represented in strings
+    // eslint-disable-next-line
+    Object.keys(updRow).forEach((key) => { if (updRow[key] != originalRow[key]) shalowEqual = false; });
     // dont fetch database if nothing have changed
     if (!shalowEqual) {
-      $loading(true)
-      const result = await postData('/api/table',upd, {}, {signal : null}, 'Failed to save in database, unknown error', null, true)
-      $loading(false)
-      if(!result) return originalRow
+      $loading(true);
+      const result = await postData('/api/table', upd, {}, { signal: null }, 'Failed to save in database, unknown error', null, true);
+      $loading(false);
+      if (!result) return originalRow;
       const row = result[0];
       dispatch(setEditMode(false));
-      return row;   
+      return row;
     }
     return updRow;
   };

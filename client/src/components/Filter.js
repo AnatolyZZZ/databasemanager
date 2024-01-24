@@ -6,35 +6,35 @@ import { useSelector, useDispatch } from 'react-redux';
 import { modifyFilter, delFilter } from '../actions';
 
 export function Filter(props) {
+  const { table, id } = props;
   const columns = useSelector((state) => state.columns);
-  // console.log(columns);
   const filters = useSelector((state) => state.filters);
   const dispatch = useDispatch();
   const operands = ['=', '>', '<', '>=', '<='];
 
   const handleColumnChange = (e) => {
-    const curFilter = filters[props.table][props.id];
-    dispatch(modifyFilter(props.table, props.id, { ...curFilter, column_name: e.target.value }));
+    const curFilter = filters[table][id];
+    dispatch(modifyFilter(table, id, { ...curFilter, column_name: e.target.value }));
   };
 
   const handleOperandChange = (e) => {
-    const curFilter = filters[props.table][props.id];
-    dispatch(modifyFilter(props.table, props.id, { ...curFilter, operand: e.target.value }));
+    const curFilter = filters[table][id];
+    dispatch(modifyFilter(table, id, { ...curFilter, operand: e.target.value }));
   };
 
   const handleValueChange = (e) => {
-    const curFilter = filters[props.table][props.id];
-    dispatch(modifyFilter(props.table, props.id, { ...curFilter, value: e.target.value }));
+    const curFilter = filters[table][id];
+    dispatch(modifyFilter(table, id, { ...curFilter, value: e.target.value }));
   };
 
   return (
     <Stack direction="row" alignItems="center" spacing={1} mb={1}>
       <FormControl size="large" sx={{ m: 1, width: 192 }}>
-        <InputLabel id={`filter_${props.id}_column_select_label`}>Column</InputLabel>
+        <InputLabel id={`filter_${id}_column_select_label`}>Column</InputLabel>
         <Select
-          labelId={`filter_${props.id}_column_select_label`}
-          id={`filter_${props.id}_column_select`}
-          value={filters[props.table][props.id].column_name}
+          labelId={`filter_${id}_column_select_label`}
+          id={`filter_${id}_column_select`}
+          value={filters[table][id].column_name}
           label="Column"
           onChange={handleColumnChange}
         >
@@ -46,11 +46,11 @@ export function Filter(props) {
       </FormControl>
 
       <FormControl size="large" sx={{ m: 1, width: 70 }}>
-        <InputLabel id={`filter_${props.id}_operand_select_label`}>Op</InputLabel>
+        <InputLabel id={`filter_${id}_operand_select_label`}>Op</InputLabel>
         <Select
-          labelId={`filter_${props.id}_operand_select_label`}
-          id={`filter_${props.id}_operand_select`}
-          value={filters[props.table][props.id].operand}
+          labelId={`filter_${id}_operand_select_label`}
+          id={`filter_${id}_operand_select`}
+          value={filters[table][id].operand}
           label="Operand"
           onChange={handleOperandChange}
         >
@@ -63,10 +63,10 @@ export function Filter(props) {
 
       <TextField
         variant="outlined"
-        value={filters[props.table][props.id].value}
+        value={filters[table][id].value}
         onChange={handleValueChange}
       />
-      <DeleteIcon color="error" onClick={() => dispatch(delFilter(props.table, props.id))} />
+      <DeleteIcon color="error" onClick={() => dispatch(delFilter(table, id))} />
     </Stack>
   );
 }
