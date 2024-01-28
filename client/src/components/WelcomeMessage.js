@@ -99,6 +99,13 @@ export function WelcomeMessage() {
         <ListItemButton ref={pkRef} onClick={(e) => clickHandler(e, pkRef, 'pk')}>
           <ListItemText inset>PK is not displayed by default</ListItemText>
         </ListItemButton>
+        <a href='https://www.loom.com/share/b8924f105b8440e9b5dbc5a62900c3a1?sid=c76d1723-780e-4000-b95e-7b6876775121' target='_blank' className='menu__link' rel="noreferrer">
+        <ListItemButton>
+          <ListItemText inset>
+              *** Watch intro video ***
+            </ListItemText>
+        </ListItemButton>
+        </a>
       </List>
       <Popper
         open={popperOpen}

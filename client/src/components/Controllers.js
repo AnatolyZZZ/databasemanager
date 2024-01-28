@@ -121,6 +121,7 @@ export function Controllers() {
                   <MenuItem onClick={() => dispatch(toggleWelcome(true))}>Show instructions</MenuItem>
                   <MenuItem onClick={() => $navigate('loginregister')}>Login/Register</MenuItem>
                   <MenuItem onClick={() => $navigate('hotkeys')}>HotKeys</MenuItem>
+                  <MenuItem><a href='https://www.loom.com/share/b8924f105b8440e9b5dbc5a62900c3a1?sid=c76d1723-780e-4000-b95e-7b6876775121' target='_blank' className='menu__link' rel="noreferrer">Intro video</a></MenuItem>
                 </MenuList>
               </ClickAwayListener>
             </Paper>
