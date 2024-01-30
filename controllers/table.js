@@ -30,7 +30,7 @@ const updateEntryController = async (req, res) => {
   } catch (error) {
     // eslint-disable-next-line
     console.log('error in controller', error);
-    res.status(500).json({ msg: 'error updating table', upd: req.body });
+    res.status(500).json({ msg: error.message ? error.message : null, upd: req.body });
   }
 };
 module.exports = { addRowsController, getTableController, updateEntryController };

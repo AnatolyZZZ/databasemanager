@@ -10,8 +10,8 @@ const initialState = {
   // cur table available columns
   columns: [],
   /// for dev use localhost http://localhost:5002 for prod ''
-  // root_url: 'http://localhost:5002',
-  root_url: '',
+  root_url: 'http://localhost:5002',
+  // root_url: '',
   // all available tables in database
   tables: [],
   // columns selected to display

@@ -19,29 +19,42 @@ export function HomePage() {
   const editNewRowDialogOpen = useSelector((state) => state.newRow);
   const editing = useSelector((state) => state.editing);
   const errorsInNewTable = useSelector((state) => state.validationErrors);
+  const constrains = useSelector((state) => state.constrains);
+  const columns = useSelector((state) => state.columns);
+
+  const isSerial = (column) => {
+    const defaultValString = String(constrains[column].defaultValue);
+    const nextVal = defaultValString.slice(0, 8);
+    return nextVal === 'nextval(';
+  };
+
 
   const saveToDatabase = async () => {
     $loading(true);
-    const addedRows = await postData('/api/table', { table: table_name, rows: newTableRows });
+    // need to delete all Serial from table
+    const seiralColumns =  columns.filter(column => isSerial(column))
+    let prepareUpdate = [...newTableRows];
+    prepareUpdate = prepareUpdate.map(row => {
+      seiralColumns.forEach(column =>  delete row[column])
+      return row
+      })
+
+    const addedRows = await postData('/api/table', { table: table_name, rows: prepareUpdate });
     if (addedRows) {
       const newTable = [...cur_table, ...addedRows];
       dispatch(setTable(newTable));
       // should clear everything in newTable
       dispatch(setNewTableToDefault());
-
       dispatch(openNewRow(false));
     }
-
+    console.log('newTableRows ->',newTableRows);
     $loading(false);
   };
 
   const closeEditModal = () => {
     dispatch(openNewRow(false));
     dispatch(setEditMode(false));
-    // if more than 1 row => we are edditing new model, so when close set to default
-    if (newTableRows.length > 1) {
-      dispatch(setNewTableToDefault());
-    }
+    dispatch(setNewTableToDefault());
   };
 
   return (

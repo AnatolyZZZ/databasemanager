@@ -35,11 +35,7 @@ export function NewTable() {
   return (
     <Box sx={{
       width: '100%',
-      height: '100%',
-      '       .MuiDataGrid-cell': {
-        // make borders visible
-        // border : '1px solid #f6f6f6'
-      },
+      height: '100%'
     }}
     >
 

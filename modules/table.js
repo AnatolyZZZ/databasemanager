@@ -8,7 +8,11 @@ const addRows = async (tableName, rows) => {
     return result;
   } catch (error) {
     // eslint-disable-next-line
-    console.log(`error in module, error adding rows ${JSON.stringify(rows)} to table ${tableName}`, error);
+    // console.log(`error in module, error adding rows ${JSON.stringify(rows)} to table ${tableName}`, error);
+    const { code, detail } = error
+    if (code === '23505') {
+      throw new Error(`Can not add rows: ${detail}`)
+    } 
     throw error;
   }
 };
@@ -22,7 +26,11 @@ const updateEntry = async (tableName, primaryKey, keyValue, entry) => {
     return result;
   } catch (error) {
     // eslint-disable-next-line
-    console.log(`error updating table ${tableName} by entry ${entry}, were ${primaryKey} is ${keyValue}`, error);
+    // console.log(`error updating table ${tableName} by entry ${entry}, were ${primaryKey} is ${keyValue}`, error);
+    const { code, detail } = error
+    if (code === '23505') {
+      throw new Error(`Can not update value: ${detail}`)
+    } 
     throw error;
   }
 };

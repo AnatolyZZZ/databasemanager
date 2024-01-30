@@ -36,7 +36,7 @@ export const postData = async (route, payload, para = {}, abortController = { si
     if (isAuth === false || isAuth === 'false') store.dispatch(setAuth(false));
     const data = await response.json();
     if (response.status === 200) return data;
-    const message = unsuccedMessage || data.msg;
+    const message = unsuccedMessage || data.msg || 'Failed to post data';
     $alert(message);
     if (response.status === 401) {
       await $delay(500);
