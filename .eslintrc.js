@@ -4,8 +4,8 @@ module.exports = {
     // commonjs: true,
     es2021: true,
   },
-  // extends: 'plugin:react/recommended',
-  extends: 'airbnb',
+  extends: 'plugin:react/recommended',
+  // extends: 'airbnb',
   settings: {
     react: {
       version: '18.2.0',

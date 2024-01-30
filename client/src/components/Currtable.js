@@ -40,7 +40,7 @@ export function CurrTable() {
           newArr = arr;
       }
       if (idx === 0) {
-        return arr;
+        return newArr;
       }
       return applyFilter(idx - 1, newArr);
     };
