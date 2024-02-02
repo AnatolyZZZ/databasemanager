@@ -13,7 +13,7 @@ export function NewTable() {
 
   const updateRows = async (updRow, originalRow) => {
     const newRowsState = [...newTableRows];
-    const idx = newRowsState.findIndex((row) => row[primaryKey] === originalRow[primaryKey]);
+    const idx = newRowsState.findIndex(row => row[primaryKey] === originalRow[primaryKey]);
     newRowsState[idx] = updRow;
     /// check that PK is still unique
     let i = 0;

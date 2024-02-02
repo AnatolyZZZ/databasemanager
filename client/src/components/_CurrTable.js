@@ -45,7 +45,7 @@ export function CurrTable() {
       return applyFilter(idx - 1, newArr);
     };
     /// if filters are not applid or there is no setup filters for this table
-    if (!apply_filters || !filters[table_name]) {
+    if (!apply_filters || !filters[table_name] || !Array.isArray(filters[table_name]) || filters[table_name].length === 0) {
       filterRows([...table]);
       // otherwise should upply them
     } else {

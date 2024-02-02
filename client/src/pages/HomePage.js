@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from 'react-redux';
-import { CurrTable } from '../components/Currtable';
+import { CurrTable } from '../components/_CurrTable';
 import { WelcomeMessage } from '../components/WelcomeMessage';
 import { Controllers } from '../components/Controllers';
 import { NewTable } from '../components/NewTable';
@@ -33,21 +33,20 @@ export function HomePage() {
     $loading(true);
     // need to delete all Serial from table
     const seiralColumns =  columns.filter(column => isSerial(column))
-    let prepareUpdate = [...newTableRows];
-    prepareUpdate = prepareUpdate.map(row => {
-      seiralColumns.forEach(column =>  delete row[column])
-      return row
-      })
-
+    const prepareUpdate = newTableRows
+    .map((row) => {
+      const entriesInRow = Object.entries(row);
+      entriesInRow.filter(([key, value]) => !seiralColumns.includes(key))
+      return Object.fromEntries(entriesInRow)
+    });
     const addedRows = await postData('/api/table', { table: table_name, rows: prepareUpdate });
     if (addedRows) {
       const newTable = [...cur_table, ...addedRows];
       dispatch(setTable(newTable));
-      // should clear everything in newTable
+      // should clear everything in newTable for new row adding 
       dispatch(setNewTableToDefault());
       dispatch(openNewRow(false));
     }
-    console.log('newTableRows ->',newTableRows);
     $loading(false);
   };
 

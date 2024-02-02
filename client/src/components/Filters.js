@@ -13,7 +13,6 @@ export function Filters() {
   const [filtersDialog, openFiltersDialog] = useState(false);
   const editing = useSelector((state) => state.editing);
   const apply_filters = useSelector((state) => state.apply_filters);
-  // console.log(apply_filters)
   const dispatch = useDispatch();
 
   const handleListKeyDown = (e) => {
@@ -51,10 +50,7 @@ export function Filters() {
           <FormControlLabel
             control={(
               <Switch
-                onChange={(e) => {
-                  dispatch(applyFilters(e.target.checked));
-                  // console.log(e.target.checked)
-                }}
+                onChange={(e) => dispatch(applyFilters(e.target.checked))}
                 checked={apply_filters}
                 color="warning"
               />
