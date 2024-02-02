@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from 'react-redux';
-import { CurrTable } from '../components/_CurrTable';
+import { CurrTable } from '../components/CurrTable';
 import { WelcomeMessage } from '../components/WelcomeMessage';
 import { Controllers } from '../components/Controllers';
 import { NewTable } from '../components/NewTable';
