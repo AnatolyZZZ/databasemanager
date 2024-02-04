@@ -35,8 +35,8 @@ export function HomePage() {
     const seiralColumns =  columns.filter(column => isSerial(column))
     const prepareUpdate = newTableRows
     .map((row) => {
-      const entriesInRow = Object.entries(row);
-      entriesInRow.filter(([key, value]) => !seiralColumns.includes(key))
+      const entriesInRow = Object.entries(row)
+      .filter(([key, value]) => !seiralColumns.includes(key))
       return Object.fromEntries(entriesInRow)
     });
     const addedRows = await postData('/api/table', { table: table_name, rows: prepareUpdate });

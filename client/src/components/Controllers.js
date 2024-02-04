@@ -11,7 +11,7 @@ import {
 } from '../actions';
 import { Filters } from './Filters';
 import { ColumnsController } from './ColumnsController';
-import { ModelCopy } from './Modelcopy';
+import { ModelCopy } from './ModelCopy';
 import { Errors } from './Errors';
 import { $navigate } from '../utils/ux';
 
